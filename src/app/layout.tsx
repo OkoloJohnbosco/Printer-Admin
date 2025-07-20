@@ -1,17 +1,23 @@
 import type { Metadata } from "next";
-import { Work_Sans, Geist_Mono } from "next/font/google";
+import { Manrope, Work_Sans } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Work_Sans({
+const workSans = Work_Sans({
   variable: "--font-work-sans",
   subsets: ["latin"],
   weight: ["400"],
 });
 
-const geistMono = Work_Sans({
+const workSansHeading = Work_Sans({
   variable: "--font-work-heading",
   subsets: ["latin"],
-  weight: ["700"],
+  weight: ["600"],
+});
+
+const manropeHeading = Manrope({
+  variable: "--font-manrope-heading",
+  subsets: ["latin"],
+  weight: ["600"],
 });
 
 export const metadata: Metadata = {
@@ -27,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${workSans.variable} ${workSansHeading.variable} ${manropeHeading.variable} antialiased`}
       >
         {children}
       </body>

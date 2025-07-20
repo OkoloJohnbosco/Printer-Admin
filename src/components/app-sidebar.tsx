@@ -2,33 +2,37 @@
 
 import {
   AudioWaveform,
-  BookOpen,
+  BellIcon,
+  Castle,
+  CircleDollarSign,
+  CircleQuestionMark,
   Command,
+  GalleryVertical,
   GalleryVerticalEnd,
   LayoutDashboard,
   Printer,
   Settings2,
+  ShieldCheck,
+  Tag,
+  UserRoundCog,
 } from "lucide-react";
 import * as React from "react";
 
 import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import routes from "@/routes";
+import Image from "next/image";
+import Link from "next/link";
 
 // This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   teams: [
     {
       name: "Acme Inc",
@@ -60,12 +64,12 @@ const data = {
     {
       title: "Verification",
       url: routes.VERIFICATION,
-      icon: BookOpen,
+      icon: ShieldCheck,
     },
     {
       title: "Revenue & Payout",
       url: routes.REVENUE_AND_PAYOUT,
-      icon: Settings2,
+      icon: CircleDollarSign,
     },
   ],
 
@@ -73,17 +77,17 @@ const data = {
     {
       title: "Portfolio & Works",
       url: routes.PORTFOLIO_AND_WORKS,
-      icon: LayoutDashboard,
+      icon: GalleryVertical,
     },
     {
       title: "Company Story",
       url: routes.COMPANY_STORY,
-      icon: Printer,
+      icon: Castle,
     },
     {
       title: "Product Offerings",
       url: routes.PRODUCT_OFFERINGS,
-      icon: BookOpen,
+      icon: Tag,
     },
     {
       title: "Order Management",
@@ -96,35 +100,52 @@ const data = {
     {
       title: "Account",
       url: routes.MY_ACCOUNT,
-      icon: LayoutDashboard,
+      icon: UserRoundCog,
     },
     {
       title: "Notifications",
       url: routes.NOTIFICATIONS,
-      icon: Printer,
+      icon: BellIcon,
     },
     {
       title: "Help & Support",
       url: routes.HELP_AND_SUPPORT,
-      icon: Settings2,
+      icon: CircleQuestionMark,
     },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar className="bg-white" collapsible="icon" {...props}>
+    <Sidebar className="border-0!" collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <SidebarMenu>
+          <SidebarMenuItem className="px-4 transition-[width,height,padding] group-data-[collapsible=icon]:p-0">
+            <Link href={routes.ROOT}>
+              <Image
+                height={50}
+                width={100}
+                src="/logo.svg"
+                alt=""
+                className="group-data-[collapsible=icon]:hidden block"
+              />
+              <Image
+                height={70}
+                width={70}
+                src="/logo-sm.svg"
+                alt=""
+                className="group-data-[collapsible=icon]:block hidden"
+              />
+            </Link>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <NavMain label="Main" items={data.navMain} />
         <NavMain label="Print Hub Management" items={data.navPrintHub} />
         <NavMain label="Settings" items={data.navSettings} />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
+      <SidebarFooter></SidebarFooter>
     </Sidebar>
   );
 }

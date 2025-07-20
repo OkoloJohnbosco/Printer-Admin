@@ -30,8 +30,10 @@ export function NavMain({
   const pathname = usePathname();
   return (
     <SidebarGroup className="px-0">
-      <SidebarGroupLabel>{label}</SidebarGroupLabel>
-      <SidebarMenu className="gap-0">
+      <SidebarGroupLabel className="font-[600] text-brand-gray-200 pl-4">
+        {label}
+      </SidebarGroupLabel>
+      <SidebarMenu className="gap-0 group-data-[collapsible=icon]:gap-2">
         {items.map((item) => (
           <SidebarMenuItem key={item.title}>
             <SidebarMenuButton

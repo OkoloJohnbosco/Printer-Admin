@@ -16,18 +16,18 @@ const routes = {
 
   // DASHBOARD ROUTES
   DASHBOARD: "/dashboard",
-  PRINT_JOBS: "/dashboard/print-jobs",
-  VERIFICATION: "/dashboard/verification",
-  REVENUE_AND_PAYOUT: "/dashboard/revenue-and-payout",
+  PRINT_JOBS: "/print-jobs",
+  VERIFICATION: "/verification",
+  REVENUE_AND_PAYOUT: "/revenue-and-payout",
 
-  PORTFOLIO_AND_WORKS: "/dashboard/portfolio-and-works",
-  COMPANY_STORY: "/dashboard/company-story",
-  PRODUCT_OFFERINGS: "/dashboard/product-offerings",
-  ORDER_MANAGEMENT: "/dashboard/order-management",
+  PORTFOLIO_AND_WORKS: "/portfolio-and-works",
+  COMPANY_STORY: "/company-story",
+  PRODUCT_OFFERINGS: "/product-offerings",
+  ORDER_MANAGEMENT: "/order-management",
 
-  MY_ACCOUNT: "/dashboard/my-account",
-  NOTIFICATIONS: "/dashboard/notifications",
-  HELP_AND_SUPPORT: "/dashboard/help-and-support",
+  MY_ACCOUNT: "/my-account",
+  NOTIFICATIONS: "/notifications",
+  HELP_AND_SUPPORT: "/help-and-support",
 };
 
 export default routes;
