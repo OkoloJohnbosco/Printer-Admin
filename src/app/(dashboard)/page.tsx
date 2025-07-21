@@ -1,6 +1,7 @@
 import { ChartAreaInteractive } from "@/modules/main/dashboard/components/monthly-revenue-chart";
 import VerificationBanner from "@/modules/main/dashboard/components/verification-banner";
 import WelcomeHeader from "@/modules/main/dashboard/components/welcome-header";
+import RecentPrintJobs from "@/modules/main/dashboard/templates/recent-print-jobs";
 import StatsCardRow from "@/modules/main/dashboard/templates/stats-card-row";
 import VerificationStatusCard from "@/modules/main/dashboard/templates/verification-status-card";
 
@@ -15,6 +16,7 @@ export default function Home() {
         <ChartAreaInteractive />
         <VerificationStatusCard />
       </div>
+      <RecentPrintJobs />
     </div>
   );
 }
