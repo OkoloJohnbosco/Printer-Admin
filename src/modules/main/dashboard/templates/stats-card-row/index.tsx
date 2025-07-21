@@ -12,7 +12,7 @@ function StatsCardRow() {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <div className="px-4 py-6 space-y-4 bg-white rounded-lg">
         <div className="flex items-center gap-4">
-          <div className="h-12 w-12 grid place-items-center bg-accent rounded-full">
+          <div className="h-12 w-12 grid place-items-center bg-brand-purple-500 rounded-full">
             <Printer className="h-4 w-4 text-brand-gray-400" />
           </div>
           <div>

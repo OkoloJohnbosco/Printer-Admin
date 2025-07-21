@@ -24,7 +24,7 @@ export function NavUser({
   };
 }) {
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={true}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
