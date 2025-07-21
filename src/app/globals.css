@@ -44,6 +44,8 @@
   --radius-xl: calc(var(--radius) + 4px);
 
   /* Custom */
+  --text-nm: var(--text-nm);
+
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-primary: var(--brand-primary);
   --color-brand-gray-100: var(--brand-gray-100);
@@ -51,6 +53,17 @@
   --color-brand-gray-300: var(--brand-gray-300);
   --color-brand-gray-400: var(--brand-gray-400);
   --color-brand-gray-500: var(--brand-gray-500);
+
+  --color-brand-yellow-100: var(--brand-yellow-100);
+  --color-brand-yellow-200: var(--brand-yellow-200);
+  --color-brand-yellow-300: var(--brand-yellow-300);
+
+  --color-brand-green-100: var(--brand-green-100);
+  --color-brand-green-200: var(--brand-green-200);
+  --color-brand-green-300: var(--brand-green-300);
+
+  --color-brand-blue-100: var(--brand-blue-100);
+  --color-brand-blue-200: var(--brand-blue-200);
 }
 
 
@@ -87,6 +100,7 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+  --text-nm: 13px;
 
   --brand-foreground: #C7D9E1;
   --brand-primary: #021525;
@@ -95,6 +109,18 @@
   --brand-gray-300: #4B5563;
   --brand-gray-400: #1F2937;
   --brand-gray-500: #FAFAFA;
+
+  --brand-yellow-100: #FEF9C3;
+  --brand-yellow-200: #CA8A04;
+  --brand-yellow-300: #FBBF24;
+
+  --brand-green-100: #22C55E;
+  --brand-green-200: #DCFCE7;
+  --brand-green-300: #16A34A;
+
+  --brand-blue-100: #DBEAFE;
+  --brand-blue-200: #2563EB;
+
 }
 
 .dark {
@@ -130,6 +156,8 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
 
+  --text-nm: 13px;
+
   --brand-foreground: #C7D9E1;
   --brand-primary: #021525;
   --brand-gray-100: #374151;
@@ -137,6 +165,18 @@
   --brand-gray-300: #4B5563;
   --brand-gray-400: #1F2937;
   --brand-gray-500: #FAFAFA;
+
+  --brand-yellow-100: #FEF9C3;
+  --brand-yellow-200: #CA8A04;
+  --brand-yellow-300: #FBBF24;
+
+  --brand-green-100: #22C55E;
+  --brand-green-200: #DCFCE7;
+  --brand-green-300: #16A34A;
+
+  --brand-blue-100: #DBEAFE;
+  --brand-blue-200: #2563EB;
+
 }
 
 @layer base {

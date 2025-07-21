@@ -10,7 +10,7 @@ const headerClasses = cva([``], {
       h3: ["sm:text-[32px] text-[24px] leading-[120%]"],
       h4: ["sm:text-[24px] text-[20px] leading-[140%]"],
       h5: ["sm:text-[20px] text-[18px] leading-[140%]"],
-      h6: ["sm:text-[16px] text-[14px] leading-[140%]"],
+      h6: ["sm:text-[18px] text-[16px] leading-[140%]"],
     },
   },
   defaultVariants: {
