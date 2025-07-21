@@ -54,6 +54,7 @@
   --color-brand-gray-400: var(--brand-gray-400);
   --color-brand-gray-500: var(--brand-gray-500);
   --color-brand-gray-600: var(--brand-gray-600);
+  --color-brand-gray-700: var(--brand-gray-700);
 
   --color-brand-yellow-100: var(--brand-yellow-100);
   --color-brand-yellow-200: var(--brand-yellow-200);
@@ -120,6 +121,8 @@
   --brand-gray-400: #1F2937;
   --brand-gray-500: #FAFAFA;
   --brand-gray-600: #9CA3AF;
+  --brand-gray-700: #727376;
+
 
   --brand-yellow-100: #FEF9C3;
   --brand-yellow-200: #CA8A04;
@@ -186,6 +189,7 @@
   --brand-gray-400: #1F2937;
   --brand-gray-500: #FAFAFA;
   --brand-gray-600: #9CA3AF;
+  --brand-gray-700: #727376;
 
   --brand-yellow-100: #FEF9C3;
   --brand-yellow-200: #CA8A04;
@@ -227,4 +231,12 @@
   h6 {
     @apply font-[family-name:var(--font-manrope-heading)] text-brand-gray-400 font-[600];
   }
+}
+
+.profile-hero {
+  background:
+    url("/profile-bg.png") repeat;
+  background-blend-mode: plus-darker, normal;
+  background-size: cover;
+  background-position: center;
 }
