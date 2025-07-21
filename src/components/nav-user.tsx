@@ -39,7 +39,9 @@ export function NavUser({
             <span className="truncate text-brand-gray-400 font-[family-name:var(--font-manrope-heading)] font-medium">
               {user.name}
             </span>
-            <span className="truncate text-xs">{user.email}</span>
+            <span className="truncate text-xs font-extralight">
+              {user.email}
+            </span>
           </div>
         </Button>
       </DropdownMenuTrigger>

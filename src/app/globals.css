@@ -53,6 +53,7 @@
   --color-brand-gray-300: var(--brand-gray-300);
   --color-brand-gray-400: var(--brand-gray-400);
   --color-brand-gray-500: var(--brand-gray-500);
+  --color-brand-gray-600: var(--brand-gray-600);
 
   --color-brand-yellow-100: var(--brand-yellow-100);
   --color-brand-yellow-200: var(--brand-yellow-200);
@@ -61,9 +62,18 @@
   --color-brand-green-100: var(--brand-green-100);
   --color-brand-green-200: var(--brand-green-200);
   --color-brand-green-300: var(--brand-green-300);
+  --color-brand-green-400: var(--brand-green-400);
+  --color-brand-green-500: var(--brand-green-500);
+  --color-brand-green-600: var(--brand-green-600);
 
   --color-brand-blue-100: var(--brand-blue-100);
   --color-brand-blue-200: var(--brand-blue-200);
+
+  --color-brand-purple-100: var(--brand-purple-100);
+  --color-brand-purple-200: var(--brand-purple-200);
+  --color-brand-purple-300: var(--brand-purple-300);
+  --color-brand-purple-400: var(--brand-purple-400);
+  --color-brand-purple-500: var(--brand-purple-500);
 }
 
 
@@ -109,6 +119,7 @@
   --brand-gray-300: #4B5563;
   --brand-gray-400: #1F2937;
   --brand-gray-500: #FAFAFA;
+  --brand-gray-600: #9CA3AF;
 
   --brand-yellow-100: #FEF9C3;
   --brand-yellow-200: #CA8A04;
@@ -117,9 +128,18 @@
   --brand-green-100: #22C55E;
   --brand-green-200: #DCFCE7;
   --brand-green-300: #16A34A;
+  --brand-green-400: #BBF7D0;
+  --brand-green-500: #F0FDF4;
+  --brand-green-600: #15803D;
 
   --brand-blue-100: #DBEAFE;
   --brand-blue-200: #2563EB;
+
+  --brand-purple-100: #EEF2FF;
+  --brand-purple-200: #C7D2FE;
+  --brand-purple-300: #4338CA;
+  --brand-purple-400: #3730A3;
+  --brand-purple-500: #E0E7FF;
 
 }
 
@@ -165,6 +185,7 @@
   --brand-gray-300: #4B5563;
   --brand-gray-400: #1F2937;
   --brand-gray-500: #FAFAFA;
+  --brand-gray-600: #9CA3AF;
 
   --brand-yellow-100: #FEF9C3;
   --brand-yellow-200: #CA8A04;
@@ -173,9 +194,19 @@
   --brand-green-100: #22C55E;
   --brand-green-200: #DCFCE7;
   --brand-green-300: #16A34A;
+  --brand-green-400: #BBF7D0;
+  --brand-green-500: #F0FDF4;
+  --brand-green-600: #15803D;
+
 
   --brand-blue-100: #DBEAFE;
   --brand-blue-200: #2563EB;
+
+  --brand-purple-100: #EEF2FF;
+  --brand-purple-200: #C7D2FE;
+  --brand-purple-300: #4338CA;
+  --brand-purple-400: #3730A3;
+  --brand-purple-500: #E0E7FF;
 
 }
 
@@ -185,7 +216,7 @@
   }
 
   body {
-    @apply bg-background font-[family-name:var(--font-work-sans)] text-brand-gray-300;
+    @apply bg-background font-[family-name:var(--font-work-sans)] text-brand-gray-300 font-[400];
   }
 
   h1,
@@ -194,6 +225,6 @@
   h4,
   h5,
   h6 {
-    @apply font-[family-name:var(--font-manrope-heading)] text-brand-gray-400;
+    @apply font-[family-name:var(--font-manrope-heading)] text-brand-gray-400 font-[600];
   }
 }

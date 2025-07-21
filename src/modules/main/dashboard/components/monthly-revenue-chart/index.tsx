@@ -16,6 +16,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import Heading from "@/components/ui/heading";
 import {
   Select,
   SelectContent,
@@ -161,9 +162,13 @@ export function ChartAreaInteractive() {
   });
 
   return (
-    <Card className="@container/card shadow-none">
+    <Card className="@container/card shadow-none border-0">
       <CardHeader>
-        <CardTitle>Monthly Revenue</CardTitle>
+        <CardTitle>
+          <Heading size="h7" className="font-[700]">
+            Monthly Revenue
+          </Heading>
+        </CardTitle>
 
         <CardAction>
           <ToggleGroup
@@ -186,13 +191,13 @@ export function ChartAreaInteractive() {
               <SelectValue placeholder="Last 3 months" />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
-              <SelectItem value="90d" className="rounded-lg">
+              <SelectItem value="90d" className="rounded-lg text-nm">
                 Last 3 months
               </SelectItem>
-              <SelectItem value="30d" className="rounded-lg">
+              <SelectItem value="30d" className="rounded-lg text-nm">
                 Last 30 days
               </SelectItem>
-              <SelectItem value="7d" className="rounded-lg">
+              <SelectItem value="7d" className="rounded-lg text-nm">
                 Last 7 days
               </SelectItem>
             </SelectContent>
@@ -202,7 +207,7 @@ export function ChartAreaInteractive() {
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
+          className="aspect-auto h-[350px] w-full"
         >
           <AreaChart data={filteredData}>
             <defs>

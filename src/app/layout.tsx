@@ -5,7 +5,7 @@ import "./globals.css";
 const workSans = Work_Sans({
   variable: "--font-work-sans",
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["400", "500"],
 });
 
 const workSansHeading = Work_Sans({
@@ -17,7 +17,7 @@ const workSansHeading = Work_Sans({
 const manropeHeading = Manrope({
   variable: "--font-manrope-heading",
   subsets: ["latin"],
-  weight: ["600"],
+  weight: ["600", "700"],
 });
 
 export const metadata: Metadata = {

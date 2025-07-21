@@ -2,6 +2,7 @@ import { ChartAreaInteractive } from "@/modules/main/dashboard/components/monthl
 import VerificationBanner from "@/modules/main/dashboard/components/verification-banner";
 import WelcomeHeader from "@/modules/main/dashboard/components/welcome-header";
 import StatsCardRow from "@/modules/main/dashboard/templates/stats-card-row";
+import VerificationStatusCard from "@/modules/main/dashboard/templates/verification-status-card";
 
 export default function Home() {
   return (
@@ -10,8 +11,9 @@ export default function Home() {
       <VerificationBanner />
       <StatsCardRow />
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <ChartAreaInteractive />
+        <VerificationStatusCard />
       </div>
     </div>
   );

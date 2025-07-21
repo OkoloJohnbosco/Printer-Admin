@@ -6,9 +6,9 @@ function VerificationBanner() {
   return (
     <div className="p-5  bg-white w-full rounded-2xl">
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <div className="h-24 w-24 rounded-full grid place-items-center bg-brand-yellow-100">
-            <Shield className="h-10 w-10 text-brand-yellow-200" />
+        <div className="flex flex-col md:flex-row md:items-center gap-4">
+          <div className="h-16 w-16 md:h-24 md:w-24 shrink-0 rounded-full grid place-items-center bg-brand-yellow-100">
+            <Shield className="h-7 w-7 md:h-10 md:w-10 text-brand-yellow-200" />
           </div>
           <div className="space-y-2">
             <Heading size={"h6"}>Start Your Verification</Heading>
