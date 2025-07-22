@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { BusinessInfoVerificationFormSchema } from "./business-info.schema";
 
-function BusinessInfoVerificationForm() {
+function BusinessInfoVerificationForm({ onClose }: { onClose: () => void }) {
   const form = useForm<z.infer<typeof BusinessInfoVerificationFormSchema>>({
     resolver: zodResolver(BusinessInfoVerificationFormSchema),
     defaultValues: {
@@ -235,8 +235,10 @@ function BusinessInfoVerificationForm() {
               )}
             />
           </div>
-          <div className="flex justify-end items-center bg-brand-gray-500 z-10 sticky bottom-0 py-5 gap-3 border-t">
-            <Button variant="outline">Cancel</Button>
+          <div className="flex justify-end items-center bg-brand-gray-500 z-10 sticky bottom-0 p-4 gap-3 border-t">
+            <Button variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
             <Button type="submit">Submit</Button>
           </div>
         </form>

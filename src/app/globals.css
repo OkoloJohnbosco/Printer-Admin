@@ -81,6 +81,9 @@
 
   --color-brand-placeholder: var(--brand-placeholder);
 
+  --color-brand-teal-100: var(--brand-teal-100);
+  --color-brand-teal-200: var(--brand-teal-200);
+
 }
 
 
@@ -155,6 +158,8 @@
 
   --brand-placeholder: #D3D7E0;
 
+  --brand-teal-100: #40D2A11A;
+  --brand-teal-200: #3CB5B5;
 }
 
 .dark {
@@ -227,6 +232,9 @@
   --brand-error-100: #FF4623;
 
   --brand-placeholder: #D3D7E0;
+
+  --brand-teal-100: #40D2A11A;
+  --brand-teal-200: #3CB5B5;
 }
 
 @layer base {
