@@ -1,6 +1,139 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { format, getYear, parseISO } from "date-fns";
+import { twMerge } from "tailwind-merge";
+import { z } from "zod";
+
+type keys<T> = keyof T;
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
+
+export function convertToKilobyte(size: number) {
+  const newSize = size / 1024;
+
+  return newSize.toFixed(2);
+}
+
+export function createFormData<T extends Record<string, string | Blob>>(
+  data: T
+) {
+  const reqData = new FormData();
+
+  const dataKeys = Object.keys(data) as keys<T>[];
+  dataKeys.forEach((item) => {
+    if (data[item]) {
+      reqData.set(item as string, data[item]);
+    }
+  });
+
+  return reqData;
+}
+
+export const fileSchema = (maxSize: number, allowedTypes: string[]) =>
+  z
+    .any()
+    .refine((file) => file instanceof File, {
+      message: "Expected a file.",
+    })
+    .refine((file) => file?.size <= maxSize, {
+      // make this 50 mb
+      message: `File size should be less than ${
+        maxSize / (100 * 1024 * 1024)
+      }MB.`,
+    })
+    .refine((file) => allowedTypes.includes(file?.type), {
+      message: `Only ${allowedTypes.join(", ")} files are accepted.`,
+    });
+
+export const fileSize = 100 * 1024 * 1024;
+
+export function formatNumber(num: number): string {
+  if (isNaN(num)) return "0";
+  if (num < 1000) return num?.toString();
+
+  const units = ["", "K", "M", "B", "T", "P", "E"]; // K = Thousand, M = Million, B = Billion, T = Trillion, P = Quadrillion, E = Quintillion
+  const unitIndex = Math.floor(Math.log10(num) / 3); // Determine the index of the unit
+
+  const scaledNumber = (num / Math.pow(1000, unitIndex)).toFixed(2); // Scale the number down and keep one decimal place
+  return `${scaledNumber}${units[unitIndex]}`;
+}
+
+export function formatTableNumber(
+  num: number,
+  options?: { isPercent?: boolean; dp?: number }
+): string {
+  let giverNum = num;
+  if (isNaN(giverNum)) return "0";
+  // Remove the decimals bynpm using Math.floor (or Math.trunc)
+  // const integerPart = Math.floor(num);
+  if (options?.isPercent) giverNum = giverNum * 100;
+
+  // Format the integer part with commas
+  return giverNum.toLocaleString("en-US", {
+    minimumFractionDigits: options?.dp ?? 3,
+    maximumFractionDigits: options?.dp ?? 3,
+  });
+}
+
+/**
+ * Formats an ISO date string to a human-readable time format (e.g., "2:44pm").
+ * @param isoDate - The ISO date string to format.
+ * @returns The formatted time string in "h:mm am/pm" format or an empty string if the input is invalid.
+ */
+export function formatTime(isoDate: string | null | undefined): string {
+  if (!isoDate) {
+    return ""; // Return an empty string if the input is null or undefined
+  }
+
+  try {
+    const parsedDate = parseISO(isoDate);
+    return format(parsedDate, "h:mma").toLowerCase();
+  } catch (error) {
+    console.error("Invalid date format:", error);
+    return "";
+  }
+}
+
+export default function getInitials(name?: string) {
+  if (!name) return "";
+  if (name.split(" ").length === 1) return name.substring(0, 2).toUpperCase();
+  return name
+    .split(" ")
+    .splice(0, 2)
+    .map((item) => item.substring(0, 1))
+    .join("")
+    .toUpperCase();
+}
+
+export const getRandomColor = () => {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
+
+const startYear = getYear(new Date()) - 100;
+const endYear = getYear(new Date());
+
+export const years = Array.from(
+  { length: endYear - startYear + 1 },
+  (_, i) => endYear - i
+);
+
+export const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];

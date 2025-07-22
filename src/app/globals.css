@@ -55,6 +55,7 @@
   --color-brand-gray-500: var(--brand-gray-500);
   --color-brand-gray-600: var(--brand-gray-600);
   --color-brand-gray-700: var(--brand-gray-700);
+  --color-brand-gray-800: var(--brand-gray-800);
 
   --color-brand-yellow-100: var(--brand-yellow-100);
   --color-brand-yellow-200: var(--brand-yellow-200);
@@ -75,6 +76,11 @@
   --color-brand-purple-300: var(--brand-purple-300);
   --color-brand-purple-400: var(--brand-purple-400);
   --color-brand-purple-500: var(--brand-purple-500);
+
+  --color-brand-error-100: var(--brand-error-100);
+
+  --color-brand-placeholder: var(--brand-placeholder);
+
 }
 
 
@@ -122,6 +128,7 @@
   --brand-gray-500: #FAFAFA;
   --brand-gray-600: #9CA3AF;
   --brand-gray-700: #727376;
+  --brand-gray-800: #56585C;
 
 
   --brand-yellow-100: #FEF9C3;
@@ -143,6 +150,10 @@
   --brand-purple-300: #4338CA;
   --brand-purple-400: #3730A3;
   --brand-purple-500: #E0E7FF;
+
+  --brand-error-100: #FF4623;
+
+  --brand-placeholder: #D3D7E0;
 
 }
 
@@ -190,6 +201,7 @@
   --brand-gray-500: #FAFAFA;
   --brand-gray-600: #9CA3AF;
   --brand-gray-700: #727376;
+  --brand-gray-800: #56585C;
 
   --brand-yellow-100: #FEF9C3;
   --brand-yellow-200: #CA8A04;
@@ -212,6 +224,9 @@
   --brand-purple-400: #3730A3;
   --brand-purple-500: #E0E7FF;
 
+  --brand-error-100: #FF4623;
+
+  --brand-placeholder: #D3D7E0;
 }
 
 @layer base {
@@ -239,4 +254,11 @@
   background-blend-mode: plus-darker, normal;
   background-size: cover;
   background-position: center;
+}
+
+.required::after {
+  content: "*";
+  color: VAR(--brand-error-100);
+  font-size: 14px;
+  /* Optional: makes the asterisk red */
 }

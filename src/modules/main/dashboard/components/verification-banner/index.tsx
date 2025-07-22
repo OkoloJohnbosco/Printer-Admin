@@ -2,10 +2,14 @@ import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
 import { ArrowRight, Shield } from "lucide-react";
 
-function VerificationBanner() {
+function VerificationBanner({
+  openVerificationModal,
+}: {
+  openVerificationModal: () => void;
+}) {
   return (
     <div className="p-5  bg-white w-full rounded-2xl">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center gap-8">
         <div className="flex flex-col md:flex-row md:items-center gap-4">
           <div className="h-16 w-16 md:h-24 md:w-24 shrink-0 rounded-full grid place-items-center bg-brand-yellow-100">
             <Shield className="h-7 w-7 md:h-10 md:w-10 text-brand-yellow-200" />
@@ -16,7 +20,7 @@ function VerificationBanner() {
               Complete the verification process to have access to features and
               access high-value print jobs.
             </p>
-            <Button>
+            <Button onClick={openVerificationModal} size="lg">
               Start Verification
               <ArrowRight />
             </Button>
