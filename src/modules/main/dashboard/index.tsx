@@ -12,7 +12,7 @@ import BusinessInfoVerificationFormModal from "./templates/business-info-verifca
 export default function DashboardPageTemplate() {
   const { isOpen, onClose, onOpen } = useDisclosure();
   return (
-    <div className="space-y-5 min-h-screen page-fade-in">
+    <div className="space-y-5 page-fade-in">
       <WelcomeHeader isVerified={true} />
       <VerificationBanner openVerificationModal={onOpen} />
       <StatsCardRow />

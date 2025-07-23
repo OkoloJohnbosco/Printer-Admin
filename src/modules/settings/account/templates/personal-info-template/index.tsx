@@ -50,9 +50,12 @@ function PersonalInfoTemplate() {
       </CardHeader>
       <CardContent className="grid gap-6 w-full">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-6">
-            <div className="space-y-2">
-              <div className="relative">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col md:flex-row gap-6"
+          >
+            <div className="space-y-2 mx-auto">
+              <div className="relative w-fit">
                 <Avatar className="h-32 border-4 border-white shadow  w-32 rounded-full">
                   <AvatarImage src="/profile.png" alt="user name" />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
