@@ -270,3 +270,7 @@
   font-size: 14px;
   /* Optional: makes the asterisk red */
 }
+
+.page-fade-in {
+  @apply animate-in fade-in-0 duration-700 ease-in-out;
+}
