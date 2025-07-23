@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
 import { DetailedHTMLProps, HTMLAttributes } from "react";
 
-const headerClasses = cva([``], {
+export const headerClasses = cva([``], {
   variants: {
     size: {
       h1: ["sm:text-[56px] text-[40px] leading-[120%]"],
