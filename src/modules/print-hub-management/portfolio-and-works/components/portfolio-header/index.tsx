@@ -2,7 +2,11 @@ import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
 import { Plus } from "lucide-react";
 
-function PortfolioHeader() {
+function PortfolioHeader({
+  onAddWorkModalOpen,
+}: {
+  onAddWorkModalOpen: () => void;
+}) {
   return (
     <div className="flex items-center flex-wrap gap-4 justify-between">
       <div>
@@ -11,7 +15,7 @@ function PortfolioHeader() {
           Showcase your best work and manage your print shop portfolio
         </p>
       </div>
-      <Button>
+      <Button onClick={onAddWorkModalOpen}>
         <Plus /> Add New Work
       </Button>
     </div>

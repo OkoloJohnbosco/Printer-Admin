@@ -48,6 +48,7 @@
 
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-primary: var(--brand-primary);
+  --color-brand-gray-50: var(--brand-gray-50);
   --color-brand-gray-100: var(--brand-gray-100);
   --color-brand-gray-200: var(--brand-gray-200);
   --color-brand-gray-300: var(--brand-gray-300);
@@ -125,6 +126,7 @@
 
   --brand-foreground: #C7D9E1;
   --brand-primary: #021525;
+  --brand-gray-50: #F3F4F6;
   --brand-gray-100: #374151;
   --brand-gray-200: #6B7280;
   --brand-gray-300: #4B5563;
@@ -201,6 +203,7 @@
 
   --brand-foreground: #C7D9E1;
   --brand-primary: #021525;
+  --brand-gray-50: #F3F4F6;
   --brand-gray-100: #374151;
   --brand-gray-200: #6B7280;
   --brand-gray-300: #4B5563;

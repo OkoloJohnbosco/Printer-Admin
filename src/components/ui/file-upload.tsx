@@ -42,7 +42,7 @@ const DragNdrop = ({ value, onChange, id, helperText }: FileUploadProps) => {
     <section className="">
       <div
         data-error={!!error}
-        className={`border-2 data-[error=true]:border-destructive/30 border-dashed rounded-md border-brand-file p-4 bg-white flex flex-col items-center justify-center relative`}
+        className={`border-2 data-[error=true]:border-destructive/80 border-dashed rounded-md border-[#D1D5DB] p-4 bg-white flex flex-col items-center justify-center relative`}
         onDrop={handleDrop}
         onDragOver={(event) => event.preventDefault()}
       >
