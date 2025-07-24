@@ -59,7 +59,7 @@ export function NavUser({
           <DropdownMenuLabel className="p-0 font-normal">
             <div className="h-24 w-full profile-hero"></div>
             <div className="flex flex-col -mt-12 items-center gap-1 px-1 py-1.5 text-left text-sm">
-              <Avatar className="h-[75px] w-[75px] rounded-full">
+              <Avatar className="h-[75px] w-[75px] border-2 border-brand-alternative rounded-full">
                 <AvatarImage src="/profile.png" alt={user.name} />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>

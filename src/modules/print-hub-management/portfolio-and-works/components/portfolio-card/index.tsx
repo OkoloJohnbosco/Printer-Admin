@@ -11,20 +11,20 @@ import Image from "next/image";
 export function PortfolioCard() {
   return (
     <div className="flex flex-col gap-6">
-      <Label className="hover:bg-accent/50 relative bg-white flex flex-col items-start overflow-hidden gap-3 rounded-lg border has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
+      <Label className="hover:bg-accent/50 relative bg-white flex flex-col items-start  gap-3 rounded-lg border has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
         <Checkbox
           id="toggle-2"
           defaultChecked
           className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700 absolute top-2 left-2"
         />
 
-        <div className="rounded-lg mx-auto w-full max-h-[200px]">
+        <div className="rounded-t-lg mx-auto w-full max-h-[200px] overflow-hidden">
           <Image
             height={250}
             width={300}
             src="/portfolio.jpg"
             alt=""
-            className="object-cover max-h-[200px]"
+            className="object-cover w-full max-h-[200px]"
           />
         </div>
         <div className="grid gap-1.5 font-normal p-3">
