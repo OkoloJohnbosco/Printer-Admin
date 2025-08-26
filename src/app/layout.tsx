@@ -1,3 +1,4 @@
+import ThemeQueryProvider from "@/provider";
 import type { Metadata } from "next";
 import { Manrope, Work_Sans } from "next/font/google";
 import "./globals.css";
@@ -35,7 +36,14 @@ export default function RootLayout({
       <body
         className={`${workSans.variable} ${workSansHeading.variable} ${manropeHeading.variable} antialiased`}
       >
-        {children}
+        <ThemeQueryProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeQueryProvider>
       </body>
     </html>
   );
