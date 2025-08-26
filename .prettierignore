@@ -1,0 +1,8 @@
+/dist
+/coverage
+/node_modules
+/public
+.lintstagedrc.json
+# .vscode   
+
+# include any folder you want prettier to ignore formatting for
