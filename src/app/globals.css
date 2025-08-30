@@ -295,3 +295,18 @@
 .page-fade-in {
   @apply animate-in fade-in-0 duration-700 ease-in-out;
 }
+
+.auth-hero {
+  background:
+    url("/shade.svg")no-repeat;
+  background-blend-mode: plus-darker, normal;
+  background-size: cover;
+  background-position: center;
+  background-clip: border-box;
+  min-height: 250px;
+  min-width: 800px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}

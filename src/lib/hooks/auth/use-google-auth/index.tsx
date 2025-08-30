@@ -1,5 +1,5 @@
 import { ENDPOINTS, QUERYKEYS } from "@/lib/endpoints";
-import useQueryActionHook from "@/lib/hooks/api/use-queryaction.tsx";
+import useQueryActionHook from "@/lib/hooks/api/use-queryaction";
 import { GoogleAuthResponse } from "./use-google-auth.types";
 
 const useGoogleAuth = (callBackURL: string) => {

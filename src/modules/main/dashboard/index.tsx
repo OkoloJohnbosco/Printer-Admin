@@ -1,6 +1,6 @@
 "use client";
 
-import useDisclosure from "@/hooks/use-disclosure";
+import useDisclosure from "@/lib/hooks/use-disclosure";
 import { ChartAreaInteractive } from "@/modules/main/dashboard/components/monthly-revenue-chart";
 import VerificationBanner from "@/modules/main/dashboard/components/verification-banner";
 import WelcomeHeader from "@/modules/main/dashboard/components/welcome-header";
@@ -12,12 +12,12 @@ import BusinessInfoVerificationFormModal from "./templates/business-info-verifca
 export default function DashboardPageTemplate() {
   const { isOpen, onClose, onOpen } = useDisclosure();
   return (
-    <div className="space-y-5 page-fade-in">
+    <div className="page-fade-in space-y-5">
       <WelcomeHeader isVerified={true} />
       <VerificationBanner openVerificationModal={onOpen} />
       <StatsCardRow />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <ChartAreaInteractive />
         <VerificationStatusCard />
       </div>

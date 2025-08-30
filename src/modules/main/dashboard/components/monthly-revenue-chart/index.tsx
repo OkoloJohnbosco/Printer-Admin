@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/lib/hooks/use-mobile";
 
 export const description = "An interactive area chart";
 
@@ -162,7 +162,7 @@ export function ChartAreaInteractive() {
   });
 
   return (
-    <Card className="@container/card shadow-none border-0">
+    <Card className="@container/card border-0 shadow-none">
       <CardHeader>
         <CardTitle>
           <Heading size="h7" className="font-[700]">
@@ -191,13 +191,13 @@ export function ChartAreaInteractive() {
               <SelectValue placeholder="Last 3 months" />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
-              <SelectItem value="90d" className="rounded-lg text-nm">
+              <SelectItem value="90d" className="text-nm rounded-lg">
                 Last 3 months
               </SelectItem>
-              <SelectItem value="30d" className="rounded-lg text-nm">
+              <SelectItem value="30d" className="text-nm rounded-lg">
                 Last 30 days
               </SelectItem>
-              <SelectItem value="7d" className="rounded-lg text-nm">
+              <SelectItem value="7d" className="text-nm rounded-lg">
                 Last 7 days
               </SelectItem>
             </SelectContent>

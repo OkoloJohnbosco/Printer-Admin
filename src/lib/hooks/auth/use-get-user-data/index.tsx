@@ -1,5 +1,5 @@
 import { ENDPOINTS, QUERYKEYS } from "@/lib/endpoints";
-import useQueryActionHook from "@/lib/hooks/api/use-queryaction.tsx";
+import useQueryActionHook from "@/lib/hooks/api/use-queryaction";
 
 const useGetUserData = () => {
   return useQueryActionHook({

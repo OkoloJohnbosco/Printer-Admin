@@ -2,19 +2,12 @@
 
 import {
   AudioWaveform,
-  BellIcon,
-  Castle,
   CircleDollarSign,
-  CircleQuestionMark,
   Command,
-  GalleryVertical,
   GalleryVerticalEnd,
   LayoutDashboard,
   Printer,
-  Settings2,
   ShieldCheck,
-  Tag,
-  UserRoundCog,
 } from "lucide-react";
 import * as React from "react";
 
@@ -52,17 +45,17 @@ const data = {
   ],
   navMain: [
     {
-      title: "Dashboard",
+      title: "Order Management",
       url: routes.DASHBOARD,
       icon: LayoutDashboard,
     },
     {
-      title: "Print Jobs",
+      title: "Hub Management",
       url: routes.PRINT_JOBS,
       icon: Printer,
     },
     {
-      title: "Verification",
+      title: "Settings",
       url: routes.VERIFICATION,
       icon: ShieldCheck,
     },
@@ -70,47 +63,6 @@ const data = {
       title: "Revenue & Payout",
       url: routes.REVENUE_AND_PAYOUT,
       icon: CircleDollarSign,
-    },
-  ],
-
-  navPrintHub: [
-    {
-      title: "Portfolio & Works",
-      url: routes.PORTFOLIO_AND_WORKS,
-      icon: GalleryVertical,
-    },
-    {
-      title: "Company Story",
-      url: routes.COMPANY_STORY,
-      icon: Castle,
-    },
-    {
-      title: "Product Offerings",
-      url: routes.PRODUCT_OFFERINGS,
-      icon: Tag,
-    },
-    {
-      title: "Order Management",
-      url: routes.ORDER_MANAGEMENT,
-      icon: Settings2,
-    },
-  ],
-
-  navSettings: [
-    {
-      title: "Account",
-      url: routes.MY_ACCOUNT,
-      icon: UserRoundCog,
-    },
-    {
-      title: "Notifications",
-      url: routes.NOTIFICATIONS,
-      icon: BellIcon,
-    },
-    {
-      title: "Help & Support",
-      url: routes.HELP_AND_SUPPORT,
-      icon: CircleQuestionMark,
     },
   ],
 };
@@ -127,14 +79,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 width={100}
                 src="/logo.svg"
                 alt=""
-                className="group-data-[collapsible=icon]:hidden block"
+                className="block group-data-[collapsible=icon]:hidden"
               />
               <Image
                 height={70}
                 width={70}
                 src="/logo-sm.svg"
                 alt=""
-                className="group-data-[collapsible=icon]:block hidden"
+                className="hidden group-data-[collapsible=icon]:block"
               />
             </Link>
           </SidebarMenuItem>
@@ -142,8 +94,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain label="Main" items={data.navMain} />
-        <NavMain label="Print Hub Management" items={data.navPrintHub} />
-        <NavMain label="Settings" items={data.navSettings} />
       </SidebarContent>
       <SidebarFooter></SidebarFooter>
     </Sidebar>

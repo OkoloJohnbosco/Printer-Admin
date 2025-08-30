@@ -15,53 +15,30 @@ export const ENDPOINTS = {
   GOOGLE_AUTH: (callBackURL: string) =>
     `auth/google${callBackURL ? `?callback=${callBackURL}` : ""}`,
 
-  //   Cars Endpoints
-  GET_APPROVED_VEHICLES: (
+  //  Admin Endpoints
+  GET_ALL_HUBS: (
     page: number,
     limit: number,
-    use?: string,
-    bodyType?: string,
-    vehicleType?: string,
-    make?: string,
-    model?: string,
-    minPrice?: string,
-    maxPrice?: string,
-    minYear?: string,
-    maxYear?: string,
-    location?: string,
-    state?: string,
-    seller?: string,
-    fuelType?: string,
-    minBatteryWarranty?: number,
-    maxBatteryWarranty?: number,
-    minBatteryCapacity?: number,
+    status: "PENDING" | "APPROVED" | "REJECTED",
   ) =>
-    `vehicles/distinct${page ? `?page=${page}` : ""}${limit ? `&limit=${limit}` : ""}${use ? `&use=${use}` : ""}${bodyType ? `&bodyType=${bodyType}` : ""}
-      ${vehicleType ? `&vehicleType=${vehicleType}` : ""}${make ? `&make=${make}` : ""}${model ? `&model=${model}` : ""}${minPrice ? `&minPrice=${minPrice}` : ""}
-      ${maxPrice ? `&maxPrice=${maxPrice}` : ""}${minYear ? `&minYear=${minYear}` : ""}${maxYear ? `&maxYear=${maxYear}` : ""}${location ? `&location=${location}` : ""}
-      ${state ? `&state=${state}` : ""}${seller ? `&seller=${seller}` : ""}${fuelType ? `&fuelType=${fuelType}` : ""}${minBatteryWarranty ? `&minBatteryWarranty=${minBatteryWarranty}` : ""}
-      ${maxBatteryWarranty ? `&maxBatteryWarranty=${maxBatteryWarranty}` : ""}${minBatteryCapacity ? `&minBatteryCapacity=${minBatteryCapacity}` : ""}`,
-  CREATE_NEW_VEHICLE_LISTING: "vehicles",
-  GET_USER_PURCHASED_VEHICLES: (page: number, limit: number) =>
-    `vehicles/my-vehicles${page ? `?page=${page}` : ""}${limit ? `&limit=${limit}` : ""}`,
-  GET_VENDOR_CAR_LISTING: (page: number, limit: number) =>
-    `vehicles/vendor/my-listings${page ? `?page=${page}` : ""}${limit ? `&limit=${limit}` : ""}`,
-  GET_VEHICLE_BY_EVOOLV_ID: (evoolvId: string) => `vehicles/evolve/${evoolvId}`,
-  GET_VEHICLE_BY_ID: (vehicleId: string) => `vehicles/${vehicleId}`,
-  GET_TOP_PICKS_EV: () => `vehicles/top-picks`,
-  PURCHASE_VEHICLE: "vehicles/buy",
-  GET_VEHICLE_FILTERS: "vehicles/filters",
+    `admin/hubs${page ? `?cursor=${page}` : ""}${limit ? `&limit=${limit}` : ""}${status ? `&status=${status}` : ""}`,
+  GET_ALL_PRODUCT_CATEGORIES: `admin/product/categories`,
+  CREATE_PRODUCT_CATEGORY: `admin/product/category`,
+  GET_HUB_BY_ID: (hubId: string) => `admin/hub/${hubId}`,
+  GET_PRODUCT_CATEGORY_BY_ID: (categoryId: string) =>
+    `admin/product/category/${categoryId}`,
+  DELETE_PRODUCT_CATEGORY_BY_ID: (categoryId: string) =>
+    `admin/product/category/${categoryId}`,
+  UPDATE_PRODUCT_CATEGORY_BY_ID: (categoryId: string) =>
+    `admin/product/category/${categoryId}`,
+  UPDATE_VERIFICATION_STATUS: (hubId: string) =>
+    `admin/hubs/${hubId}/verification-status`,
 
-  //   KYC Endpoints
-  SUBMIT_INDIVIDUAL_KYC: "kyc/individual",
-  SUBMIT_BUSINESS_KYC: "kyc/business",
-  GET_KYC_STATS: "kyc/status",
-
-  //   Upload Endpoints
-  UPLOAD_IMAGE_FILE: "upload/image",
-  UPLOAD_VIDEO_FILE: "upload/video",
-  UPLOAD_DOCUMENT_FILE: "upload/document",
-  UPLOAD_THUMBNAIL_IMAGE: "upload/thumbnail",
+  GET_PRODUCT_BY_ID: (productId: string) => `admin/product/${productId}`,
+  GET_ALL_PRODUCTS: (page: number, limit: number) =>
+    `admin/products${page ? `?cursor=${page}` : ""}${limit ? `&limit=${limit}` : ""}`,
+  GET_ALL_USERS: (page: number, limit: number) =>
+    `admin/users${page ? `?cursor=${page}` : ""}${limit ? `&limit=${limit}` : ""}`,
 };
 
 //  for tracking react-query useQuery hooks and for revalidation
@@ -70,15 +47,12 @@ export const QUERYKEYS = {
   GOOGLE_AUTH: "GOOGLE_AUTH",
   GOOGLE_AUTH_USER_SESSION: "GOOGLE_AUTH_USER_SESSION",
 
-  // Cars
-  GET_APPROVED_VEHICLES: "GET_APPROVED_VEHICLES",
-  GET_USER_PURCHASED_VEHICLES: "GET_USER_PURCHASED_VEHICLES",
-  GET_VENDOR_CAR_LISTING: "GET_VENDOR_CAR_LISTING",
-  GET_VEHICLE_BY_EVOOLV_ID: "GET_VEHICLE_BY_EVOOLV_ID",
-  GET_VEHICLE_BY_ID: "GET_VEHICLE_BY_ID",
-  GET_TOP_PICKS_EV: "GET_TOP_PICKS_EV",
-  GET_VEHICLE_FILTERS: "GET_VEHICLE_FILTERS",
-
-  // Kyc keys
-  GET_KYC_STATS: "GET_KYC_STATS",
+  GET_HUB_BY_ID: "GET_HUB_BY_ID",
+  GET_ALL_HUBS: "GET_ALL_HUBS",
+  GET_ALL_PRODUCTS: "GET_ALL_PRODUCTS",
+  GET_ALL_USERS: "GET_ALL_USERS",
+  GET_PRODUCT_BY_ID: "GET_PRODUCT_BY_ID",
+  GET_PRODUCT_CATEGORY_BY_ID: "GET_PRODUCT_CATEGORY_BY_ID",
+  GET_ALL_PRODUCT_CATEGORIES: "GET_ALL_PRODUCT_CATEGORIES",
+  CREATE_PRODUCT_CATEGORY: "CREATE_PRODUCT_CATEGORY",
 };

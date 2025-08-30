@@ -12,8 +12,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import useDisclosure from "@/hooks/use-disclosure";
 import LogoutModal from "@/layout/components/logout-modal";
+import useDisclosure from "@/lib/hooks/use-disclosure";
 import routes from "@/routes";
 import Link from "next/link";
 import { Button } from "./ui/button";
@@ -35,14 +35,14 @@ export function NavUser({
           <Button
             variant="outline"
             size="lg"
-            className="px-4 border-0 shadow-none hover:bg-white"
+            className="border-0 px-4 shadow-none hover:bg-white"
           >
             <Avatar className="h-9 w-9 rounded-full">
               <AvatarImage src="/profile.png" alt={user.name} />
               <AvatarFallback className="rounded-lg">CN</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate text-brand-gray-400 font-[family-name:var(--font-manrope-heading)] font-medium">
+              <span className="text-brand-gray-400 truncate font-[family-name:var(--font-manrope-heading)] font-medium">
                 {user.name}
               </span>
               <span className="truncate text-xs font-extralight">
@@ -57,9 +57,9 @@ export function NavUser({
           sideOffset={10}
         >
           <DropdownMenuLabel className="p-0 font-normal">
-            <div className="h-24 w-full profile-hero"></div>
-            <div className="flex flex-col -mt-12 items-center gap-1 px-1 py-1.5 text-left text-sm">
-              <Avatar className="h-[75px] w-[75px] border-2 border-brand-alternative rounded-full">
+            <div className="profile-hero h-24 w-full"></div>
+            <div className="-mt-12 flex flex-col items-center gap-1 px-1 py-1.5 text-left text-sm">
+              <Avatar className="border-brand-alternative h-[75px] w-[75px] rounded-full border-2">
                 <AvatarImage src="/profile.png" alt={user.name} />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
@@ -73,7 +73,7 @@ export function NavUser({
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem className="justify-between font-bold text-brand-gray-700 px-4 rounded-none">
+            <DropdownMenuItem className="text-brand-gray-700 justify-between rounded-none px-4 font-bold">
               Switch to Customer
               <ArrowUp01Icon />
             </DropdownMenuItem>
@@ -82,31 +82,31 @@ export function NavUser({
           <DropdownMenuGroup>
             <DropdownMenuItem
               asChild
-              className="font-bold text-brand-gray-700 px-4 rounded-none"
+              className="text-brand-gray-700 rounded-none px-4 font-bold"
             >
               <Link href={routes.MY_ACCOUNT}>Your profile</Link>
             </DropdownMenuItem>
             <DropdownMenuItem
               asChild
-              className="font-bold text-brand-gray-700 px-4 rounded-none"
+              className="text-brand-gray-700 rounded-none px-4 font-bold"
             >
               <Link href={routes.ORDER_MANAGEMENT}>Orders Management</Link>
             </DropdownMenuItem>
             <DropdownMenuItem
               asChild
-              className="font-bold text-brand-gray-700 px-4 rounded-none"
+              className="text-brand-gray-700 rounded-none px-4 font-bold"
             >
               <Link href={routes.NOTIFICATIONS}>Notifications</Link>
             </DropdownMenuItem>
             <DropdownMenuItem
               asChild
-              className="font-bold text-brand-gray-700 px-4 rounded-none"
+              className="text-brand-gray-700 rounded-none px-4 font-bold"
             >
               <Link href={routes.ROOT}>Settings</Link>
             </DropdownMenuItem>
             <DropdownMenuItem
               asChild
-              className="font-bold text-brand-gray-700 px-4 rounded-none"
+              className="text-brand-gray-700 rounded-none px-4 font-bold"
             >
               <Link href={routes.HELP_AND_SUPPORT}>Help</Link>
             </DropdownMenuItem>
@@ -114,7 +114,7 @@ export function NavUser({
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={onOpen}
-            className="font-bold text-brand-gray-700 px-4 rounded-none"
+            className="text-brand-gray-700 rounded-none px-4 font-bold"
           >
             Sign out
           </DropdownMenuItem>
