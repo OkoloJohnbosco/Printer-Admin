@@ -1,5 +1,5 @@
 "use client";
-import useDisclosure from "@/lib/hooks/use-disclosure";
+import useDisclosure from "@/lib/hooks/common/use-disclosure";
 import { PortfolioCard } from "./components/portfolio-card";
 import PortfolioHeader from "./components/portfolio-header";
 import AddnewWorkFormModal from "./templates/add-new-work";

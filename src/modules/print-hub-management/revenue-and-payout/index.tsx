@@ -1,6 +1,6 @@
 "use client";
 
-import useDisclosure from "@/lib/hooks/use-disclosure";
+import useDisclosure from "@/lib/hooks/common/use-disclosure";
 import NoRevenueCard from "./components/no-revenue-card";
 import RevenueHeader from "./components/revenue-header";
 import RequestPayoutTemplate from "./templates/request-payout-template";

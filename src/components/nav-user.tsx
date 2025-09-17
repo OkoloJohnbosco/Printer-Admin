@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import LogoutModal from "@/layout/components/logout-modal";
-import useDisclosure from "@/lib/hooks/use-disclosure";
+import useDisclosure from "@/lib/hooks/common/use-disclosure";
 import routes from "@/routes";
 import Link from "next/link";
 import { Button } from "./ui/button";

@@ -22,17 +22,37 @@ export const ENDPOINTS = {
     status: "PENDING" | "APPROVED" | "REJECTED",
   ) =>
     `admin/hubs${page ? `?cursor=${page}` : ""}${limit ? `&limit=${limit}` : ""}${status ? `&status=${status}` : ""}`,
-  GET_ALL_PRODUCT_CATEGORIES: `admin/product/categories`,
-  CREATE_PRODUCT_CATEGORY: `admin/product/category`,
   GET_HUB_BY_ID: (hubId: string) => `admin/hub/${hubId}`,
+  UPDATE_VERIFICATION_STATUS: (hubId: string) =>
+    `admin/hubs/${hubId}/verification-status`,
+  CREATE_PRODUCT_CATEGORY: `admin/product/category`,
+  GET_ALL_PRODUCT_CATEGORIES: `admin/product/categories`,
   GET_PRODUCT_CATEGORY_BY_ID: (categoryId: string) =>
-    `admin/product/category/${categoryId}`,
-  DELETE_PRODUCT_CATEGORY_BY_ID: (categoryId: string) =>
     `admin/product/category/${categoryId}`,
   UPDATE_PRODUCT_CATEGORY_BY_ID: (categoryId: string) =>
     `admin/product/category/${categoryId}`,
-  UPDATE_VERIFICATION_STATUS: (hubId: string) =>
-    `admin/hubs/${hubId}/verification-status`,
+  DELETE_PRODUCT_CATEGORY_BY_ID: (categoryId: string) =>
+    `admin/product/category/${categoryId}`,
+
+  CREATE_PRODUCT_SUB_CATEGORY: `admin/products/sub-categories`,
+  GET_ALL_PRODUCT_SUB_CATEGORIES: (categoryId: string) =>
+    `admin/products/sub-categories${categoryId ? `?categoryId=${categoryId}` : ""}`,
+  GET_PRODUCT_SUB_CATEGORY_BY_ID: (subCategoryId: string) =>
+    `admin/products/sub-categories/${subCategoryId}`,
+  UPDATE_PRODUCT_SUB_CATEGORY_BY_ID: (subCategoryId: string) =>
+    `admin/products/sub-categories/${subCategoryId}`,
+  DELETE_PRODUCT_SUB_CATEGORY_BY_ID: (subCategoryId: string) =>
+    `admin/products/sub-categories/${subCategoryId}`,
+
+  CREATE_PRODUCT_TEMPLATE: `admin/products/templates`,
+  GET_ALL_PRODUCT_TEMPLATES: (subCategoryId?: string) =>
+    `admin/products/templates${subCategoryId ? `?subCategoryId=${subCategoryId}` : ""}`,
+  GET_PRODUCT_TEMPLATE_BY_ID: (templateId: string) =>
+    `admin/products/templates/${templateId}`,
+  UPDATE_PRODUCT_TEMPLATE_BY_ID: (templateId: string) =>
+    `admin/products/templates/${templateId}`,
+  DELETE_PRODUCT_TEMPLATE_BY_ID: (templateId: string) =>
+    `admin/products/templates/${templateId}`,
 
   GET_PRODUCT_BY_ID: (productId: string) => `admin/product/${productId}`,
   GET_ALL_PRODUCTS: (page: number, limit: number) =>
@@ -54,5 +74,9 @@ export const QUERYKEYS = {
   GET_PRODUCT_BY_ID: "GET_PRODUCT_BY_ID",
   GET_PRODUCT_CATEGORY_BY_ID: "GET_PRODUCT_CATEGORY_BY_ID",
   GET_ALL_PRODUCT_CATEGORIES: "GET_ALL_PRODUCT_CATEGORIES",
-  CREATE_PRODUCT_CATEGORY: "CREATE_PRODUCT_CATEGORY",
+
+  GET_ALL_PRODUCT_SUB_CATEGORIES: "GET_ALL_PRODUCT_SUB_CATEGORIES",
+  GET_PRODUCT_SUB_CATEGORY_BY_ID: "GET_PRODUCT_SUB_CATEGORY_BY_ID",
+  GET_ALL_PRODUCT_TEMPLATES: "GET_ALL_PRODUCT_TEMPLATES",
+  GET_PRODUCT_TEMPLATE_BY_ID: "GET_PRODUCT_TEMPLATE_BY_ID",
 };

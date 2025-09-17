@@ -1,6 +1,6 @@
 "use client";
 
-import useDisclosure from "@/lib/hooks/use-disclosure";
+import useDisclosure from "@/lib/hooks/common/use-disclosure";
 import { ChartAreaInteractive } from "@/modules/main/dashboard/components/monthly-revenue-chart";
 import VerificationBanner from "@/modules/main/dashboard/components/verification-banner";
 import WelcomeHeader from "@/modules/main/dashboard/components/welcome-header";
