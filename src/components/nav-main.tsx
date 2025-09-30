@@ -30,7 +30,7 @@ export function NavMain({
   const pathname = usePathname();
   return (
     <SidebarGroup className="px-0">
-      <SidebarGroupLabel className="font-[600] text-brand-gray-200 pl-4">
+      <SidebarGroupLabel className="text-brand-gray-200 pl-4 font-[600]">
         {label}
       </SidebarGroupLabel>
       <SidebarMenu className="gap-0 group-data-[collapsible=icon]:gap-2">
@@ -41,7 +41,7 @@ export function NavMain({
               size="base"
               asChild
               tooltip={item.title}
-              isActive={item.url === pathname}
+              isActive={pathname.includes(item.url)}
             >
               <Link href={item.url}>
                 {item.icon && <item.icon />}

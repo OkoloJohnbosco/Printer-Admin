@@ -1,7 +1,5 @@
 "use client";
 
-import { ArrowUp01Icon } from "lucide-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -71,13 +69,7 @@ export function NavUser({
               </div>
             </div>
           </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem className="text-brand-gray-700 justify-between rounded-none px-4 font-bold">
-              Switch to Customer
-              <ArrowUp01Icon />
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
+
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem
@@ -103,12 +95,6 @@ export function NavUser({
               className="text-brand-gray-700 rounded-none px-4 font-bold"
             >
               <Link href={routes.ROOT}>Settings</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              asChild
-              className="text-brand-gray-700 rounded-none px-4 font-bold"
-            >
-              <Link href={routes.HELP_AND_SUPPORT}>Help</Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />

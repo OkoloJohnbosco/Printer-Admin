@@ -16,7 +16,7 @@ export function convertToKilobyte(size: number) {
 }
 
 export function createFormData<T extends Record<string, string | Blob>>(
-  data: T
+  data: T,
 ) {
   const reqData = new FormData();
 
@@ -61,7 +61,7 @@ export function formatNumber(num: number): string {
 
 export function formatTableNumber(
   num: number,
-  options?: { isPercent?: boolean; dp?: number }
+  options?: { isPercent?: boolean; dp?: number },
 ): string {
   let giverNum = num;
   if (isNaN(giverNum)) return "0";
@@ -120,7 +120,7 @@ const endYear = getYear(new Date());
 
 export const years = Array.from(
   { length: endYear - startYear + 1 },
-  (_, i) => endYear - i
+  (_, i) => endYear - i,
 );
 
 export const months = [
@@ -140,4 +140,64 @@ export const months = [
 
 export function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export interface ExportData {
+  [key: string]: string | number | boolean | null | undefined;
+}
+
+export function exportToCSV(data: ExportData[], filename: string) {
+  if (data.length === 0) {
+    console.warn("No data to export");
+    return;
+  }
+
+  // Get headers from the first object
+  const headers = Object.keys(data[0]);
+
+  // Create CSV content
+  const csvContent = [
+    // Header row
+    headers.join(","),
+    // Data rows
+    ...data.map((row) =>
+      headers
+        .map((header) => {
+          const value = row[header];
+          // Handle values that might contain commas or quotes
+          if (value === null || value === undefined) return "";
+          const stringValue = String(value);
+          if (
+            stringValue.includes(",") ||
+            stringValue.includes('"') ||
+            stringValue.includes("\n")
+          ) {
+            return `"${stringValue.replace(/"/g, '""')}"`;
+          }
+          return stringValue;
+        })
+        .join(","),
+    ),
+  ].join("\n");
+
+  // Create blob and download
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+
+  link.setAttribute("href", url);
+  link.setAttribute(
+    "download",
+    `${filename}-${new Date().toISOString().split("T")[0]}.csv`,
+  );
+  link.style.visibility = "hidden";
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+export function formatDateForExport(date: string | Date): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  return d.toISOString().split("T")[0];
 }

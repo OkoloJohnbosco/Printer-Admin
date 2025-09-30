@@ -47,9 +47,16 @@
   --text-nm: var(--text-nm);
 
   --color-brand-foreground: var(--brand-foreground);
+  --color-brand-neutral: var(--brand-neutral);
   --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-gray-30: var(--brand-gray-30);
   --color-brand-gray-40: var(--brand-gray-40);
+  --color-brand-gray-45: var(--brand-gray-45);
   --color-brand-gray-50: var(--brand-gray-50);
+  --color-brand-gray-60: var(--brand-gray-60);
+  --color-brand-gray-70: var(--brand-gray-70);
+  --color-brand-gray-80: var(--brand-gray-80);
   --color-brand-gray-100: var(--brand-gray-100);
   --color-brand-gray-200: var(--brand-gray-200);
   --color-brand-gray-300: var(--brand-gray-300);
@@ -59,20 +66,36 @@
   --color-brand-gray-700: var(--brand-gray-700);
   --color-brand-gray-800: var(--brand-gray-800);
   --color-brand-gray-900: var(--brand-gray-900);
+  --color-brand-gray-950: var(--brand-gray-950);
+  --color-brand-gray-960: var(--brand-gray-960);
+  --color-brand-gray-970: var(--brand-gray-970);
 
   --color-brand-yellow-100: var(--brand-yellow-100);
   --color-brand-yellow-200: var(--brand-yellow-200);
   --color-brand-yellow-300: var(--brand-yellow-300);
+  --color-brand-yellow-400: var(--brand-yellow-400);
+  --color-brand-yellow-500: var(--brand-yellow-500);
+  --color-brand-yellow-600: var(--brand-yellow-600);
 
   --color-brand-green-100: var(--brand-green-100);
+  --color-brand-green-150: var(--brand-green-150);
   --color-brand-green-200: var(--brand-green-200);
   --color-brand-green-300: var(--brand-green-300);
   --color-brand-green-400: var(--brand-green-400);
   --color-brand-green-500: var(--brand-green-500);
   --color-brand-green-600: var(--brand-green-600);
+  --color-brand-green-700: var(--brand-green-700);
+  --color-brand-green-800: var(--brand-green-800);
 
   --color-brand-blue-100: var(--brand-blue-100);
   --color-brand-blue-200: var(--brand-blue-200);
+  --color-brand-blue-300: var(--brand-blue-300);
+  --color-brand-blue-400: var(--brand-blue-400);
+
+  --color-brand-red-100: var(--brand-red-100);
+  --color-brand-red-200: var(--brand-red-200);
+
+
 
   --color-brand-purple-100: var(--brand-purple-100);
   --color-brand-purple-200: var(--brand-purple-200);
@@ -88,8 +111,9 @@
   --color-brand-teal-100: var(--brand-teal-100);
   --color-brand-teal-200: var(--brand-teal-200);
 
-}
+  --color-brand-black-500: var(--brand-black-500);
 
+}
 
 :root {
   --radius: 0.625rem;
@@ -128,9 +152,16 @@
 
   --brand-foreground: #C7D9E1;
   --brand-primary: #021525;
+  --brand-secondary: #0A0D13;
+  --brand-neutral: #666666;
 
+  --brand-gray-30: #8B8D97;
   --brand-gray-40: #F9FAFB;
+  --brand-gray-45: #BEC0CA;
   --brand-gray-50: #F3F4F6;
+  --brand-gray-60: #83858B;
+  --brand-gray-70: #ACACAC;
+  --brand-gray-80: #686868;
   --brand-gray-100: #374151;
   --brand-gray-200: #6B7280;
   --brand-gray-300: #4B5563;
@@ -140,21 +171,33 @@
   --brand-gray-700: #727376;
   --brand-gray-800: #56585C;
   --brand-gray-900: #E5E7EB;
-
-
+  --brand-gray-950: #D8D8D8;
+  --brand-gray-960: #DFDFE6;
+  --brand-gray-970: #E6E6E6;
   --brand-yellow-100: #FEF9C3;
   --brand-yellow-200: #CA8A04;
   --brand-yellow-300: #FBBF24;
+  --brand-yellow-400: #FFCB45;
+  --brand-yellow-500: #F3EB0A;
+  --brand-yellow-600: #EAB308;
 
   --brand-green-100: #22C55E;
+  --brand-green-150: #D1FAE5;
   --brand-green-200: #DCFCE7;
   --brand-green-300: #16A34A;
   --brand-green-400: #BBF7D0;
   --brand-green-500: #F0FDF4;
   --brand-green-600: #15803D;
+  --brand-green-700: #065F46;
+  --brand-green-800: #10B981;
 
   --brand-blue-100: #DBEAFE;
   --brand-blue-200: #2563EB;
+  --brand-blue-300: #1FA7E0;
+  --brand-blue-400: #3B82F6;
+
+  --brand-red-100: #FEE2E2;
+  --brand-red-200: #EF4444;
 
   --brand-purple-100: #EEF2FF;
   --brand-purple-200: #C7D2FE;
@@ -169,6 +212,8 @@
 
   --brand-teal-100: #40D2A11A;
   --brand-teal-200: #3CB5B5;
+
+  --brand-black-500: #151515;
 }
 
 .dark {
@@ -208,8 +253,16 @@
 
   --brand-foreground: #C7D9E1;
   --brand-primary: #021525;
+  --brand-secondary: #0A0D13;
+  --brand-neutral: #666666;
+
+  --brand-gray-30: #8B8D97;
   --brand-gray-40: #F9FAFB;
+  --brand-gray-45: #BEC0CA;
   --brand-gray-50: #F3F4F6;
+  --brand-gray-60: #83858B;
+  --brand-gray-70: #ACACAC;
+  --brand-gray-80: #686868;
   --brand-gray-100: #374151;
   --brand-gray-200: #6B7280;
   --brand-gray-300: #4B5563;
@@ -219,21 +272,32 @@
   --brand-gray-700: #727376;
   --brand-gray-800: #56585C;
   --brand-gray-900: #E5E7EB;
-
+  --brand-gray-950: #D8D8D8;
+  --brand-gray-960: #DFDFE6;
+  --brand-gray-970: #E6E6E6;
   --brand-yellow-100: #FEF9C3;
   --brand-yellow-200: #CA8A04;
   --brand-yellow-300: #FBBF24;
+  --brand-yellow-400: #FFCB45;
+  --brand-yellow-500: #F3EB0A;
+  --brand-yellow-600: #EAB308;
 
   --brand-green-100: #22C55E;
+  --brand-green-150: #D1FAE5;
   --brand-green-200: #DCFCE7;
   --brand-green-300: #16A34A;
   --brand-green-400: #BBF7D0;
   --brand-green-500: #F0FDF4;
   --brand-green-600: #15803D;
-
-
+  --brand-green-700: #065F46;
+  --brand-green-800: #10B981;
   --brand-blue-100: #DBEAFE;
   --brand-blue-200: #2563EB;
+  --brand-blue-300: #1FA7E0;
+  --brand-blue-400: #3B82F6;
+
+  --brand-red-100: #FEE2E2;
+  --brand-red-200: #EF4444;
 
   --brand-purple-100: #EEF2FF;
   --brand-purple-200: #C7D2FE;
@@ -248,15 +312,17 @@
 
   --brand-teal-100: #40D2A11A;
   --brand-teal-200: #3CB5B5;
+
+  --brand-black-500: #151515;
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50 scroll-smooth;
   }
 
   body {
-    @apply bg-background font-[family-name:var(--font-work-sans)] text-brand-gray-300 font-[400];
+    @apply bg-background font-[family-name:var(--font-work-sans)] text-brand-gray-300 font-[400] scroll-smooth;
   }
 
   h1,
@@ -267,33 +333,6 @@
   h6 {
     @apply font-[family-name:var(--font-manrope-heading)] text-brand-gray-400 font-[600];
   }
-}
-
-.portfolio-grid {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  row-gap: 16px;
-  column-gap: 16px;
-}
-
-.profile-hero {
-  background:
-    url("/profile-bg.png") repeat;
-  background-blend-mode: plus-darker, normal;
-  background-size: cover;
-  background-position: center;
-}
-
-.required::after {
-  content: "*";
-  color: VAR(--brand-error-100);
-  font-size: 14px;
-  /* Optional: makes the asterisk red */
-}
-
-.page-fade-in {
-  @apply animate-in fade-in-0 duration-700 ease-in-out;
 }
 
 .auth-hero {
@@ -309,4 +348,83 @@
   justify-content: center;
   align-items: center;
 
+}
+
+.page-fade-in {
+  @apply animate-in fade-in-0 duration-700 ease-in-out;
+}
+
+.container-wrapper {
+  @apply mx-auto w-full max-w-[calc(1560px+80px)] px-3 sm:px-4 md:px-6;
+}
+
+
+
+.notification-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  row-gap: 16px;
+  column-gap: 16px;
+}
+
+.print-hub-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  row-gap: 20px;
+  column-gap: 20px;
+}
+
+@media (max-width: 500px) {
+  .program-benefit-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-hero {
+  background:
+    url("/profile-bg.webp") repeat;
+  background-blend-mode: plus-darker, normal;
+  background-size: cover;
+  background-position: center;
+}
+
+.required::after {
+  content: "*";
+  color: VAR(--brand-error-100);
+  font-size: 14px;
+  /* Optional: makes the asterisk red */
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+
+  }
+
+  body {
+    @apply bg-background text-foreground scroll-smooth;
+
+  }
+
+}
+
+.custom-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("/icon.png") no-repeat center;
+  background-color: #ffffff;
+
+  background-size: 900px;
+  /* or cover */
+  opacity: 0.1;
+  /* Adjust to make it faint */
+  /* Push behind content */
 }

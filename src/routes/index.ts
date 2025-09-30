@@ -23,7 +23,8 @@ const routes = {
   PORTFOLIO_AND_WORKS: "/portfolio-and-works",
   COMPANY_STORY: "/company-story",
   PRODUCT_OFFERINGS: "/product-offerings",
-  ORDER_MANAGEMENT: "/order-management",
+  ORDER_MANAGEMENT: "/orders",
+  HUB_MANAGEMENT: "/print-hubs",
 
   MY_ACCOUNT: "/my-account",
   NOTIFICATIONS: "/notifications",

@@ -6,6 +6,7 @@ import {
   Command,
   GalleryVerticalEnd,
   LayoutDashboard,
+  Package,
   Printer,
   ShieldCheck,
 } from "lucide-react";
@@ -45,13 +46,18 @@ const data = {
   ],
   navMain: [
     {
-      title: "Order Management",
+      title: "Dashboard",
       url: routes.DASHBOARD,
       icon: LayoutDashboard,
     },
     {
+      title: "Order Management",
+      url: routes.ORDER_MANAGEMENT,
+      icon: Package,
+    },
+    {
       title: "Hub Management",
-      url: routes.PRINT_JOBS,
+      url: routes.HUB_MANAGEMENT,
       icon: Printer,
     },
     {
