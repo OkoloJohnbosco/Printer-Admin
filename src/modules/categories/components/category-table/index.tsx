@@ -19,7 +19,7 @@ export default function CategoryTable() {
     getProductCategories.isLoading && !getProductCategories?.value;
 
   const renderTableBody = () => {
-    if (isLoading) return <TableSkeletonRowLoader length={5} />;
+    if (isLoading) return <TableSkeletonRowLoader length={4} />;
 
     if (getProductCategories?.value?.data?.length === 0)
       return <EmptyTable length={5} />;
@@ -40,7 +40,6 @@ export default function CategoryTable() {
           <TableHead className="w-[40px]"></TableHead>
           <TableHead>Name</TableHead>
           <TableHead>Description</TableHead>
-          <TableHead className="text-right">Products</TableHead>
           <TableHead className="w-[100px] text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>

@@ -11,10 +11,10 @@ function SubCategoryTable({ categoryId }: { categoryId: string }) {
     getProductSubCategories.isLoading && !getProductSubCategories?.value;
 
   const renderTableBody = () => {
-    if (isLoading) return <TableSkeletonRowLoader length={5} noBody />;
+    if (isLoading) return <TableSkeletonRowLoader length={4} noBody />;
 
     if (getProductSubCategories?.value?.data?.length === 0)
-      return <EmptyTable length={5} />;
+      return <EmptyTable length={4} />;
 
     return (
       <React.Fragment key={categoryId}>

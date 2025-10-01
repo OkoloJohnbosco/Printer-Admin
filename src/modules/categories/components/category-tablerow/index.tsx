@@ -66,11 +66,6 @@ export default function CategoryTableRow({
         <TableCell className="font-medium">{category.name}</TableCell>
         <TableCell className="text-muted-foreground">{category.id}</TableCell>
         <TableCell className="text-right">
-          <span className="bg-primary/10 text-primary inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-medium">
-            {1}
-          </span>
-        </TableCell>
-        <TableCell className="text-right">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
