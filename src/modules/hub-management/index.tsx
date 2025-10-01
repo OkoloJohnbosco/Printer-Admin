@@ -36,9 +36,11 @@ const tabs = [
 ];
 
 export default function PrintHubsPageTemplate() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [locationFilter, setLocationFilter] = useState("all");
+  const [filters, setFilters] = useState({
+    searchTerm: "",
+    statusFilter: "all",
+    locationFilter: "all",
+  });
   const [active, setActive] = useState<string>("gallery");
 
   const stats = [
@@ -112,12 +114,19 @@ export default function PrintHubsPageTemplate() {
               <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
               <Input
                 placeholder="Search hubs..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={filters.searchTerm}
+                onChange={(e) =>
+                  setFilters({ ...filters, searchTerm: e.target.value })
+                }
                 className="pl-10"
               />
             </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select
+              value={filters.statusFilter}
+              onValueChange={(value) =>
+                setFilters({ ...filters, statusFilter: value })
+              }
+            >
               <SelectTrigger className="w-fit">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
@@ -128,7 +137,12 @@ export default function PrintHubsPageTemplate() {
                 <SelectItem value="inactive">Inactive</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={locationFilter} onValueChange={setLocationFilter}>
+            <Select
+              value={filters.locationFilter}
+              onValueChange={(value) =>
+                setFilters({ ...filters, locationFilter: value })
+              }
+            >
               <SelectTrigger className="w-fit">
                 <SelectValue placeholder="Filter by location" />
               </SelectTrigger>
@@ -139,7 +153,7 @@ export default function PrintHubsPageTemplate() {
                 <SelectItem value="il">Illinois</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline">
+            <Button variant="outline_gray">
               <Filter className="mr-2 h-4 w-4" />
               More Filters
             </Button>
@@ -151,7 +165,7 @@ export default function PrintHubsPageTemplate() {
                   onClick={() => setActive(tab.value)}
                   variant="ghost"
                   className={cn(
-                    "text-foundation-black-300 items-end px-3 font-normal hover:bg-transparent sm:px-6",
+                    "text-foundation-black-300 items-center justify-center px-3 font-normal hover:bg-transparent sm:px-6",
                     tab.value === active && "text-white",
                   )}
                 >

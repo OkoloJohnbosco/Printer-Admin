@@ -1,7 +1,7 @@
-import OrderDetailPageTemplate from "@/modules/order-details";
+import OrderDetailPageTemplate from "@/modules/order-management/order-details";
 
-function OrderDetailPage() {
-  return <OrderDetailPageTemplate params={{ id: "123" }} />;
+function OrderDetailPage({ params }: { params: { orderId: string } }) {
+  return <OrderDetailPageTemplate params={{ id: params.orderId }} />;
 }
 
 export default OrderDetailPage;

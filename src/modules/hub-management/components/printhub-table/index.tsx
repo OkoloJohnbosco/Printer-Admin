@@ -21,7 +21,7 @@ function PrintHubTable() {
             <TableHead>Avg Time</TableHead>
             <TableHead>Capacity</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

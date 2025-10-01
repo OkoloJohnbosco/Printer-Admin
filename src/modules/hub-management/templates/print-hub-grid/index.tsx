@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { printHubs } from "@/lib/constants";
 import { Clock, MapPin, Package, TrendingUp } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 function PrintHubGrid() {
@@ -15,7 +16,14 @@ function PrintHubGrid() {
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-3">
                 <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
-                  <MapPin className="text-primary h-5 w-5" />
+                  <Image
+                    src={"/logo-sm.svg"}
+                    alt="logo image"
+                    width={40}
+                    height={40}
+                    priority
+                    className="transition-transform duration-200 group-hover:opacity-0"
+                  />
                 </div>
                 <div>
                   <CardTitle className="mb-1">{hub.name}</CardTitle>

@@ -1,8 +1,14 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { printHubs } from "@/lib/constants";
-import { Eye } from "lucide-react";
+import { Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
 const statusColors: Record<string, string> = {
@@ -29,12 +35,25 @@ function PrintHubTableRow({ printHub }: { printHub: (typeof printHubs)[0] }) {
           {printHub.status}
         </Badge>
       </TableCell>
-      <TableCell className="text-right">
-        <Link href={`/print-hubs/${printHub.id}`}>
-          <Button variant="ghost" size="sm">
-            <Eye className="h-4 w-4" />
-          </Button>
-        </Link>
+      <TableCell>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <Link
+                href={`/print-hubs/${printHub.id}`}
+                className="flex items-center gap-2"
+              >
+                <Eye className="h-4 w-4" />
+                View Details
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </TableCell>
     </TableRow>
   );

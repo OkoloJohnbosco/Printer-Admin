@@ -2,11 +2,12 @@
 
 import {
   AudioWaveform,
-  CircleDollarSign,
   Command,
+  FolderTree,
   GalleryVerticalEnd,
   LayoutDashboard,
   Package,
+  Palette,
   Printer,
   ShieldCheck,
 } from "lucide-react";
@@ -61,14 +62,19 @@ const data = {
       icon: Printer,
     },
     {
-      title: "Settings",
-      url: routes.VERIFICATION,
-      icon: ShieldCheck,
+      title: "Design Requests",
+      url: routes.DESIGN_REQUESTS,
+      icon: Palette,
     },
     {
-      title: "Revenue & Payout",
-      url: routes.REVENUE_AND_PAYOUT,
-      icon: CircleDollarSign,
+      title: "Categories",
+      url: routes.CATEGORIES,
+      icon: FolderTree,
+    },
+    {
+      title: "Settings",
+      url: routes.MY_ACCOUNT,
+      icon: ShieldCheck,
     },
   ],
 };

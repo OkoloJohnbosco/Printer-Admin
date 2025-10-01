@@ -18,7 +18,8 @@ const routes = {
   DASHBOARD: "/dashboard",
   PRINT_JOBS: "/print-jobs",
   VERIFICATION: "/verification",
-  REVENUE_AND_PAYOUT: "/revenue-and-payout",
+  DESIGN_REQUESTS: "/design-requests",
+  CATEGORIES: "/categories",
 
   PORTFOLIO_AND_WORKS: "/portfolio-and-works",
   COMPANY_STORY: "/company-story",

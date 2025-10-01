@@ -16,7 +16,7 @@ import {
 import Heading from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import useForgotPassword from "@/lib/hooks/auth/use-forgot-password";
-import useCreateQueryString from "@/lib/hooks/use-create-path-query";
+import useCreateQueryString from "@/lib/hooks/common/use-create-path-query";
 import routes from "@/routes";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

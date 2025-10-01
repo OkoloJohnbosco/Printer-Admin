@@ -64,6 +64,11 @@ export const printHubs = [
     completedToday: 8,
     capacity: 85,
     avgProcessingTime: "2.3 hours",
+    contact: {
+      manager: "Jane Cooper",
+      email: "jane.cooper@printhub.com",
+      phone: "+1 (555) 987-6543",
+    },
   },
   {
     id: "hub-2",
@@ -75,6 +80,11 @@ export const printHubs = [
     completedToday: 12,
     capacity: 65,
     avgProcessingTime: "1.8 hours",
+    contact: {
+      manager: "Jane Cooper",
+      email: "jane.cooper@printhub.com",
+      phone: "+1 (555) 987-6543",
+    },
   },
   {
     id: "hub-3",
@@ -86,6 +96,11 @@ export const printHubs = [
     completedToday: 6,
     capacity: 92,
     avgProcessingTime: "2.1 hours",
+    contact: {
+      manager: "Jane Cooper",
+      email: "jane.cooper@printhub.com",
+      phone: "+1 (555) 987-6543",
+    },
   },
   {
     id: "hub-4",
@@ -97,5 +112,10 @@ export const printHubs = [
     completedToday: 0,
     capacity: 0,
     avgProcessingTime: "N/A",
+    contact: {
+      manager: "Jane Cooper",
+      email: "jane.cooper@printhub.com",
+      phone: "+1 (555) 987-6543",
+    },
   },
 ];

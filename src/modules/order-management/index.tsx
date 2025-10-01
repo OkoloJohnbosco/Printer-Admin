@@ -24,9 +24,11 @@ import OrderStatsRow from "./components/order-stats-row";
 import OrderTable from "./components/order-table";
 
 export default function OrdersPageTemplate() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [hubFilter, setHubFilter] = useState("all");
+  const [filters, setFilters] = useState({
+    searchQuery: "",
+    statusFilter: "all",
+    hubFilter: "all",
+  });
   const [date, setDate] = useState<Date | undefined>(new Date(2025, 5, 12));
 
   const handleExportCSV = () => {
@@ -70,12 +72,19 @@ export default function OrdersPageTemplate() {
                 <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                 <Input
                   placeholder="Search by order ID, customer, or product..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={filters.searchQuery}
+                  onChange={(e) =>
+                    setFilters({ ...filters, searchQuery: e.target.value })
+                  }
                   className="pl-9"
                 />
               </div>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <Select
+                value={filters.statusFilter}
+                onValueChange={(value) =>
+                  setFilters({ ...filters, statusFilter: value })
+                }
+              >
                 <SelectTrigger className="w-full md:w-[180px]">
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
@@ -88,7 +97,12 @@ export default function OrdersPageTemplate() {
                   <SelectItem value="completed">Completed</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={hubFilter} onValueChange={setHubFilter}>
+              <Select
+                value={filters.hubFilter}
+                onValueChange={(value) =>
+                  setFilters({ ...filters, hubFilter: value })
+                }
+              >
                 <SelectTrigger className="w-full md:w-[180px]">
                   <SelectValue placeholder="Filter by hub" />
                 </SelectTrigger>
