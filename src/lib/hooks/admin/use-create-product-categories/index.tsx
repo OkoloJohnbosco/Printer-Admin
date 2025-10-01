@@ -5,6 +5,7 @@ const useCreateProductCategories = () => {
   return useCustomMutation({
     method: "post",
     endpoint: ENDPOINTS.CREATE_PRODUCT_CATEGORY,
+    message: "Category created successfully",
   });
 };
 

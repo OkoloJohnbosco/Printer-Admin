@@ -16,9 +16,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import useAuthSignup from "@/lib/hooks/auth/use-auth-signup";
-import routes from "@/routes";
 import Link from "next/link";
 
 const FormSchema = z.object({
@@ -200,11 +200,7 @@ export default function SignUpForm() {
                     Password
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter password"
-                      {...field}
-                    />
+                    <PasswordInput placeholder="Enter password" {...field} />
                   </FormControl>
                   <FormMessage />
                   <div className="flex items-center gap-1 pt-1.5 text-xs">
@@ -217,10 +213,7 @@ export default function SignUpForm() {
                         I agree to
                       </Label>
                     </div>
-                    <Link
-                      href={routes.FORGOT_PASSWORD}
-                      className={`text-brand-primary`}
-                    >
+                    <Link href={"#"} className={`text-brand-primary`}>
                       Terms and Conditions
                     </Link>
                   </div>

@@ -16,18 +16,12 @@ const routes = {
 
   // DASHBOARD ROUTES
   DASHBOARD: "/dashboard",
-  PRINT_JOBS: "/print-jobs",
-  VERIFICATION: "/verification",
   DESIGN_REQUESTS: "/design-requests",
   CATEGORIES: "/categories",
-
-  PORTFOLIO_AND_WORKS: "/portfolio-and-works",
-  COMPANY_STORY: "/company-story",
-  PRODUCT_OFFERINGS: "/product-offerings",
   ORDER_MANAGEMENT: "/orders",
   HUB_MANAGEMENT: "/print-hubs",
-
   MY_ACCOUNT: "/my-account",
+
   NOTIFICATIONS: "/notifications",
   HELP_AND_SUPPORT: "/help-and-support",
 };

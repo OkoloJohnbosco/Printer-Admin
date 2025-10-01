@@ -7,29 +7,31 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import TableSkeletonRowLoader, {
+  EmptyTable,
+} from "@/components/ui/table-row-skeleton";
+import useGetProductCategories from "@/lib/hooks/admin/use-get-product-categories";
 import CategoryTableRow from "../category-tablerow";
 
-interface SubCategory {
-  id: string;
-  name: string;
-  description: string;
-  productCount: number;
-}
+export default function CategoryTable() {
+  const getProductCategories = useGetProductCategories();
+  const isLoading =
+    getProductCategories.isLoading && !getProductCategories?.value;
 
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-  productCount: number;
-  subCategories: SubCategory[];
-  expanded?: boolean;
-}
+  const renderTableBody = () => {
+    if (isLoading) return <TableSkeletonRowLoader length={5} />;
+    return (
+      <TableBody className="page-fade-in">
+        {getProductCategories?.value?.data?.map((category) => (
+          <CategoryTableRow key={category.id} category={category} />
+        ))}
+      </TableBody>
+    );
+  };
 
-export default function CategoryTable({
-  categories,
-}: {
-  categories: Category[];
-}) {
+  if (getProductCategories?.value?.data?.length === 0)
+    return <EmptyTable length={5} />;
+
   return (
     <Table>
       <TableHeader>
@@ -41,11 +43,7 @@ export default function CategoryTable({
           <TableHead className="w-[100px] text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody>
-        {categories.map((category) => (
-          <CategoryTableRow key={category.id} category={category} />
-        ))}
-      </TableBody>
+      <>{renderTableBody()}</>
     </Table>
   );
 }

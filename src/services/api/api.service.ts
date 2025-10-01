@@ -3,22 +3,12 @@ import axios from "axios";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { AxiosBaseQueryProps, CustomMethod } from "./api.types";
 
-export interface User {
-  id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  phone: string;
-}
-
 export interface ILoginResponse {
   message: string;
   data: {
-    user: User;
-    access_token: string;
-    refresh_token: string;
+    accessToken: string;
+    refreshToken: string;
   };
-  timestamp: string;
 }
 
 export async function logout() {
@@ -35,16 +25,8 @@ export async function getSessionToken() {
   }
 }
 
-export function getUserSession() {
-  const session = getCookie(PRINTA_APP_KEY.USER);
-  if (!session) {
-    return null;
-  }
-  return JSON.parse(session as string) as User;
-}
-
 export function updateUserSession(
-  updatedUser: Record<string, string | number>
+  updatedUser: Record<string, string | number>,
 ) {
   const session = getCookie("user_session");
   if (!session) {
@@ -60,15 +42,15 @@ export function updateUserSession(
 }
 
 export function setUserSession(data: ILoginResponse["data"]) {
-  setCookie(PRINTA_APP_KEY.TOKEN, data?.access_token);
-  setCookie(PRINTA_APP_KEY.REFRESH, data?.refresh_token);
-  setCookie(PRINTA_APP_KEY.USER, JSON.stringify(data?.user));
+  setCookie(PRINTA_APP_KEY.TOKEN, data?.accessToken);
+  setCookie(PRINTA_APP_KEY.REFRESH, data?.refreshToken);
 }
 
 axios.interceptors.request.use(
   async (config) => {
     const session = await getCookie(PRINTA_APP_KEY.TOKEN);
     const token = session;
+    console.log(token, "token");
     const isAuthRoute = config.url?.includes("/auth");
 
     if (token && !isAuthRoute) {
@@ -79,7 +61,7 @@ axios.interceptors.request.use(
   },
   (error) => {
     Promise.reject(error);
-  }
+  },
 );
 
 axios.interceptors.response.use(
@@ -96,7 +78,7 @@ axios.interceptors.response.use(
       logout();
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export async function axiosBaseQuery({

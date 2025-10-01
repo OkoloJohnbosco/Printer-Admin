@@ -66,7 +66,6 @@ function useCustomMutation<
         mutation.reset();
         return;
       }
-      console.log(data, "data john");
       if (showSuccessToast || message) {
         toast.success(
           message ?? data?.data?.data?.message ?? "Response received",

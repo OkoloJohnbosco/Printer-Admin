@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { ProductCategory } from "@/lib/hooks/admin/use-get-product-categories";
 import useDisclosure from "@/lib/hooks/common/use-disclosure";
 import {
   ChevronDown,
@@ -20,30 +21,23 @@ import {
 import React from "react";
 import CreateEditCategoryModal from "../create-edit-category-modal";
 import CreateEditSubCategoryModal from "../create-edit-sub-category-modal";
-import SubCategoryTableRow from "../sub-category-tablerow";
+import DeleteCategoryModal from "../delete-category-modal";
 
-interface SubCategory {
-  id: string;
-  name: string;
-  description: string;
-  productCount: number;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-  productCount: number;
-  subCategories: SubCategory[];
-  expanded?: boolean;
-}
-
-export default function CategoryTableRow({ category }: { category: Category }) {
+export default function CategoryTableRow({
+  category,
+}: {
+  category: ProductCategory;
+}) {
   const { isOpen, onToggle } = useDisclosure();
   const {
     isOpen: isOpenEditingCategory,
     onOpen: onOpenEditingCategory,
     onClose: onCloseEditingCategory,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenDeletingCategory,
+    onOpen: onOpenDeletingCategory,
+    onClose: onCloseDeletingCategory,
   } = useDisclosure();
   const {
     isOpen: isOpenCreatingSubCategory,
@@ -69,12 +63,10 @@ export default function CategoryTableRow({ category }: { category: Category }) {
           </Button>
         </TableCell>
         <TableCell className="font-medium">{category.name}</TableCell>
-        <TableCell className="text-muted-foreground">
-          {category.description}
-        </TableCell>
+        <TableCell className="text-muted-foreground">{category.id}</TableCell>
         <TableCell className="text-right">
           <span className="bg-primary/10 text-primary inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-medium">
-            {category.productCount}
+            {1}
           </span>
         </TableCell>
         <TableCell className="text-right">
@@ -94,7 +86,7 @@ export default function CategoryTableRow({ category }: { category: Category }) {
                 Add Sub-Category
               </DropdownMenuItem>
               <DropdownMenuItem
-                // onClick={() => handleDeleteCategory(category.id)}
+                onClick={onOpenDeletingCategory}
                 className="text-destructive"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
@@ -104,10 +96,10 @@ export default function CategoryTableRow({ category }: { category: Category }) {
           </DropdownMenu>
         </TableCell>
       </TableRow>
-      {isOpen &&
+      {/* {isOpen &&
         category.subCategories.map((subCategory) => (
           <SubCategoryTableRow key={subCategory.id} subCategory={subCategory} />
-        ))}
+        ))} */}
       <CreateEditCategoryModal
         isOpen={isOpenEditingCategory}
         onClose={onCloseEditingCategory}
@@ -116,6 +108,11 @@ export default function CategoryTableRow({ category }: { category: Category }) {
       <CreateEditSubCategoryModal
         isOpen={isOpenCreatingSubCategory}
         onClose={onCloseCreatingSubCategory}
+      />
+      <DeleteCategoryModal
+        isOpen={isOpenDeletingCategory}
+        onClose={onCloseDeletingCategory}
+        categoryId={category.id}
       />
     </React.Fragment>
   );

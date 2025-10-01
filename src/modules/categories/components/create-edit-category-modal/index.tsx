@@ -19,27 +19,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { QUERYKEYS } from "@/lib/endpoints";
 import useCreateProductCategories from "@/lib/hooks/admin/use-create-product-categories";
+import { ProductCategory } from "@/lib/hooks/admin/use-get-product-categories";
 import useUpdateProductCategory from "@/lib/hooks/admin/use-update-product-category";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import z from "zod";
-
-interface SubCategory {
-  id: string;
-  name: string;
-  description: string;
-  productCount: number;
-}
-
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-  productCount: number;
-  subCategories: SubCategory[];
-  expanded?: boolean;
-}
 
 const FormSchema = z.object({
   name: z
@@ -54,23 +41,36 @@ export default function CreateEditCategoryModal({
   isOpen,
   onClose,
   category,
-}: ModalProps & { category?: Category }) {
+}: ModalProps & { category?: ProductCategory }) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: category?.name ?? "",
-      description: category?.description ?? "",
+      description: category?.id ?? "",
     },
   });
+  const queryClient = useQueryClient();
+
   const createCategory = useCreateProductCategories();
   const updateCategory = useUpdateProductCategory(category?.id ?? "");
+  const toggleCategory = category ? updateCategory : createCategory;
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (category) {
-      updateCategory.mutateAsync(data);
-    } else {
-      createCategory.mutateAsync(data);
-    }
+    toggleCategory
+      .mutateAsync(data)
+      .then(() => {
+        queryClient
+          .invalidateQueries({
+            queryKey: [QUERYKEYS.GET_ALL_PRODUCT_CATEGORIES],
+          })
+          .then(() => {
+            form.reset();
+            onClose();
+          });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   return (
@@ -126,7 +126,7 @@ export default function CreateEditCategoryModal({
               <Button variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit">
+              <Button type="submit" isLoading={toggleCategory.isPending}>
                 {category ? "Update" : "Create"} Category
               </Button>
             </div>

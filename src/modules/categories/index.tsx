@@ -15,7 +15,7 @@ export default function CategoriesPageTemplate() {
           <CardTitle>All Categories ({productCategories.length})</CardTitle>
         </CardHeader>
         <CardContent>
-          <CategoryTable categories={productCategories} />
+          <CategoryTable />
         </CardContent>
       </Card>
     </main>

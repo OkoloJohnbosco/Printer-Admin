@@ -6,6 +6,7 @@ const useAuthLogin = () => {
   return useCustomMutation<ILoginResponse, ILoginReqBody>({
     method: "post",
     endpoint: ENDPOINTS.AUTH_LOGIN,
+    message: "Login successful",
   });
 };
 

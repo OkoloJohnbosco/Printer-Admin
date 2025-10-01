@@ -16,9 +16,8 @@ export interface User {
 export interface ILoginResponse {
   message: string;
   data: {
-    user: User;
-    access_token: string;
-    refresh_token: string;
+    accessToken: string;
+    refreshToken: string;
   };
   timestamp: string;
 }

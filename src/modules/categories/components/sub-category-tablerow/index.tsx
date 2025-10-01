@@ -25,9 +25,8 @@ export default function SubCategoryTableRow({
   subCategory: SubCategory;
 }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
-
   return (
-    <TableRow key={subCategory.id} className="bg-muted/30">
+    <TableRow key={subCategory.id} className="bg-muted/30 page-fade-in">
       <TableCell></TableCell>
       <TableCell className="pl-8">
         <div className="flex items-center gap-2">

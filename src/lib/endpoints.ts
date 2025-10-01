@@ -25,14 +25,14 @@ export const ENDPOINTS = {
   GET_HUB_BY_ID: (hubId: string) => `admin/hub/${hubId}`,
   UPDATE_VERIFICATION_STATUS: (hubId: string) =>
     `admin/hubs/${hubId}/verification-status`,
-  CREATE_PRODUCT_CATEGORY: `admin/product/category`,
-  GET_ALL_PRODUCT_CATEGORIES: `admin/product/categories`,
+  CREATE_PRODUCT_CATEGORY: `admin/products/categories`,
+  GET_ALL_PRODUCT_CATEGORIES: `admin/products/categories`,
   GET_PRODUCT_CATEGORY_BY_ID: (categoryId: string) =>
-    `admin/product/category/${categoryId}`,
+    `admin/products/categoriesy/${categoryId}`,
   UPDATE_PRODUCT_CATEGORY_BY_ID: (categoryId: string) =>
-    `admin/product/category/${categoryId}`,
+    `admin/products/categories/${categoryId}`,
   DELETE_PRODUCT_CATEGORY_BY_ID: (categoryId: string) =>
-    `admin/product/category/${categoryId}`,
+    `admin/products/categories/${categoryId}`,
 
   CREATE_PRODUCT_SUB_CATEGORY: `admin/products/sub-categories`,
   GET_ALL_PRODUCT_SUB_CATEGORIES: (categoryId: string) =>

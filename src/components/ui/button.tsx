@@ -1,36 +1,37 @@
-import { Slot } from "@radix-ui/react-slot";
+import { Slot, Slottable } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { Loader } from "lucide-react";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 relative whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "inline-flex items-center relative font-[family-name:var(--font-work-sans)] justify-center gap-2 whitespace-nowrap rounded-md text-sm transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 font-medium focus-within:ring-primary focus-within:ring-[1.5px] focus-within:ring-offset-1",
         default_blue:
-          "bg-brand-alternative text-white shadow-xs hover:bg-brand-alternative/90 font-medium focus-within:ring-brand-alternative focus-within:ring-[1.5px] focus-within:ring-offset-1",
+          "bg-brand-alternative text-black shadow-xs hover:bg-brand-alternative/90 font-medium focus-within:ring-brand-alternative focus-within:ring-[1.5px] focus-within:ring-offset-1",
         destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 font-medium",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "border bg-background text-primary border-black hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 font-medium",
         outline_gray:
           "border bg-transparent disabled:bg-[#E5E7EB] bg-white border-[#16161626] text-[#686868] hover:bg-accent hover:text-accent-foreground",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80 font-medium",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 font-medium",
         ghost_gray:
           "hover:bg-accent hover:text-accent-foreground text-[#929EAE] font-medium",
-        link: "text-primary underline-offset-4 hover:underline",
+        link: "text-primary underline-offset-4 hover:underline font-medium",
       },
       size: {
-        default: "h-10.5 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-12 rounded-md px-6 has-[>svg]:px-4",
+        default: "h-9 px-4 py-2 has-[>svg]:px-3",
+        sm: "h-9 rounded-[6px] gap-1.5 px-3 has-[>svg]:px-2.5 text-xs",
+        lg: "h-12 rounded-md text-sm px-6 has-[>svg]:px-4",
         icon: "size-9",
       },
       fullWidth: {
@@ -50,20 +51,41 @@ function Button({
   size,
   asChild = false,
   fullWidth,
+  disabled,
+  children,
+  isLoading,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    isLoading?: boolean;
   }) {
   const Comp = asChild ? Slot : "button";
 
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, fullWidth, className }))}
       type="button"
+      disabled={isLoading || disabled}
+      className={cn(buttonVariants({ variant, size, fullWidth, className }))}
       {...props}
-    />
+    >
+      <Slottable>
+        <span
+          style={{
+            opacity: isLoading ? 0 : 1,
+          }}
+          className="inline-flex w-full items-center justify-center gap-2"
+        >
+          {children}
+        </span>
+      </Slottable>
+      {isLoading && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <Loader className={cn("size-4 animate-spin text-white")} />
+        </div>
+      )}
+    </Comp>
   );
 }
 

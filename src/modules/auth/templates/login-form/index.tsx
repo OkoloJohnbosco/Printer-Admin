@@ -16,10 +16,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { QUERYKEYS } from "@/lib/endpoints";
+import { PasswordInput } from "@/components/ui/password-input";
 import useAuthLogin from "@/lib/hooks/auth/use-auth-login";
 import routes from "@/routes";
-import { useQueryClient } from "@tanstack/react-query";
+import { setUserSession } from "@/services/api/api.service";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -42,7 +42,6 @@ const FormSchema = z.object({
 });
 
 export default function LoginForm() {
-  const queryClient = useQueryClient();
   const router = useRouter();
   const authLogin = useAuthLogin();
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -55,18 +54,15 @@ export default function LoginForm() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    authLogin.mutateAsync(data).then((res) => {
-      console.log(res?.data?.data);
-      queryClient.invalidateQueries({
-        queryKey: [QUERYKEYS.GOOGLE_AUTH_USER_SESSION],
+    authLogin
+      .mutateAsync(data)
+      .then((res) => {
+        setUserSession(res?.data?.data);
+        router.push(routes.DASHBOARD);
+      })
+      .catch((err) => {
+        console.log(err);
       });
-      if (
-        !res?.data?.data?.user?.buyer_type &&
-        !res?.data?.data?.user?.seller_type
-      ) {
-        router.push(routes.ROOT);
-      }
-    });
   }
 
   return (
@@ -103,11 +99,7 @@ export default function LoginForm() {
                     Password
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter password"
-                      {...field}
-                    />
+                    <PasswordInput placeholder="Enter password" {...field} />
                   </FormControl>
                   <FormMessage />
                   <div className="flex items-center justify-between gap-1 pt-1.5 text-xs">
@@ -131,7 +123,12 @@ export default function LoginForm() {
               )}
             />
             <div className="space-y-6 pt-4">
-              <Button size="lg" type="submit" fullWidth>
+              <Button
+                size="lg"
+                type="submit"
+                fullWidth
+                isLoading={authLogin.isPending}
+              >
                 Login
               </Button>
             </div>

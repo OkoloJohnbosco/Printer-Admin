@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Heading from "@/components/ui/heading";
-import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import useResetPassword from "@/lib/hooks/auth/use-reset-password";
 import routes from "@/routes";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -98,7 +98,7 @@ export default function ResetPasswordForm() {
                     Enter New Password
                   </FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <PasswordInput {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -114,14 +114,19 @@ export default function ResetPasswordForm() {
                   </FormLabel>
 
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <PasswordInput {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <div className="pt-4">
-              <Button type="submit" fullWidth size="lg">
+              <Button
+                type="submit"
+                fullWidth
+                size="lg"
+                isLoading={resetPassword.isPending}
+              >
                 Proceed
               </Button>
             </div>
