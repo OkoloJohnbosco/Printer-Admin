@@ -119,3 +119,96 @@ export const printHubs = [
     },
   },
 ];
+
+export const productCategories = [
+  {
+    id: "1",
+    name: "Apparel",
+    description: "Clothing and wearable items",
+    productCount: 45,
+    expanded: false,
+    subCategories: [
+      {
+        id: "1-1",
+        name: "T-Shirts",
+        description: "Custom printed t-shirts",
+        productCount: 20,
+      },
+      {
+        id: "1-2",
+        name: "Hoodies",
+        description: "Comfortable hoodies",
+        productCount: 15,
+      },
+      {
+        id: "1-3",
+        name: "Tank Tops",
+        description: "Sleeveless shirts",
+        productCount: 10,
+      },
+    ],
+  },
+  {
+    id: "2",
+    name: "Accessories",
+    description: "Fashion accessories and add-ons",
+    productCount: 32,
+    expanded: false,
+    subCategories: [
+      {
+        id: "2-1",
+        name: "Tote Bags",
+        description: "Reusable shopping bags",
+        productCount: 18,
+      },
+      {
+        id: "2-2",
+        name: "Hats",
+        description: "Caps and beanies",
+        productCount: 14,
+      },
+    ],
+  },
+  {
+    id: "3",
+    name: "Print",
+    description: "Printed materials and artwork",
+    productCount: 28,
+    expanded: false,
+    subCategories: [
+      {
+        id: "3-1",
+        name: "Posters",
+        description: "Wall art posters",
+        productCount: 15,
+      },
+      {
+        id: "3-2",
+        name: "Canvas Prints",
+        description: "Canvas wall art",
+        productCount: 13,
+      },
+    ],
+  },
+  {
+    id: "4",
+    name: "Drinkware",
+    description: "Mugs, bottles, and cups",
+    productCount: 22,
+    expanded: false,
+    subCategories: [
+      {
+        id: "4-1",
+        name: "Mugs",
+        description: "Ceramic coffee mugs",
+        productCount: 12,
+      },
+      {
+        id: "4-2",
+        name: "Water Bottles",
+        description: "Reusable bottles",
+        productCount: 10,
+      },
+    ],
+  },
+];

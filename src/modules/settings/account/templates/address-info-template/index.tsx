@@ -47,7 +47,7 @@ function AddressInfoTemplate() {
       <CardHeader>
         <CardTitle>Address Information</CardTitle>
       </CardHeader>
-      <CardContent className="grid gap-6 w-full">
+      <CardContent className="grid w-full gap-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -64,7 +64,7 @@ function AddressInfoTemplate() {
               )}
             />
 
-            <div className="grid gap-4 sm:grid-cols-2 grid-cols-1">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
                 name="city"
