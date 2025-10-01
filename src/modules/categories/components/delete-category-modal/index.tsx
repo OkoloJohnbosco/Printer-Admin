@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { QUERYKEYS } from "@/lib/endpoints";
-import useDeleteProductCategory from "@/lib/hooks/admin/use-delete-product-category/dex";
+import useDeleteProductCategory from "@/lib/hooks/admin/use-delete-product-category";
 import { useQueryClient } from "@tanstack/react-query";
 
 function DeleteCategoryModal({

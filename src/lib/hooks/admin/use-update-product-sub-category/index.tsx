@@ -5,6 +5,7 @@ const useUpdateProductSubCategory = (subCategoryId: string) => {
   return useCustomMutation({
     method: "patch",
     endpoint: ENDPOINTS.UPDATE_PRODUCT_SUB_CATEGORY_BY_ID(subCategoryId),
+    message: "Sub-Category updated successfully",
   });
 };
 

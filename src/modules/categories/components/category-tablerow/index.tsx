@@ -22,6 +22,7 @@ import React from "react";
 import CreateEditCategoryModal from "../create-edit-category-modal";
 import CreateEditSubCategoryModal from "../create-edit-sub-category-modal";
 import DeleteCategoryModal from "../delete-category-modal";
+import SubCategoryTable from "../sub-category-table";
 
 export default function CategoryTableRow({
   category,
@@ -96,10 +97,9 @@ export default function CategoryTableRow({
           </DropdownMenu>
         </TableCell>
       </TableRow>
-      {/* {isOpen &&
-        category.subCategories.map((subCategory) => (
-          <SubCategoryTableRow key={subCategory.id} subCategory={subCategory} />
-        ))} */}
+      {isOpen && (
+        <SubCategoryTable key={category.id} categoryId={category.id} />
+      )}
       <CreateEditCategoryModal
         isOpen={isOpenEditingCategory}
         onClose={onCloseEditingCategory}
@@ -108,6 +108,7 @@ export default function CategoryTableRow({
       <CreateEditSubCategoryModal
         isOpen={isOpenCreatingSubCategory}
         onClose={onCloseCreatingSubCategory}
+        categoryId={category.id}
       />
       <DeleteCategoryModal
         isOpen={isOpenDeletingCategory}

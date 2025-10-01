@@ -20,6 +20,10 @@ export default function CategoryTable() {
 
   const renderTableBody = () => {
     if (isLoading) return <TableSkeletonRowLoader length={5} />;
+
+    if (getProductCategories?.value?.data?.length === 0)
+      return <EmptyTable length={5} />;
+
     return (
       <TableBody className="page-fade-in">
         {getProductCategories?.value?.data?.map((category) => (
@@ -28,9 +32,6 @@ export default function CategoryTable() {
       </TableBody>
     );
   };
-
-  if (getProductCategories?.value?.data?.length === 0)
-    return <EmptyTable length={5} />;
 
   return (
     <Table>

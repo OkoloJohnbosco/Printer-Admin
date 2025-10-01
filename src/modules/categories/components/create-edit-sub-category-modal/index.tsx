@@ -20,18 +20,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { QUERYKEYS } from "@/lib/endpoints";
 import useCreateProductSubCategory from "@/lib/hooks/admin/use-create-product-sub-category";
+import { ProductSubCategory } from "@/lib/hooks/admin/use-get-all-product-sub-categories";
 import useUpdateProductSubCategory from "@/lib/hooks/admin/use-update-product-sub-category";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import z from "zod";
-
-interface SubCategory {
-  id: string;
-  name: string;
-  description: string;
-  productCount: number;
-}
 
 const FormSchema = z.object({
   name: z
@@ -46,19 +42,37 @@ export default function CreateEditSubCategoryModal({
   isOpen,
   onClose,
   subCategory,
-}: ModalProps & { subCategory?: SubCategory }) {
+  categoryId,
+}: ModalProps & { subCategory?: ProductSubCategory; categoryId: string }) {
+  const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      name: subCategory?.name ?? "",
+      description: subCategory?.id ?? "",
+    },
   });
+
   const createSubCategory = useCreateProductSubCategory();
   const updateSubCategory = useUpdateProductSubCategory(subCategory?.id ?? "");
+  const toggleSubCategory = subCategory ? updateSubCategory : createSubCategory;
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (subCategory) {
-      updateSubCategory.mutateAsync(data);
-    } else {
-      createSubCategory.mutateAsync(data);
-    }
+    toggleSubCategory
+      .mutateAsync({
+        name: data.name,
+        categoryId,
+      })
+      .then(() => {
+        queryClient
+          .invalidateQueries({
+            queryKey: [QUERYKEYS.GET_ALL_PRODUCT_SUB_CATEGORIES, categoryId],
+          })
+          .then(() => {
+            form.reset();
+            onClose();
+          });
+      });
   }
 
   return (
@@ -114,7 +128,7 @@ export default function CreateEditSubCategoryModal({
               <Button variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit">
+              <Button type="submit" isLoading={toggleSubCategory.isPending}>
                 {subCategory ? "Update" : "Create"} Sub-Category
               </Button>
             </AlertDialogFooter>
