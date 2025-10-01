@@ -11,20 +11,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import LogoutModal from "@/layout/components/logout-modal";
+import { User } from "@/lib/hooks/auth/use-get-user-data";
 import useDisclosure from "@/lib/hooks/common/use-disclosure";
 import routes from "@/routes";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+export function NavUser({ user }: { user?: User }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
   return (
     <>
@@ -33,18 +26,18 @@ export function NavUser({
           <Button
             variant="outline"
             size="lg"
-            className="border-0 px-4 shadow-none hover:bg-white"
+            className="page-fade-in border-0 px-4 shadow-none hover:bg-white"
           >
             <Avatar className="h-9 w-9 rounded-full">
-              <AvatarImage src="/profile.png" alt={user.name} />
+              <AvatarImage src="/profile.png" alt={user?.firstName} />
               <AvatarFallback className="rounded-lg">CN</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="text-brand-gray-400 truncate font-[family-name:var(--font-manrope-heading)] font-medium">
-                {user.name}
+                {user?.firstName} {user?.lastName}
               </span>
               <span className="truncate text-xs font-extralight">
-                {user.email}
+                Admin - Print Hub
               </span>
             </div>
           </Button>
@@ -58,14 +51,14 @@ export function NavUser({
             <div className="profile-hero h-24 w-full"></div>
             <div className="-mt-12 flex flex-col items-center gap-1 px-1 py-1.5 text-left text-sm">
               <Avatar className="border-brand-alternative h-[75px] w-[75px] rounded-full border-2">
-                <AvatarImage src="/profile.png" alt={user.name} />
+                <AvatarImage src="/profile.png" alt={user?.firstName} />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-center text-sm leading-tight">
                 <span className="truncate text-lg font-medium">
-                  {user.name}
+                  {user?.firstName} {user?.lastName}
                 </span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate text-xs">{user?.email}</span>
               </div>
             </div>
           </DropdownMenuLabel>

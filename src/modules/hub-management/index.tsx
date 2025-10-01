@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useGetAllHubs from "@/lib/hooks/admin/use-get-all-hubs";
 import { cn } from "@/lib/utils";
 import {
   Activity,
@@ -36,6 +37,10 @@ const tabs = [
 ];
 
 export default function PrintHubsPageTemplate() {
+  useGetAllHubs({
+    limit: 20,
+    cursor: "",
+  });
   const [filters, setFilters] = useState({
     searchTerm: "",
     statusFilter: "all",

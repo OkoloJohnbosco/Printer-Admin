@@ -13,7 +13,7 @@ export interface ILoginResponse {
 
 export async function logout() {
   deleteCookie(PRINTA_APP_KEY.TOKEN);
-  deleteCookie(PRINTA_APP_KEY.USER);
+  deleteCookie(PRINTA_APP_KEY.REFRESH);
 }
 
 export async function getSessionToken() {
@@ -53,7 +53,7 @@ axios.interceptors.request.use(
     console.log(token, "token");
     const isAuthRoute = config.url?.includes("/auth");
 
-    if (token && !isAuthRoute) {
+    if (token && (!isAuthRoute || config.url?.includes("/auth/me"))) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
 

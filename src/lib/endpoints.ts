@@ -17,11 +17,11 @@ export const ENDPOINTS = {
 
   //  Admin Endpoints
   GET_ALL_HUBS: (
-    page: number,
+    cursor: string,
     limit: number,
-    status: "PENDING" | "APPROVED" | "REJECTED",
+    status?: "PENDING" | "APPROVED" | "REJECTED",
   ) =>
-    `admin/hubs${page ? `?cursor=${page}` : ""}${limit ? `&limit=${limit}` : ""}${status ? `&status=${status}` : ""}`,
+    `admin/hubs${limit ? `?limit=${limit}` : ""}${cursor ? `&cursor=${cursor}` : ""}${status ? `&status=${status}` : ""}`,
   GET_HUB_BY_ID: (hubId: string) => `admin/hub/${hubId}`,
   UPDATE_VERIFICATION_STATUS: (hubId: string) =>
     `admin/hubs/${hubId}/verification-status`,
