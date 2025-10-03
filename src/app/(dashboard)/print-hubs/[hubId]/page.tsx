@@ -1,9 +1,10 @@
 import PrintHubDetailPageTamplate from "@/modules/hub-management/hub-details";
 
-export default function PrintHubsPage({
+export default async function PrintHubsPage({
   params,
 }: {
-  params: { hubId: string };
+  params: Promise<{ hubId: string }>;
 }) {
-  return <PrintHubDetailPageTamplate params={{ id: params.hubId }} />;
+  const { hubId } = await params;
+  return <PrintHubDetailPageTamplate params={{ id: hubId }} />;
 }

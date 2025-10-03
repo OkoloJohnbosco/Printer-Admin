@@ -1,7 +1,12 @@
 import OrderDetailPageTemplate from "@/modules/order-management/order-details";
 
-function OrderDetailPage({ params }: { params: { orderId: string } }) {
-  return <OrderDetailPageTemplate params={{ id: params.orderId }} />;
+async function OrderDetailPage({
+  params,
+}: {
+  params: Promise<{ orderId: string }>;
+}) {
+  const { orderId } = await params;
+  return <OrderDetailPageTemplate params={{ id: orderId }} />;
 }
 
 export default OrderDetailPage;

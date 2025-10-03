@@ -1,11 +1,12 @@
 import DesignRequestDetailPageTemplate from "@/modules/design-requests/design-request-details";
 
-function DesignRequestDetailPage({
+async function DesignRequestDetailPage({
   params,
 }: {
-  params: { requestId: string };
+  params: Promise<{ requestId: string }>;
 }) {
-  return <DesignRequestDetailPageTemplate params={{ id: params.requestId }} />;
+  const { requestId } = await params;
+  return <DesignRequestDetailPageTemplate params={{ id: requestId }} />;
 }
 
 export default DesignRequestDetailPage;
