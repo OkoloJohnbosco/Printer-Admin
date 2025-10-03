@@ -47,7 +47,7 @@ export default function OrdersPageTemplate() {
 
   return (
     <div className="page-fade-in w-full">
-      <main className="p-6">
+      <main>
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="mb-2 text-3xl font-bold">Orders</h1>

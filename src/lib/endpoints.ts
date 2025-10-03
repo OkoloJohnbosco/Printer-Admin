@@ -6,7 +6,7 @@ export const ENDPOINTS = {
   AUTH_GOOGLE: "auth/google",
   AUTH_RESEND_VERIFICATION: "auth/resend-verification",
   AUTH_FORGOT_PASSWORD: "auth/password/reset/initiate",
-
+  AUTH_REFRESH_TOKEN: "auth/refresh",
   AUTH_RESET_PASSWORD: "auth/password/reset/complete",
 
   AUTH_VALIDATE_RESET_TOKEN: "auth/validate-reset-token",
