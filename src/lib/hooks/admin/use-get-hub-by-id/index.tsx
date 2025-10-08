@@ -1,8 +1,14 @@
 import { ENDPOINTS, QUERYKEYS } from "@/lib/endpoints";
 import useQueryActionHook from "../../api/use-queryaction";
+import { PrintHub } from "../use-get-all-hubs";
 
-const useGetHubById = ({ hubId }: { hubId: string }) => {
-  return useQueryActionHook({
+export interface UseGetHubByIdResponse {
+  data: PrintHub;
+  status: boolean;
+}
+
+const useGetHubById = (hubId: string) => {
+  return useQueryActionHook<UseGetHubByIdResponse>({
     method: "get",
     endpoint: ENDPOINTS.GET_HUB_BY_ID(hubId),
     queryKey: [QUERYKEYS.GET_HUB_BY_ID, `${hubId}`],

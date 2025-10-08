@@ -22,7 +22,7 @@ export const ENDPOINTS = {
     status?: "PENDING" | "APPROVED" | "REJECTED",
   ) =>
     `admin/hubs${limit ? `?limit=${limit}` : ""}${cursor ? `&cursor=${cursor}` : ""}${status ? `&status=${status}` : ""}`,
-  GET_HUB_BY_ID: (hubId: string) => `admin/hub/${hubId}`,
+  GET_HUB_BY_ID: (hubId: string) => `admin/hubs/${hubId}`,
   UPDATE_VERIFICATION_STATUS: (hubId: string) =>
     `admin/hubs/${hubId}/verification-status`,
   CREATE_PRODUCT_CATEGORY: `admin/products/categories`,
