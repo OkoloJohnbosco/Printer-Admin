@@ -72,6 +72,11 @@ const data = {
       icon: FolderTree,
     },
     {
+      title: "Templates",
+      url: routes.TEMPLATES,
+      icon: Palette,
+    },
+    {
       title: "Settings",
       url: routes.MY_ACCOUNT,
       icon: ShieldCheck,

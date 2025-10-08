@@ -12,7 +12,7 @@ export interface ProductSubCategory {
   productCategoryId: string;
 }
 
-const useGetProductSubCategories = (categoryId: string) => {
+const useGetProductSubCategories = (categoryId = "") => {
   return useQueryActionHook<ProductSubCategoryResponse>({
     method: "get",
     endpoint: ENDPOINTS.GET_ALL_PRODUCT_SUB_CATEGORIES(categoryId),

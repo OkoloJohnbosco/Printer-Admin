@@ -18,6 +18,8 @@ const routes = {
   DASHBOARD: "/dashboard",
   DESIGN_REQUESTS: "/design-requests",
   CATEGORIES: "/categories",
+  TEMPLATES: "/product-offering-templates",
+  TEMPLATES_NEW: "/product-offering-templates/new",
   ORDER_MANAGEMENT: "/orders",
   HUB_MANAGEMENT: "/print-hubs",
   MY_ACCOUNT: "/my-account",

@@ -34,6 +34,22 @@ const refreshAccessToken = async () => {
 export async function logout() {
   deleteCookie(PRINTA_APP_KEY.TOKEN);
   deleteCookie(PRINTA_APP_KEY.REFRESH);
+
+  // Only redirect if we're in the browser (not server-side)
+  if (typeof window !== "undefined") {
+    window.location.href = "/auth/login";
+  }
+}
+
+export async function logoutAndRedirect() {
+  // Clear cookies
+  deleteCookie(PRINTA_APP_KEY.TOKEN);
+  deleteCookie(PRINTA_APP_KEY.REFRESH);
+
+  // Redirect to login page
+  if (typeof window !== "undefined") {
+    window.location.href = "/auth/login";
+  }
 }
 
 export async function getSessionToken() {
@@ -92,17 +108,8 @@ axios.interceptors.response.use(
       !originalRequest.url?.includes("/auth/me");
     if (error?.response?.status === 401 && !isAuthRoute) {
       originalRequest._retry = true;
-      // try {
-      //   const newAccessToken = await refreshAccessToken();
-      //   // Retry original request with the new token
-      //   originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-      //   return axios(originalRequest); // Retry the request
-      // } catch (err) {
-      //   return Promise.reject(err); // Handle refresh token failure
-      // }
-      // logout().finally(() => {
-      //   window.location.reload();
-      // });
+      // Log the user out and redirect to login page
+      await logout();
     }
     return Promise.reject(error);
   },

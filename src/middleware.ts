@@ -21,6 +21,7 @@ const protectedRoutes = [
   "/orders",
   "/print-hubs",
   "/my-account",
+  "/product-offering-templates",
   "/",
 ];
 const publicRoutes = ["/auth/login", "/forgot-password"];

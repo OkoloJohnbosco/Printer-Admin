@@ -37,7 +37,7 @@ const tabs = [
 ];
 
 export default function PrintHubsPageTemplate() {
-  useGetAllHubs({
+  const getAllHubs = useGetAllHubs({
     limit: 20,
     cursor: "",
   });
@@ -197,7 +197,11 @@ export default function PrintHubsPageTemplate() {
           </div>
 
           {/* Print Hubs Grid */}
-          {active === "gallery" ? <PrintHubGrid /> : <PrintHubTable />}
+          {active === "gallery" ? (
+            <PrintHubGrid getAllHubs={getAllHubs} />
+          ) : (
+            <PrintHubTable getAllHubs={getAllHubs} />
+          )}
         </CardContent>
       </Card>
     </div>

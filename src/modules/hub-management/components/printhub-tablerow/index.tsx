@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { printHubs } from "@/lib/constants";
+import { PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
 import { Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
@@ -19,23 +19,25 @@ const statusColors: Record<string, string> = {
   Completed: "bg-primary/20 text-primary",
 };
 
-function PrintHubTableRow({ printHub }: { printHub: (typeof printHubs)[0] }) {
+function PrintHubTableRow({ printHub }: { printHub: PrintHub }) {
   return (
-    <TableRow key={printHub.id}>
-      <TableCell className="font-mono text-sm">{printHub.name}</TableCell>
-      <TableCell className="text-muted-foreground">
-        {printHub.address}
+    <TableRow key={printHub.userId}>
+      <TableCell className="px-5 font-mono text-sm">
+        {printHub.businessName}
       </TableCell>
-      <TableCell>{printHub.activeOrders}</TableCell>
-      <TableCell>{printHub.completedToday}</TableCell>
-      <TableCell>{printHub.avgProcessingTime}</TableCell>
-      <TableCell>{printHub.capacity}</TableCell>
-      <TableCell>
+      <TableCell className="text-muted-foreground">
+        {printHub.businessAddress}
+      </TableCell>
+      <TableCell className="px-5">12</TableCell>
+      <TableCell className="px-5">12</TableCell>
+      <TableCell className="px-5">12</TableCell>
+      <TableCell className="px-5">{printHub.businessEmail}</TableCell>
+      <TableCell className="px-5">
         <Badge variant="secondary" className={statusColors[printHub.status]}>
           {printHub.status}
         </Badge>
       </TableCell>
-      <TableCell>
+      <TableCell className="px-5">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -45,7 +47,7 @@ function PrintHubTableRow({ printHub }: { printHub: (typeof printHubs)[0] }) {
           <DropdownMenuContent align="end">
             <DropdownMenuItem>
               <Link
-                href={`/print-hubs/${printHub.id}`}
+                href={`/print-hubs/${printHub.userId}`}
                 className="flex items-center gap-2"
               >
                 <Eye className="h-4 w-4" />

@@ -10,18 +10,27 @@ import {
   ModalProps,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { QUERYKEYS } from "@/lib/endpoints";
 import { logout } from "@/services/api/api.service";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function LogoutModal({ isOpen, onClose }: ModalProps) {
-  const router = useRouter();
+  const queryClient = useQueryClient();
+
   const logoutMutation = useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      router.refresh();
+      // The logout function will handle the redirect to /auth/login
+      queryClient
+        .invalidateQueries({
+          queryKey: [QUERYKEYS.GET_USER_DATA],
+        })
+        .then(() => {
+          onClose();
+        });
     },
   });
+
   return (
     <AlertDialog open={isOpen}>
       <AlertDialogContent onEscapeKeyDown={onClose} className="bg-white">
