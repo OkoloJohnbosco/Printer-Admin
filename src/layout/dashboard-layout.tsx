@@ -12,7 +12,7 @@ export default function DashboardLayoutWrapper({
       <AppSidebar />
       <SidebarInset className="bg-brand-gray-500">
         <NavHeader />
-        <div className="p-4 sm:p-7">{children}</div>
+        <div className="container-wrapper py-4 sm:py-7">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

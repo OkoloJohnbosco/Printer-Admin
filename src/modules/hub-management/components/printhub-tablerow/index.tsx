@@ -11,14 +11,6 @@ import { PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
 import { Eye, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
-const statusColors: Record<string, string> = {
-  Received: "bg-muted text-muted-foreground",
-  "In Progress": "bg-primary/10 text-primary",
-  Shipped: "bg-chart-2/10 text-chart-2",
-  Delivered: "bg-chart-4/10 text-chart-4",
-  Completed: "bg-primary/20 text-primary",
-};
-
 function PrintHubTableRow({ printHub }: { printHub: PrintHub }) {
   return (
     <TableRow key={printHub.userId}>
@@ -33,7 +25,14 @@ function PrintHubTableRow({ printHub }: { printHub: PrintHub }) {
       <TableCell className="px-5">12</TableCell>
       <TableCell className="px-5">{printHub.businessEmail}</TableCell>
       <TableCell className="px-5">
-        <Badge variant="secondary" className={statusColors[printHub.status]}>
+        <Badge
+          variant={
+            printHub?.status.toLowerCase() as
+              | "approved"
+              | "rejected"
+              | "pending"
+          }
+        >
           {printHub.status}
         </Badge>
       </TableCell>

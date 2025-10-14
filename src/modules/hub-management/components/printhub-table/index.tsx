@@ -34,7 +34,7 @@ function PrintHubTable({
   };
 
   return (
-    <div className="border-border page-fade-in rounded-md border">
+    <div className="page-fade-in rounded-md pt-6">
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">

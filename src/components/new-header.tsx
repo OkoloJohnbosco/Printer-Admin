@@ -12,7 +12,7 @@ function NavHeader() {
   const isLoading = getUserData.isLoading && !getUserData?.value;
   return (
     <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 bg-white transition-[width,height] ease-linear">
-      <div className="flex w-full items-center justify-between px-4">
+      <div className="container-wrapper flex w-full items-center justify-between">
         <div className="-ml-3 flex items-center gap-2 px-4">
           <SidebarTrigger />
           <Heading size="h5">Admin Dashboard</Heading>

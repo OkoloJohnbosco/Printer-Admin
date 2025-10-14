@@ -1,6 +1,5 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -14,7 +13,7 @@ import OfferingTemplateHeader from "./components/offering-template-header";
 import OfferingTemplateTable from "./components/offering-template-table";
 
 export default function OfferingTemplatePageTemplate() {
-  const [subCategoryId, setSubCategoryId] = useState("");
+  const [subCategoryId, setSubCategoryId] = useState("all");
   const getProductSubCategories = useGetProductSubCategories();
 
   return (
@@ -25,7 +24,6 @@ export default function OfferingTemplatePageTemplate() {
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="shrink-0">All Offering Templates </CardTitle>
           <div className="w-full max-w-[300px] space-y-1 text-right">
-            <Label>Sub-Category:</Label>
             <Select value={subCategoryId} onValueChange={setSubCategoryId}>
               <SelectTrigger>
                 <SelectValue />

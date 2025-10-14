@@ -29,11 +29,8 @@ function PrintHubGridCard({ hub }: { hub: PrintHub }) {
             </div>
           </div>
           <Badge
-            variant="secondary"
-            className={
-              hub.status === "Operational"
-                ? "bg-primary/10 text-primary"
-                : "bg-muted text-muted-foreground"
+            variant={
+              hub?.status.toLowerCase() as "approved" | "rejected" | "pending"
             }
           >
             {hub.status}

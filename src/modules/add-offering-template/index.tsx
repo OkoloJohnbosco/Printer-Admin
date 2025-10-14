@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
@@ -14,18 +13,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { QUERYKEYS } from "@/lib/endpoints";
+import useCreateProductTemplate from "@/lib/hooks/admin/use-create-product-template";
+import useGetProductSubCategories from "@/lib/hooks/admin/use-get-all-product-sub-categories";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Fragment, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
+import SpecificationTypeModal from "./components/specification-type-modal";
+import SuccessModal from "./components/success-modal";
 
 // Zod schema for form validation
 const specificationSchema = z.object({
   key: z.string().min(1, "Specification type is required"),
   label: z.string().min(1, "Display label is required"),
-  value: z.string().min(1, "Default option is required"),
   availableOptions: z
     .array(z.string().min(1, "Option cannot be empty"))
     .min(1, "At least one option is required"),
@@ -53,7 +57,9 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function NewOfferingTemplateSection() {
-  const router = useRouter();
+  const getProductSubCategories = useGetProductSubCategories();
+  const createProductTemplate = useCreateProductTemplate();
+  const queryClient = useQueryClient();
 
   // Initialize react-hook-form
   const {
@@ -61,6 +67,10 @@ export default function NewOfferingTemplateSection() {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
+    watch,
+    setValue,
+    getValues,
+    reset,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -69,9 +79,8 @@ export default function NewOfferingTemplateSection() {
       moq: "1",
       specifications: [
         {
-          key: "",
-          label: "",
-          value: "",
+          key: "sizeOptions",
+          label: "Size Options",
           availableOptions: [""],
         },
       ],
@@ -84,7 +93,6 @@ export default function NewOfferingTemplateSection() {
     fields: specificationFields,
     append: appendSpecification,
     remove: removeSpecification,
-    update: updateSpecification,
   } = useFieldArray({
     control,
     name: "specifications",
@@ -99,37 +107,12 @@ export default function NewOfferingTemplateSection() {
     name: "addons",
   });
 
-  // Mock categories data - in real app, fetch from API
-  const categories = [
-    {
-      id: "1",
-      name: "Marketing Materials",
-      subCategories: [
-        { id: "1-1", name: "Business Cards" },
-        { id: "1-2", name: "Flyers & Handbills" },
-        { id: "1-3", name: "Posters" },
-        { id: "1-4", name: "Brochures" },
-      ],
-    },
-    {
-      id: "2",
-      name: "Custom Apparel",
-      subCategories: [
-        { id: "2-1", name: "Shirts & Hoodies" },
-        { id: "2-2", name: "Caps" },
-        { id: "2-3", name: "Tote Bags" },
-      ],
-    },
-    {
-      id: "3",
-      name: "Stationery & Office",
-      subCategories: [
-        { id: "3-1", name: "Notepads" },
-        { id: "3-2", name: "Envelopes" },
-        { id: "3-3", name: "Letterheads" },
-      ],
-    },
-  ];
+  // Modal state for specification type selection
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
+  // Watch specifications to track selected types
+  const watchedSpecifications = watch("specifications");
 
   // Available specification types
   const specificationTypes = [
@@ -146,11 +129,26 @@ export default function NewOfferingTemplateSection() {
     { value: "cornersOptions", label: "Corners Options" },
   ];
 
+  // Get available specification types (not already selected)
+  const getAvailableSpecificationTypes = () => {
+    const selectedTypes =
+      watchedSpecifications?.map((spec) => spec.key).filter(Boolean) || [];
+    return specificationTypes.filter(
+      (type) => !selectedTypes.includes(type.value),
+    );
+  };
+
   const addSpecificationField = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleSpecificationTypeSelect = (specType: {
+    value: string;
+    label: string;
+  }) => {
     appendSpecification({
-      key: "",
-      label: "",
-      value: "",
+      key: specType.value,
+      label: specType.label,
       availableOptions: [""],
     });
   };
@@ -164,37 +162,21 @@ export default function NewOfferingTemplateSection() {
   };
 
   const addOption = (specIndex: number) => {
-    const currentSpec = specificationFields[specIndex];
-    updateSpecification(specIndex, {
-      ...currentSpec,
-      availableOptions: [...currentSpec.availableOptions, ""],
-    });
+    const currentValues = getValues(
+      `specifications.${specIndex}.availableOptions`,
+    );
+    const newOptions = [...currentValues, ""];
+    setValue(`specifications.${specIndex}.availableOptions`, newOptions);
   };
 
   const removeOption = (specIndex: number, optionIndex: number) => {
-    const currentSpec = specificationFields[specIndex];
-    if (currentSpec.availableOptions.length > 1) {
-      updateSpecification(specIndex, {
-        ...currentSpec,
-        availableOptions: currentSpec.availableOptions.filter(
-          (_, idx) => idx !== optionIndex,
-        ),
-      });
+    const currentValues = getValues(
+      `specifications.${specIndex}.availableOptions`,
+    );
+    if (currentValues.length > 1) {
+      const newOptions = currentValues.filter((_, idx) => idx !== optionIndex);
+      setValue(`specifications.${specIndex}.availableOptions`, newOptions);
     }
-  };
-
-  const updateOption = (
-    specIndex: number,
-    optionIndex: number,
-    value: string,
-  ) => {
-    const currentSpec = specificationFields[specIndex];
-    const newOptions = [...currentSpec.availableOptions];
-    newOptions[optionIndex] = value;
-    updateSpecification(specIndex, {
-      ...currentSpec,
-      availableOptions: newOptions,
-    });
   };
 
   const onSubmit = (data: FormData) => {
@@ -205,20 +187,29 @@ export default function NewOfferingTemplateSection() {
         moq: parseInt(data.moq),
         ...data.specifications.reduce(
           (acc, spec) => {
-            if (spec.key && spec.value) {
-              acc[spec.key] = spec.value;
+            if (spec.key) {
+              acc[spec.key] = spec.availableOptions;
             }
             return acc;
           },
-          {} as Record<string, string>,
+          {} as Record<string, string[]>,
         ),
       },
       addons: data.addons.filter((addon) => addon.key && addon.label),
     };
 
     console.log("[v0] Template created:", template);
-    // In real app, send to API
-    router.push("/categories");
+    createProductTemplate.mutateAsync(template).then(() => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERYKEYS.GET_ALL_PRODUCT_TEMPLATES],
+      });
+      setIsSuccessModalOpen(true);
+    });
+  };
+
+  const handleCreateAnother = () => {
+    reset();
+    setIsSuccessModalOpen(false);
   };
 
   return (
@@ -259,7 +250,7 @@ export default function NewOfferingTemplateSection() {
                   {...register("templateName")}
                 />
                 {errors.templateName && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-xs text-red-500">
                     {errors.templateName.message}
                   </p>
                 )}
@@ -276,28 +267,22 @@ export default function NewOfferingTemplateSection() {
                         <SelectValue placeholder="Select a sub-category" />
                       </SelectTrigger>
                       <SelectContent>
-                        {categories.map((category) => (
-                          <div key={category.id}>
-                            <div className="text-muted-foreground px-2 py-1.5 text-sm font-semibold">
-                              {category.name}
-                            </div>
-                            {category.subCategories.map((sub) => (
-                              <SelectItem
-                                key={sub.id}
-                                value={sub.id}
-                                className="pl-6"
-                              >
-                                {sub.name}
-                              </SelectItem>
-                            ))}
-                          </div>
-                        ))}
+                        {getProductSubCategories?.value?.data?.map(
+                          (subCategory) => (
+                            <SelectItem
+                              key={subCategory.id}
+                              value={subCategory.id}
+                            >
+                              {subCategory.name}
+                            </SelectItem>
+                          ),
+                        )}
                       </SelectContent>
                     </Select>
                   )}
                 />
                 {errors.selectedSubCategory && (
-                  <p className="text-sm text-red-500">
+                  <p className="text-xs text-red-500">
                     {errors.selectedSubCategory.message}
                   </p>
                 )}
@@ -313,7 +298,7 @@ export default function NewOfferingTemplateSection() {
                   {...register("moq")}
                 />
                 {errors.moq && (
-                  <p className="text-sm text-red-500">{errors.moq.message}</p>
+                  <p className="text-xs text-red-500">{errors.moq.message}</p>
                 )}
               </div>
             </CardContent>
@@ -331,7 +316,7 @@ export default function NewOfferingTemplateSection() {
               </div>
               {errors.specifications &&
                 !Array.isArray(errors.specifications) && (
-                  <p className="mt-2 text-sm text-red-500">
+                  <p className="mt-2 text-xs text-red-500">
                     {errors.specifications.message}
                   </p>
                 )}
@@ -363,32 +348,18 @@ export default function NewOfferingTemplateSection() {
                     <div className="grid gap-4 md:grid-cols-2">
                       <div className="space-y-2">
                         <Label>Specification Type</Label>
-                        <Controller
-                          name={`specifications.${index}.key`}
-                          control={control}
-                          render={({ field }) => (
-                            <Select
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select type" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {specificationTypes.map((type) => (
-                                  <SelectItem
-                                    key={type.value}
-                                    value={type.value}
-                                  >
-                                    {type.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          )}
+                        <div className="border-input bg-background rounded-md border px-3 py-2 text-sm">
+                          {specificationTypes.find(
+                            (type) => type.value === spec.key,
+                          )?.label || "No type selected"}
+                        </div>
+                        {/* Hidden input to maintain form data */}
+                        <input
+                          type="hidden"
+                          {...register(`specifications.${index}.key`)}
                         />
                         {errors.specifications?.[index]?.key && (
-                          <p className="text-sm text-red-500">
+                          <p className="text-xs text-red-500">
                             {errors.specifications[index]?.key?.message}
                           </p>
                         )}
@@ -401,7 +372,7 @@ export default function NewOfferingTemplateSection() {
                           {...register(`specifications.${index}.label`)}
                         />
                         {errors.specifications?.[index]?.label && (
-                          <p className="text-sm text-red-500">
+                          <p className="text-xs text-red-500">
                             {errors.specifications[index]?.label?.message}
                           </p>
                         )}
@@ -422,29 +393,47 @@ export default function NewOfferingTemplateSection() {
                         </Button>
                       </div>
                       <div className="space-y-2">
-                        {spec.availableOptions.map((option, optionIndex) => (
-                          <div key={optionIndex} className="flex gap-2">
-                            <Input
-                              placeholder={`Option ${optionIndex + 1}`}
-                              value={option}
-                              onChange={(e) =>
-                                updateOption(index, optionIndex, e.target.value)
-                              }
-                            />
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => removeOption(index, optionIndex)}
-                              disabled={spec.availableOptions.length === 1}
-                              type="button"
-                            >
-                              <Trash2 className="text-destructive h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))}
+                        {watch(`specifications.${index}.availableOptions`)?.map(
+                          (option: string, optionIndex: number) => (
+                            <Fragment key={optionIndex}>
+                              <div key={optionIndex} className="flex gap-2">
+                                <Input
+                                  placeholder={`Option ${optionIndex + 1}`}
+                                  {...register(
+                                    `specifications.${index}.availableOptions.${optionIndex}`,
+                                  )}
+                                />
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    removeOption(index, optionIndex)
+                                  }
+                                  disabled={
+                                    watch(
+                                      `specifications.${index}.availableOptions`,
+                                    )?.length === 1
+                                  }
+                                  type="button"
+                                >
+                                  <Trash2 className="text-destructive h-4 w-4" />
+                                </Button>
+                              </div>
+                              {errors.specifications?.[index]
+                                ?.availableOptions?.[optionIndex] && (
+                                <p className="text-xs text-red-500">
+                                  {
+                                    errors.specifications[index]
+                                      ?.availableOptions?.[optionIndex]?.message
+                                  }
+                                </p>
+                              )}
+                            </Fragment>
+                          ),
+                        )}
                       </div>
                       {errors.specifications?.[index]?.availableOptions && (
-                        <p className="text-sm text-red-500">
+                        <p className="text-xs text-red-500">
                           {
                             errors.specifications[index]?.availableOptions
                               ?.message
@@ -452,47 +441,6 @@ export default function NewOfferingTemplateSection() {
                         </p>
                       )}
                     </div>
-
-                    {spec.availableOptions.some((opt) => opt.trim() !== "") && (
-                      <div className="space-y-2">
-                        <Label>Default Selected Option</Label>
-                        <Controller
-                          name={`specifications.${index}.value`}
-                          control={control}
-                          render={({ field }) => (
-                            <RadioGroup
-                              value={field.value}
-                              onValueChange={field.onChange}
-                            >
-                              {spec.availableOptions
-                                .filter((opt) => opt.trim() !== "")
-                                .map((option, idx) => (
-                                  <div
-                                    key={idx}
-                                    className="flex items-center space-x-2"
-                                  >
-                                    <RadioGroupItem
-                                      value={option}
-                                      id={`${spec.id}-${idx}`}
-                                    />
-                                    <Label
-                                      htmlFor={`${spec.id}-${idx}`}
-                                      className="cursor-pointer font-normal"
-                                    >
-                                      {option}
-                                    </Label>
-                                  </div>
-                                ))}
-                            </RadioGroup>
-                          )}
-                        />
-                        {errors.specifications?.[index]?.value && (
-                          <p className="text-sm text-red-500">
-                            {errors.specifications[index]?.value?.message}
-                          </p>
-                        )}
-                      </div>
-                    )}
                   </div>
                 ))
               )}
@@ -547,7 +495,7 @@ export default function NewOfferingTemplateSection() {
                           {...register(`addons.${index}.key`)}
                         />
                         {errors.addons?.[index]?.key && (
-                          <p className="text-sm text-red-500">
+                          <p className="text-xs text-red-500">
                             {errors.addons[index]?.key?.message}
                           </p>
                         )}
@@ -560,7 +508,7 @@ export default function NewOfferingTemplateSection() {
                           {...register(`addons.${index}.label`)}
                         />
                         {errors.addons?.[index]?.label && (
-                          <p className="text-sm text-red-500">
+                          <p className="text-xs text-red-500">
                             {errors.addons[index]?.label?.message}
                           </p>
                         )}
@@ -584,15 +532,36 @@ export default function NewOfferingTemplateSection() {
           {/* Actions */}
           <div className="flex justify-end gap-4">
             <Link href="/categories">
-              <Button variant="outline" type="button">
+              <Button variant="outline" type="button" size="lg">
                 Cancel
               </Button>
             </Link>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              size="lg"
+              disabled={isSubmitting}
+              isLoading={createProductTemplate.isPending}
+            >
               {isSubmitting ? "Creating..." : "Create Template"}
             </Button>
           </div>
         </form>
+
+        {/* Specification Type Selection Modal */}
+        <SpecificationTypeModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSelect={handleSpecificationTypeSelect}
+          availableTypes={getAvailableSpecificationTypes()}
+        />
+
+        {/* Success Modal */}
+        <SuccessModal
+          isOpen={isSuccessModalOpen}
+          onClose={() => setIsSuccessModalOpen(false)}
+          onCreateAnother={handleCreateAnother}
+          templateName={watch("templateName") || ""}
+        />
       </main>
     </div>
   );

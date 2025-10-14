@@ -11,15 +11,7 @@ import {
 } from "@/components/ui/select";
 import useGetAllHubs from "@/lib/hooks/admin/use-get-all-hubs";
 import { cn } from "@/lib/utils";
-import {
-  Activity,
-  Filter,
-  MapPin,
-  Package,
-  Plus,
-  Search,
-  Users,
-} from "lucide-react";
+import { Activity, MapPin, Package, Plus, Search, Users } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import PrintHubTable from "./components/printhub-table";
@@ -37,16 +29,25 @@ const tabs = [
 ];
 
 export default function PrintHubsPageTemplate() {
-  const getAllHubs = useGetAllHubs({
-    limit: 20,
-    cursor: "",
-  });
   const [filters, setFilters] = useState({
     searchTerm: "",
     statusFilter: "all",
     locationFilter: "all",
   });
-  const [active, setActive] = useState<string>("gallery");
+
+  const getAllHubs = useGetAllHubs({
+    limit: 20,
+    cursor: "",
+    status:
+      filters.statusFilter === "all"
+        ? undefined
+        : (filters.statusFilter as
+            | "PENDING"
+            | "APPROVED"
+            | "REJECTED"
+            | undefined),
+  });
+  const [active, setActive] = useState<string>("list");
 
   const stats = [
     {
@@ -137,9 +138,9 @@ export default function PrintHubsPageTemplate() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="maintenance">Maintenance</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
+                <SelectItem value="PENDING">Pending</SelectItem>
+                <SelectItem value="APPROVED">Approved</SelectItem>
+                <SelectItem value="REJECTED">Rejected</SelectItem>
               </SelectContent>
             </Select>
             <Select
@@ -158,10 +159,7 @@ export default function PrintHubsPageTemplate() {
                 <SelectItem value="il">Illinois</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline_gray">
-              <Filter className="mr-2 h-4 w-4" />
-              More Filters
-            </Button>
+
             <div className="bg-brand-gray-50 flex shrink-0 items-center gap-2 overflow-hidden rounded-full">
               {tabs?.map((tab) => (
                 <Button

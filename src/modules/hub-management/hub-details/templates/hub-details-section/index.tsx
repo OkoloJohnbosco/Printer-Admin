@@ -24,7 +24,7 @@ import { QUERYKEYS } from "@/lib/endpoints";
 import { PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
 import useUpdateVerificationStatus from "@/lib/hooks/admin/use-update-verification-status";
 import { useQueryClient } from "@tanstack/react-query";
-import { MapPin, Settings } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { useState } from "react";
 import HubDetailsStats from "../../components/hub-details-stats";
 
@@ -64,10 +64,6 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
               <h1 className="mb-2 text-3xl font-bold">{hub.businessName}</h1>
               <p className="text-muted-foreground">{hub.businessAddress}</p>
             </div>
-            <Button variant="outline">
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
-            </Button>
           </div>
         </div>
 
