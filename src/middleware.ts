@@ -14,17 +14,8 @@ interface User {
 }
 
 // 1. Specify protected and public routes
-const protectedRoutes = [
-  "/dashboard",
-  "/design-requests",
-  "/categories",
-  "/orders",
-  "/print-hubs",
-  "/my-account",
-  "/product-offering-templates",
-  "/",
-];
-const publicRoutes = ["/auth/login", "/forgot-password"];
+
+const publicRoutes = ["/auth/login", "/auth/sign-up", "/forgot-password"];
 
 async function checkUserRole(token: string) {
   try {
@@ -46,8 +37,8 @@ async function checkUserRole(token: string) {
 export default async function middleware(req: NextRequest) {
   // 2. Check if the current route is protected or public
   const path = req.nextUrl.pathname;
-  const isProtectedRoute = protectedRoutes.includes(path);
   const isPublicRoute = publicRoutes.includes(path);
+  const isProtectedRoute = !isPublicRoute;
 
   // 3. Decrypt the session from the cookie
   const token = await (await cookies()).get("printa_auth_session")?.value;

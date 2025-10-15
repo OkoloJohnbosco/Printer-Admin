@@ -10,7 +10,9 @@ import {
 import { TableCell, TableRow } from "@/components/ui/table";
 import { ProductTemplate } from "@/lib/hooks/admin/use-get-all-product-templates";
 import useDisclosure from "@/lib/hooks/common/use-disclosure";
-import { Edit, MoreVertical, Trash2 } from "lucide-react";
+import routes from "@/routes";
+import { Edit, Eye, MoreVertical, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import DeleteOfferingTemplateModal from "../delete-offering-template";
 
 export default function OfferingTemplateTableRow({
@@ -19,6 +21,16 @@ export default function OfferingTemplateTableRow({
   template: ProductTemplate;
 }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const router = useRouter();
+
+  const handleViewTemplate = () => {
+    router.push(`${routes.TEMPLATES}/${template.id}`);
+  };
+
+  const handleEditTemplate = () => {
+    // TODO: Navigate to edit template page or open edit modal
+    console.log("Edit template:", template.id);
+  };
   return (
     <>
       <TableRow className="hover:bg-muted/50">
@@ -40,7 +52,12 @@ export default function OfferingTemplateTableRow({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleViewTemplate}>
+                <Eye className="mr-2 h-4 w-4" />
+                View Template
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onClick={handleEditTemplate}>
                 <Edit className="mr-2 h-4 w-4" />
                 Edit Offering Template
               </DropdownMenuItem>
