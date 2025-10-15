@@ -22,11 +22,7 @@ export interface AxiosBaseQueryProps<T = object> {
   extraConfig?: AxiosRequestConfig;
 }
 
-export type PrintaResponseType<T = object> = AxiosResponse<
-  {
-    data: { message: string };
-  } & T
->;
+export type PrintaResponseType<T = object> = AxiosResponse<{} & T>;
 
 export interface RequestResponse<T = Record<string, unknown>> {
   queryFn?: QueryFunction<PrintaResponseType<T>, QueryKey>;

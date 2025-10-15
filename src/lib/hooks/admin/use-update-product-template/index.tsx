@@ -5,6 +5,7 @@ const useUpdateProductTemplate = (templateId: string) => {
   return useCustomMutation({
     method: "patch",
     endpoint: ENDPOINTS.UPDATE_PRODUCT_TEMPLATE_BY_ID(templateId),
+    showSuccessToast: false,
   });
 };
 

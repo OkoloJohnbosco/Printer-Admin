@@ -1,5 +1,6 @@
 import { ENDPOINTS, QUERYKEYS } from "@/lib/endpoints";
 import useQueryActionHook from "../../api/use-queryaction";
+import { Addon } from "../use-get-product-template-by-id";
 
 export interface ProductTemplateResponse {
   data: ProductTemplate[];
@@ -11,7 +12,7 @@ export interface ProductTemplate {
   subCategoryId: string;
   name: string;
   specifications: Specifications;
-  addons: string[];
+  addons: Addon[];
   createdAt: string;
   updatedAt: string;
 }

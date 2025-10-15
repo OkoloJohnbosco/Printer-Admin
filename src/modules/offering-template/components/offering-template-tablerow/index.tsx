@@ -28,8 +28,7 @@ export default function OfferingTemplateTableRow({
   };
 
   const handleEditTemplate = () => {
-    // TODO: Navigate to edit template page or open edit modal
-    console.log("Edit template:", template.id);
+    router.push(`${routes.TEMPLATES}/${template.id}/edit`);
   };
   return (
     <>

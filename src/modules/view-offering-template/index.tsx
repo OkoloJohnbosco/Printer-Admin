@@ -7,7 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import useGetProductSubCategories from "@/lib/hooks/admin/use-get-all-product-sub-categories";
 import useGetProductTemplateById from "@/lib/hooks/admin/use-get-product-template-by-id";
+import routes from "@/routes";
 import { Edit, Package, Plus, Settings } from "lucide-react";
+import { useRouter } from "next/navigation";
 import NoTemplateFound from "./components/no-template-found";
 import ViewTemplateSkeleton from "./templates/view-template-skeleton";
 
@@ -18,20 +20,20 @@ interface ViewOfferingTemplatePageTemplateProps {
 export default function ViewOfferingTemplatePageTemplate({
   templateId,
 }: ViewOfferingTemplatePageTemplateProps) {
+  const router = useRouter();
   const getTemplate = useGetProductTemplateById(templateId);
   const getSubCategories = useGetProductSubCategories();
 
   const template = getTemplate?.value?.data;
   const isLoading = getTemplate.isLoading && !getTemplate?.value;
-
+  console.log({ template });
   // Find the subcategory name
   const subCategory = getSubCategories?.value?.data?.find(
     (sub) => sub.id === template?.subCategoryId,
   );
 
   const handleEditTemplate = () => {
-    // TODO: Navigate to edit template page or open edit modal
-    console.log("Edit template:", templateId);
+    router.push(`${routes.TEMPLATES}/${templateId}/edit`);
   };
 
   if (isLoading) {

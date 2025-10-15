@@ -212,3 +212,19 @@ export const productCategories = [
     ],
   },
 ];
+
+export const specificationTypes = [
+  { value: "sizeOptions", label: "Size Options" },
+  { value: "shapeOptions", label: "Shape Options" },
+  { value: "sideOptions", label: "Side Options" },
+  { value: "coverOptions", label: "Cover Options" },
+  { value: "bindingOptions", label: "Binding Options" },
+  { value: "paperOptions", label: "Paper Options" },
+  { value: "pageOptions", label: "Page Options" },
+  { value: "orientationOptions", label: "Orientation Options" },
+  { value: "thicknessOptions", label: "Thickness/Material Options" },
+  { value: "finishOptions", label: "Finish/Quality Options" },
+  { value: "cornersOptions", label: "Corners Options" },
+  { value: "paperStockOptions", label: "Paper Stock Options" },
+  { value: "fillerPaperOptions", label: "Filler Paper Options" },
+];

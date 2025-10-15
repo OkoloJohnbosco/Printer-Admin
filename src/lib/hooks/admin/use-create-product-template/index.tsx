@@ -5,6 +5,7 @@ const useCreateProductTemplate = () => {
   return useCustomMutation({
     method: "post",
     endpoint: ENDPOINTS.CREATE_PRODUCT_TEMPLATE,
+    showSuccessToast: false,
   });
 };
 
