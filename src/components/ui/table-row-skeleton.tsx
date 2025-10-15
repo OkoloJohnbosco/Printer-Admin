@@ -16,7 +16,7 @@ const TableSkeletonRowLoader = ({
           <TableRow key={rowIndex} className="animate-pulse">
             {Array.from({ length }).map((_, colIndex) => (
               <TableCell key={colIndex}>
-                <div className="w-full rounded bg-gray-200 p-3.5"></div>
+                <div className="w-full rounded bg-gray-200 p-4"></div>
               </TableCell>
             ))}
           </TableRow>
@@ -30,7 +30,7 @@ const TableSkeletonRowLoader = ({
         <TableRow key={rowIndex} className="animate-pulse">
           {Array.from({ length }).map((_, colIndex) => (
             <TableCell key={colIndex}>
-              <div className="w-full rounded bg-gray-200 p-3.5"></div>
+              <div className="w-full rounded bg-gray-200 p-4"></div>
             </TableCell>
           ))}
         </TableRow>

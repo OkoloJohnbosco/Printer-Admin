@@ -24,13 +24,42 @@ import { QUERYKEYS } from "@/lib/endpoints";
 import { PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
 import useUpdateVerificationStatus from "@/lib/hooks/admin/use-update-verification-status";
 import { useQueryClient } from "@tanstack/react-query";
-import { MapPin } from "lucide-react";
+import { AlertCircle, MapPin } from "lucide-react";
 import { useState } from "react";
+import DocumentViewer, { Document } from "../../components/document-viewer";
 import HubDetailsStats from "../../components/hub-details-stats";
 
 export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
   const [status, setStatus] = useState(hub.status);
+  const [viewedDocuments, setViewedDocuments] = useState<string[]>([]);
   const queryClient = useQueryClient();
+
+  // Mock documents - replace with actual documents from hub data
+  const hubDocuments: Document[] = [
+    {
+      id: "doc_1",
+      name: "Business Registration Certificate.pdf",
+      type: "doc",
+      url: "/api/documents/business-cert.pdf", // Replace with actual URL
+      uploadedAt: "2024-01-15T10:30:00Z",
+    },
+    {
+      id: "doc_2",
+      name: "Tax Identification Document.pdf",
+      type: "pdf",
+      url: "/api/documents/tax-id.pdf", // Replace with actual URL
+      uploadedAt: "2024-01-15T10:32:00Z",
+    },
+    {
+      id: "doc_3",
+      name: "Business License Photo.jpg",
+      type: "image",
+      url: "/api/documents/business-license.jpg", // Replace with actual URL
+      uploadedAt: "2024-01-15T10:35:00Z",
+    },
+  ];
+
+  const allDocumentsViewed = viewedDocuments.length === hubDocuments.length;
 
   const statusColors: Record<string, string> = {
     PENDING: "bg-primary/10 text-primary",
@@ -38,6 +67,12 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
     REJECTED: "bg-primary/20 text-primary",
   };
   const updateVerificationStatus = useUpdateVerificationStatus(hub.userId);
+
+  const handleDocumentViewed = (documentId: string) => {
+    setViewedDocuments((prev) =>
+      prev.includes(documentId) ? prev : [...prev, documentId],
+    );
+  };
 
   const handleStatusUpdate = () => {
     updateVerificationStatus
@@ -71,6 +106,20 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
 
         <div className="grid gap-6 md:grid-cols-3">
           <div className="space-y-6 md:col-span-2">
+            {/* Document Verification Section */}
+            <Card className="@container/card shadow-none">
+              <CardHeader>
+                <CardTitle>Document Verification</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <DocumentViewer
+                  documents={hubDocuments}
+                  onDocumentViewed={handleDocumentViewed}
+                  viewedDocuments={viewedDocuments}
+                />
+              </CardContent>
+            </Card>
+
             <Card className="@container/card shadow-none">
               <CardHeader>
                 <CardTitle>Hub Orders</CardTitle>
@@ -209,12 +258,33 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
                 <CardTitle>Update Status</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {!allDocumentsViewed && (
+                  <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                    <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-600" />
+                    <div>
+                      <p className="text-sm font-medium text-amber-800">
+                        Document Review Required
+                      </p>
+                      <p className="text-sm text-amber-700">
+                        You must view all {hubDocuments.length} verification
+                        documents before updating the hub status.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <label className="text-muted-foreground mb-2 block text-sm">
                     Current Status
                   </label>
-                  <Select value={status} onValueChange={setStatus}>
-                    <SelectTrigger>
+                  <Select
+                    value={status}
+                    onValueChange={setStatus}
+                    disabled={!allDocumentsViewed}
+                  >
+                    <SelectTrigger
+                      className={!allDocumentsViewed ? "opacity-50" : ""}
+                    >
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -229,8 +299,11 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
                   fullWidth
                   variant="default_blue"
                   isLoading={updateVerificationStatus.isPending}
+                  disabled={!allDocumentsViewed}
                 >
-                  Update Status
+                  {!allDocumentsViewed
+                    ? `Review Documents First (${viewedDocuments.length}/${hubDocuments.length})`
+                    : "Update Status"}
                 </Button>
               </CardContent>
             </Card>
