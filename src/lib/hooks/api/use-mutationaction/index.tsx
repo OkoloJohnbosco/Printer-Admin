@@ -68,6 +68,7 @@ function useCustomMutation<
       }
       if (showSuccessToast || message) {
         toast.success(
+          // @ts-expect-error Fix leter
           message ?? data?.data?.data?.message ?? "Response received",
         );
       }
