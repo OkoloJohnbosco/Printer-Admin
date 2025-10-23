@@ -10,6 +10,7 @@ export interface ProductSubCategory {
   createdAt: string;
   updatedAt: string;
   productCategoryId: string;
+  description: string | null;
 }
 
 const useGetProductSubCategories = (categoryId = "") => {

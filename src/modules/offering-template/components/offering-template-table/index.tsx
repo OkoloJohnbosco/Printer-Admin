@@ -26,7 +26,7 @@ export default function OfferingTemplateTable({
     if (isLoading) return <TableSkeletonRowLoader length={5} noOfRows={8} />;
 
     if (getProductTemplates?.value?.data?.length === 0)
-      return <EmptyTable length={5} />;
+      return <EmptyTable length={5} message="No offering templates found" />;
 
     return (
       <TableBody className="page-fade-in">

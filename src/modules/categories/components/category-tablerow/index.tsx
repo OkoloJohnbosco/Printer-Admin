@@ -49,7 +49,7 @@ export default function CategoryTableRow({
   return (
     <React.Fragment key={category.id}>
       <TableRow className="hover:bg-muted/50">
-        <TableCell>
+        <TableCell className="flex items-center gap-2 font-medium">
           <Button
             variant="ghost"
             size="sm"
@@ -62,9 +62,11 @@ export default function CategoryTableRow({
               <ChevronRight className="h-4 w-4" />
             )}
           </Button>
+          {category.name}
         </TableCell>
-        <TableCell className="font-medium">{category.name}</TableCell>
-        <TableCell className="text-muted-foreground">{category.id}</TableCell>
+        <TableCell className="text-muted-foreground">
+          {category?.description ?? "--"}
+        </TableCell>
         <TableCell className="text-right">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

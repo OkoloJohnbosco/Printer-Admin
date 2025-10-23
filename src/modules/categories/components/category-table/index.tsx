@@ -19,10 +19,10 @@ export default function CategoryTable() {
     getProductCategories.isLoading && !getProductCategories?.value;
 
   const renderTableBody = () => {
-    if (isLoading) return <TableSkeletonRowLoader length={4} noOfRows={8} />;
+    if (isLoading) return <TableSkeletonRowLoader length={3} noOfRows={8} />;
 
     if (getProductCategories?.value?.data?.length === 0)
-      return <EmptyTable length={5} />;
+      return <EmptyTable length={4} message="No categories found" />;
 
     return (
       <TableBody className="page-fade-in">
@@ -37,7 +37,6 @@ export default function CategoryTable() {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[40px]"></TableHead>
           <TableHead>Name</TableHead>
           <TableHead>Description</TableHead>
           <TableHead className="w-[100px] text-right">Actions</TableHead>

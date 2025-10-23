@@ -49,7 +49,7 @@ export default function CreateEditSubCategoryModal({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: subCategory?.name ?? "",
-      description: subCategory?.id ?? "",
+      description: subCategory?.description ?? "",
     },
   });
 
@@ -77,7 +77,7 @@ export default function CreateEditSubCategoryModal({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogContent>
+      <AlertDialogContent onEscapeKeyDown={(e) => e.preventDefault()}>
         <AlertDialogHeader>
           <AlertDialogTitle>
             {subCategory ? "Edit Sub-Category" : "Create New Sub-Category"}

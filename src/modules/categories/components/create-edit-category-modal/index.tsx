@@ -46,7 +46,7 @@ export default function CreateEditCategoryModal({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: category?.name ?? "",
-      description: category?.id ?? "",
+      description: category?.description ?? "",
     },
   });
   const queryClient = useQueryClient();
@@ -75,7 +75,7 @@ export default function CreateEditCategoryModal({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogContent>
+      <AlertDialogContent onEscapeKeyDown={(e) => e.preventDefault()}>
         <AlertDialogHeader>
           <AlertDialogTitle>
             {category ? "Edit Category" : "Create New Category"}

@@ -9,6 +9,7 @@ export interface ProductCategory {
   name: string;
   createdAt: string;
   updatedAt: string;
+  description: string | null;
 }
 
 const useGetProductCategories = () => {

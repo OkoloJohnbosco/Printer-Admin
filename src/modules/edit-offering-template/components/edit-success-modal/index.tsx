@@ -66,7 +66,7 @@ function EditSuccessModal({
             <Link href={`${routes.TEMPLATES_NEW}`}>Create New Template</Link>
           </Button>
           <Button asChild className="flex-1">
-            <Link href={`${routes.TEMPLATES}/${templateId}`}>
+            <Link href={`${routes.TEMPLATES}/${templateId}`} replace>
               View Template
             </Link>
           </Button>

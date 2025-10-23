@@ -28,7 +28,6 @@ export default function SubCategoryTableRow({
 
   return (
     <TableRow key={subCategory.id} className="bg-muted/30 page-fade-in">
-      <TableCell></TableCell>
       <TableCell className="pl-8">
         <div className="flex items-center gap-2">
           <div className="bg-primary h-px w-4" />
@@ -36,7 +35,7 @@ export default function SubCategoryTableRow({
         </div>
       </TableCell>
       <TableCell className="text-muted-foreground text-sm">
-        {subCategory.id}
+        {subCategory?.description ?? "--"}
       </TableCell>
       <TableCell className="text-right">
         <DropdownMenu>
