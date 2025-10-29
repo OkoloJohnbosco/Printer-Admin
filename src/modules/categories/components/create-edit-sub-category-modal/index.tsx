@@ -61,6 +61,7 @@ export default function CreateEditSubCategoryModal({
     toggleSubCategory
       .mutateAsync({
         name: data.name,
+        description: data.description,
         categoryId,
       })
       .then(() => {
