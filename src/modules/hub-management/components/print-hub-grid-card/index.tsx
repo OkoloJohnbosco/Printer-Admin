@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 function PrintHubGridCard({ hub }: { hub: PrintHub }) {
+  console.log(hub, "hub");
   return (
     <Card key={hub.userId} className="@container/card shadow-none">
       <CardHeader>
@@ -81,7 +82,7 @@ function PrintHubGridCard({ hub }: { hub: PrintHub }) {
         </div>
 
         <div className="flex gap-2 pt-2">
-          <Link href={`/print-hubs/${hub.userId}`} className="flex-1">
+          <Link href={`/print-hubs/${hub.id}`} className="flex-1">
             <Button
               variant="outline"
               size="lg"

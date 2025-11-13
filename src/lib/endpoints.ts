@@ -33,6 +33,8 @@ export const ENDPOINTS = {
     `admin/products/categories/${categoryId}`,
   DELETE_PRODUCT_CATEGORY_BY_ID: (categoryId: string) =>
     `admin/products/categories/${categoryId}`,
+  REVIEW_HUB_DOCUMENT: (documentId: string) =>
+    `admin/documents/${documentId}/review`,
 
   CREATE_PRODUCT_SUB_CATEGORY: `admin/products/sub-categories`,
   GET_ALL_PRODUCT_SUB_CATEGORIES: (categoryId: string) =>

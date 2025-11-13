@@ -1,3 +1,4 @@
+import toast from "@/components/ui/toast";
 import { axiosBaseQuery } from "@/services/api/api.service";
 import {
   AxiosBaseQueryProps,
@@ -5,7 +6,6 @@ import {
   ServerError,
 } from "@/services/api/api.types";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { MutationBody, MutationConfig } from "./use-mutationaction.types";
 
 const formatError = (data: { status: boolean; error: string }): string => {
@@ -56,7 +56,9 @@ function useCustomMutation<
 
     onError: (err) => {
       if (showFailureToast) {
-        toast.error(formatError(err.response?.data));
+        toast.error({
+          description: formatError(err.response?.data),
+        });
       }
       mutation.reset();
     },
@@ -67,10 +69,11 @@ function useCustomMutation<
         return;
       }
       if (showSuccessToast || message) {
-        toast.success(
-          // @ts-expect-error Fix leter
-          message ?? data?.data?.data?.message ?? "Response received",
-        );
+        toast.success({
+          description:
+            // @ts-expect-error Fix leter
+            message ?? data?.data?.data?.message ?? "Response received",
+        });
       }
     },
 

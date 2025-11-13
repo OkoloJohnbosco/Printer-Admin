@@ -12,6 +12,7 @@ export interface HubsData {
 }
 
 export interface PrintHub {
+  id: string;
   userId: string;
   status: string;
   city: string;
@@ -21,8 +22,18 @@ export interface PrintHub {
   businessAddress: string;
   createdAt: string;
   updatedAt: string;
-  businessLogoUrl: string;
-  businessLicenseUrl: string;
+  documents: Document[];
+}
+
+export interface Document {
+  id: string;
+  hubId: string;
+  type: string;
+  status: "PENDING_REVIEW" | "APPROVED" | "REJECTED";
+  rejectionReason: string;
+  createdAt: string;
+  updatedAt: string;
+  url: string;
 }
 
 const useGetAllHubs = ({

@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CursorPaginationDetailed } from "@/components/ui/cursor-pagination";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -10,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useGetAllHubs from "@/lib/hooks/admin/use-get-all-hubs";
+import { useCursorPagination } from "@/lib/hooks/common/use-cursor-pagination";
 import { cn } from "@/lib/utils";
 import { Activity, MapPin, Package, Plus, Search, Users } from "lucide-react";
 import { motion } from "motion/react";
@@ -29,6 +31,11 @@ const tabs = [
 ];
 
 export default function PrintHubsPageTemplate() {
+  const pagination = useCursorPagination({
+    initialItemsPerPage: 12,
+    scrollOnPageChange: true,
+  });
+
   const [filters, setFilters] = useState({
     searchTerm: "",
     statusFilter: "all",
@@ -36,8 +43,8 @@ export default function PrintHubsPageTemplate() {
   });
 
   const getAllHubs = useGetAllHubs({
-    limit: 20,
-    cursor: "",
+    limit: pagination.itemsPerPage,
+    cursor: pagination.currentCursor || "",
     status:
       filters.statusFilter === "all"
         ? undefined
@@ -193,13 +200,28 @@ export default function PrintHubsPageTemplate() {
               ))}
             </div>
           </div>
-
-          {/* Print Hubs Grid */}
-          {active === "gallery" ? (
-            <PrintHubGrid getAllHubs={getAllHubs} />
-          ) : (
-            <PrintHubTable getAllHubs={getAllHubs} />
-          )}
+          <div>
+            {/* Print Hubs Grid */}
+            {active === "gallery" ? (
+              <PrintHubGrid getAllHubs={getAllHubs} />
+            ) : (
+              <PrintHubTable getAllHubs={getAllHubs} />
+            )}
+            <div className="rounded-2xl bg-white p-4">
+              <CursorPaginationDetailed
+                hasNextPage={pagination.hasNextPage}
+                hasPreviousPage={pagination.hasPreviousPage}
+                onNextPage={pagination.handleNextPage}
+                onPreviousPage={pagination.handlePreviousPage}
+                isLoading={getAllHubs.isLoading}
+                currentPage={pagination.currentPage}
+                itemsPerPage={pagination.itemsPerPage}
+                totalItemsOnCurrentPage={
+                  getAllHubs.value?.data?.hubs?.length || 0
+                }
+              />
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -31,35 +31,45 @@ import HubDetailsStats from "../../components/hub-details-stats";
 
 export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
   const [status, setStatus] = useState(hub.status);
-  const [viewedDocuments, setViewedDocuments] = useState<string[]>([]);
   const queryClient = useQueryClient();
 
-  // Mock documents - replace with actual documents from hub data
-  const hubDocuments: Document[] = [
-    {
-      id: "doc_1",
-      name: "Business Registration Certificate.pdf",
-      type: "doc",
-      url: "/api/documents/business-cert.pdf", // Replace with actual URL
-      uploadedAt: "2024-01-15T10:30:00Z",
-    },
-    {
-      id: "doc_2",
-      name: "Tax Identification Document.pdf",
-      type: "pdf",
-      url: "/api/documents/tax-id.pdf", // Replace with actual URL
-      uploadedAt: "2024-01-15T10:32:00Z",
-    },
-    {
-      id: "doc_3",
-      name: "Business License Photo.jpg",
-      type: "image",
-      url: "/api/documents/business-license.jpg", // Replace with actual URL
-      uploadedAt: "2024-01-15T10:35:00Z",
-    },
-  ];
+  // Map hub documents to DocumentViewer format
+  const getDocumentType = (url: string): "image" | "pdf" | "doc" => {
+    const extension = url.split(".").pop()?.toLowerCase();
+    if (["jpg", "jpeg", "png", "gif", "webp"].includes(extension || "")) {
+      return "image";
+    }
+    if (extension === "pdf") {
+      return "pdf";
+    }
+    return "doc";
+  };
 
-  const allDocumentsViewed = viewedDocuments.length === hubDocuments.length;
+  const getDocumentName = (type: string): string => {
+    const typeMap: Record<string, string> = {
+      TAX_CLEARANCE: "Tax Clearance Certificate",
+      BUSINESS_LICENSE: "Business License",
+      BUSINESS_REGISTRATION: "Business Registration Certificate",
+      IDENTIFICATION: "Identification Document",
+    };
+    return typeMap[type] || type.replace(/_/g, " ");
+  };
+
+  const hubDocuments: Document[] =
+    hub.documents?.map((doc) => ({
+      id: doc.id,
+      name: getDocumentName(doc.type),
+      type: getDocumentType(doc.url),
+      url: doc.url,
+      uploadedAt: doc.createdAt,
+      status: doc.status as "PENDING_REVIEW" | "APPROVED" | "REJECTED",
+    })) || [];
+
+  const approvedDocuments = hubDocuments.filter(
+    (doc) => doc.status === "APPROVED",
+  );
+  const allDocumentsApproved =
+    approvedDocuments.length === hubDocuments.length && hubDocuments.length > 0;
 
   const statusColors: Record<string, string> = {
     PENDING: "bg-primary/10 text-primary",
@@ -67,12 +77,6 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
     REJECTED: "bg-primary/20 text-primary",
   };
   const updateVerificationStatus = useUpdateVerificationStatus(hub.userId);
-
-  const handleDocumentViewed = (documentId: string) => {
-    setViewedDocuments((prev) =>
-      prev.includes(documentId) ? prev : [...prev, documentId],
-    );
-  };
 
   const handleStatusUpdate = () => {
     updateVerificationStatus
@@ -112,11 +116,7 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
                 <CardTitle>Document Verification</CardTitle>
               </CardHeader>
               <CardContent>
-                <DocumentViewer
-                  documents={hubDocuments}
-                  onDocumentViewed={handleDocumentViewed}
-                  viewedDocuments={viewedDocuments}
-                />
+                <DocumentViewer documents={hubDocuments} />
               </CardContent>
             </Card>
 
@@ -258,15 +258,15 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
                 <CardTitle>Update Status</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {!allDocumentsViewed && (
+                {!allDocumentsApproved && (
                   <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4">
                     <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-600" />
                     <div>
                       <p className="text-sm font-medium text-amber-800">
-                        Document Review Required
+                        Document Approval Required
                       </p>
                       <p className="text-sm text-amber-700">
-                        You must view all {hubDocuments.length} verification
+                        You must approve all {hubDocuments.length} verification
                         documents before updating the hub status.
                       </p>
                     </div>
@@ -280,10 +280,10 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
                   <Select
                     value={status}
                     onValueChange={setStatus}
-                    disabled={!allDocumentsViewed}
+                    disabled={!allDocumentsApproved}
                   >
                     <SelectTrigger
-                      className={!allDocumentsViewed ? "opacity-50" : ""}
+                      className={!allDocumentsApproved ? "opacity-50" : ""}
                     >
                       <SelectValue />
                     </SelectTrigger>
@@ -299,10 +299,10 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
                   fullWidth
                   variant="default_blue"
                   isLoading={updateVerificationStatus.isPending}
-                  disabled={!allDocumentsViewed}
+                  disabled={!allDocumentsApproved}
                 >
-                  {!allDocumentsViewed
-                    ? `Review Documents First (${viewedDocuments.length}/${hubDocuments.length})`
+                  {!allDocumentsApproved
+                    ? `Approve Documents First (${approvedDocuments.length}/${hubDocuments.length} Approved)`
                     : "Update Status"}
                 </Button>
               </CardContent>

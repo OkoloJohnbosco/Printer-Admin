@@ -1,19 +1,18 @@
 "use client";
 
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Eye, FileIcon, FileText, ImageIcon, X } from "lucide-react";
-import Image from "next/image";
-import { useState } from "react";
+import toast from "@/components/ui/toast";
+import { QUERYKEYS } from "@/lib/endpoints";
+import useReviewDocument from "@/lib/hooks/admin/use-review-document";
+import { useQueryClient } from "@tanstack/react-query";
+import { Eye, FileIcon, FileText, ImageIcon } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useRef, useState } from "react";
+import DocumentReviewSheet, {
+  DocumentForReview,
+} from "../document-review-sheet";
 
 export interface Document {
   id: string;
@@ -21,22 +20,27 @@ export interface Document {
   type: "image" | "pdf" | "doc";
   url: string;
   uploadedAt: string;
+  status: "PENDING_REVIEW" | "APPROVED" | "REJECTED";
 }
 
 interface DocumentViewerProps {
   documents: Document[];
-  onDocumentViewed: (documentId: string) => void;
-  viewedDocuments: string[];
 }
 
-export default function DocumentViewer({
-  documents,
-  onDocumentViewed,
-  viewedDocuments,
-}: DocumentViewerProps) {
-  const [selectedDocument, setSelectedDocument] = useState<Document | null>(
-    null,
+export default function DocumentViewer({ documents }: DocumentViewerProps) {
+  const params = useParams();
+  const hubId = params.hubId as string;
+  const [selectedDocument, setSelectedDocument] =
+    useState<DocumentForReview | null>(null);
+  const [reviewAction, setReviewAction] = useState<"APPROVED" | "REJECTED">(
+    "APPROVED",
   );
+  const [rejectionReason, setRejectionReason] = useState("");
+  const reviewedDocumentIdsRef = useRef<Set<string>>(new Set());
+  const queryClient = useQueryClient();
+
+  // Create hook instance for the current selected document
+  const reviewDocument = useReviewDocument(selectedDocument?.id || "");
 
   const getDocumentIcon = (type: Document["type"]) => {
     switch (type) {
@@ -65,54 +69,84 @@ export default function DocumentViewer({
   };
 
   const handleViewDocument = (document: Document) => {
-    setSelectedDocument(document);
-    if (!viewedDocuments.includes(document.id)) {
-      onDocumentViewed(document.id);
-    }
+    setSelectedDocument({
+      id: document.id,
+      name: document.name,
+      type: document.type,
+      url: document.url,
+      status: document.status,
+    });
+    setReviewAction("APPROVED");
+    setRejectionReason("");
   };
 
-  const renderDocumentPreview = (document: Document) => {
-    if (!selectedDocument) return null;
+  const handleCloseSheet = () => {
+    setSelectedDocument(null);
+    setReviewAction("APPROVED");
+    setRejectionReason("");
+  };
 
-    switch (document.type) {
-      case "image":
-        return (
-          <div className="flex justify-center">
-            <Image
-              src={document.url ?? ""}
-              fill
-              alt={document.name}
-              className="max-h-[70vh] max-w-full rounded-lg object-contain"
-            />
-          </div>
+  const handleSubmitReview = async () => {
+    if (!selectedDocument) return;
+
+    // Validate rejection reason if action is REJECTED
+    if (reviewAction === "REJECTED" && !rejectionReason.trim()) {
+      toast.error({
+        description: "Please provide a reason for rejection",
+      });
+      return;
+    }
+
+    // Prevent duplicate API calls
+    if (reviewedDocumentIdsRef.current.has(selectedDocument.id)) {
+      return;
+    }
+
+    reviewedDocumentIdsRef.current.add(selectedDocument.id);
+
+    reviewDocument
+      .mutateAsync({
+        status: reviewAction,
+        rejectionReason: reviewAction === "REJECTED" ? rejectionReason : "",
+      })
+      .then(() => {
+        queryClient
+          .invalidateQueries({
+            queryKey: [QUERYKEYS.GET_HUB_BY_ID, hubId],
+          })
+          .then(() => {
+            toast.success({
+              description: `Document ${selectedDocument.name} ${reviewAction.toLowerCase()} successfully`,
+            });
+            handleCloseSheet();
+          });
+      })
+      .catch((error) => {
+        console.error(
+          `Failed to ${reviewAction.toLowerCase()} document:`,
+          error,
         );
-      case "pdf":
-        return (
-          <div className="h-[70vh] w-full">
-            <iframe
-              src={document.url}
-              className="h-full w-full rounded-lg"
-              title={document.name}
-            />
-          </div>
-        );
-      case "doc":
-        return (
-          <div className="flex h-[50vh] flex-col items-center justify-center space-y-4">
-            <FileIcon className="text-muted-foreground h-16 w-16" />
-            <p className="text-muted-foreground">
-              Document preview not available. Click the download link below to
-              view the document.
-            </p>
-            <Button asChild>
-              <a href={document.url} target="_blank" rel="noopener noreferrer">
-                Open Document
-              </a>
-            </Button>
-          </div>
-        );
+        reviewedDocumentIdsRef.current.delete(selectedDocument.id);
+        toast.error({
+          description: `Failed to ${reviewAction.toLowerCase()} document`,
+        });
+      });
+  };
+
+  const approvedDocuments = documents.filter(
+    (doc) => doc.status === "APPROVED",
+  );
+
+  const getStatusBadgeStyle = (status: Document["status"]) => {
+    switch (status) {
+      case "APPROVED":
+        return "bg-green-100 text-green-700";
+      case "REJECTED":
+        return "bg-red-100 text-red-700";
+      case "PENDING_REVIEW":
+        return "bg-amber-100 text-amber-700";
       default:
-        return null;
+        return "bg-gray-100 text-gray-700";
     }
   };
 
@@ -122,17 +156,17 @@ export default function DocumentViewer({
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold">Verification Documents</h3>
           <Badge variant="outline">
-            {viewedDocuments.length}/{documents.length} Viewed
+            {approvedDocuments.length}/{documents.length} Approved
           </Badge>
         </div>
 
         <div className="grid gap-3">
           {documents.map((document, index) => {
-            const isViewed = viewedDocuments.includes(document.id);
+            const isApproved = document.status === "APPROVED";
             return (
               <Card
                 key={document.id}
-                className={`transition-colors ${isViewed ? "border-green-200 bg-green-50" : ""}`}
+                className={`transition-colors ${isApproved ? "border-green-200 bg-green-50" : ""}`}
               >
                 <CardContent className="flex items-center justify-between p-4">
                   <div className="flex items-center gap-3">
@@ -153,11 +187,9 @@ export default function DocumentViewer({
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    {isViewed && (
-                      <Badge className="bg-green-100 text-green-700">
-                        Viewed
-                      </Badge>
-                    )}
+                    <Badge className={getStatusBadgeStyle(document.status)}>
+                      {document.status}
+                    </Badge>
                     <Button
                       variant="outline"
                       size="sm"
@@ -173,62 +205,28 @@ export default function DocumentViewer({
           })}
         </div>
 
-        {viewedDocuments.length < documents.length && (
+        {approvedDocuments.length < documents.length && (
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
             <p className="text-sm text-amber-700">
-              <strong>Note:</strong> You must view all {documents.length}{" "}
+              <strong>Note:</strong> You must approve all {documents.length}{" "}
               documents before you can update the hub status.
             </p>
           </div>
         )}
       </div>
 
-      {/* Document Preview Modal */}
-      <AlertDialog
-        open={!!selectedDocument}
-        onOpenChange={() => setSelectedDocument(null)}
-      >
-        <AlertDialogContent className="max-h-[90vh] max-w-4xl overflow-auto sm:max-w-3xl">
-          <AlertDialogHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <AlertDialogTitle>{selectedDocument?.name}</AlertDialogTitle>
-                <AlertDialogDescription>
-                  {selectedDocument?.type.toUpperCase()} Document
-                </AlertDialogDescription>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSelectedDocument(null)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          </AlertDialogHeader>
-
-          {selectedDocument && renderDocumentPreview(selectedDocument)}
-
-          <AlertDialogFooter className="mt-4 flex justify-end gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setSelectedDocument(null)}
-              className="flex-1"
-            >
-              Close
-            </Button>
-            <Button asChild className="flex-1">
-              <a
-                href={selectedDocument?.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Open in New Tab
-              </a>
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Document Review Sheet */}
+      <DocumentReviewSheet
+        document={selectedDocument}
+        isOpen={!!selectedDocument}
+        onClose={handleCloseSheet}
+        reviewAction={reviewAction}
+        onReviewActionChange={setReviewAction}
+        rejectionReason={rejectionReason}
+        onRejectionReasonChange={setRejectionReason}
+        onSubmit={handleSubmitReview}
+        isLoading={reviewDocument.isPending}
+      />
     </>
   );
 }

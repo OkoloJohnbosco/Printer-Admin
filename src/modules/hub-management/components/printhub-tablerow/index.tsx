@@ -46,7 +46,7 @@ function PrintHubTableRow({ printHub }: { printHub: PrintHub }) {
           <DropdownMenuContent align="end">
             <DropdownMenuItem>
               <Link
-                href={`/print-hubs/${printHub.userId}`}
+                href={`/print-hubs/${printHub.id}`}
                 className="flex items-center gap-2"
               >
                 <Eye className="h-4 w-4" />
