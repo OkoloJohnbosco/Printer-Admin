@@ -10,6 +10,7 @@ import {
   Palette,
   Printer,
   ShieldCheck,
+  Users,
 } from "lucide-react";
 import * as React from "react";
 
@@ -62,6 +63,11 @@ const data = {
       icon: Printer,
     },
     {
+      title: "User Management",
+      url: routes.USER_MANAGEMENT,
+      icon: Users,
+    },
+    {
       title: "Design Requests",
       url: routes.DESIGN_REQUESTS,
       icon: Palette,
@@ -86,7 +92,11 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar className="border-0!" collapsible="icon" {...props}>
+    <Sidebar
+      className="border-0! border-r! border-gray-100"
+      collapsible="icon"
+      {...props}
+    >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem className="px-4 transition-[width,height,padding] group-data-[collapsible=icon]:p-0">

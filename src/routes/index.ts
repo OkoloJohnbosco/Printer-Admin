@@ -22,6 +22,7 @@ const routes = {
   TEMPLATES_NEW: "/product-offering-templates/new",
   ORDER_MANAGEMENT: "/orders",
   HUB_MANAGEMENT: "/print-hubs",
+  USER_MANAGEMENT: "/users",
   MY_ACCOUNT: "/my-account",
 
   NOTIFICATIONS: "/notifications",

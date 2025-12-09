@@ -1,3 +1,5 @@
+import { GetAllOrdersParams } from "./hooks/orders/use-get-all-orders/use-get-all-orders.types";
+
 export const ENDPOINTS = {
   // Auth Endpoint
   AUTH_SIGNUP: "auth/signup",
@@ -61,6 +63,40 @@ export const ENDPOINTS = {
     `admin/products${page ? `?cursor=${page}` : ""}${limit ? `&limit=${limit}` : ""}`,
   GET_ALL_USERS: (page: number, limit: number) =>
     `admin/users${page ? `?cursor=${page}` : ""}${limit ? `&limit=${limit}` : ""}`,
+
+  // Order Endpoints
+  GET_ALL_ORDERS: (params: GetAllOrdersParams) => {
+    const searchParams = new URLSearchParams();
+    if (params.cursor) {
+      searchParams.set("cursor", params.cursor);
+    }
+    if (params.limit) {
+      searchParams.set("limit", params.limit.toString());
+    }
+    if (params.status) {
+      searchParams.set("status", params.status);
+    }
+    if (params.hubId) {
+      searchParams.set("hubId", params.hubId);
+    }
+    if (params.startDate) {
+      searchParams.set("startDate", params.startDate);
+    }
+    if (params.endDate) {
+      searchParams.set("endDate", params.endDate);
+    }
+    return `admin/orders?${searchParams.toString()}`;
+  },
+  GET_ORDER_BY_ID: (orderId: string) => `admin/orders/${orderId}`,
+  REASSIGN_ORDER: (orderId: string) => `admin/orders/${orderId}/reassign`,
+
+  // System Config Endpoints
+  CREATE_SYSTEM_CONFIG: "admin/configs",
+  GET_SYSTEM_CONFIG: "admin/configs",
+  UPDATE_SYSTEM_CONFIG: (configId: string) => `admin/configs/${configId}`,
+  DELETE_SYSTEM_CONFIG: (configId: string) => `admin/configs/${configId}`,
+  GET_DELIVERY_PRICE_CONFIG: "admin/configs/delivery",
+  UPDATE_DELIVERY_PRICE_CONFIG: "admin/configs/delivery",
 };
 
 //  for tracking react-query useQuery hooks and for revalidation
@@ -81,4 +117,10 @@ export const QUERYKEYS = {
   GET_PRODUCT_SUB_CATEGORY_BY_ID: "GET_PRODUCT_SUB_CATEGORY_BY_ID",
   GET_ALL_PRODUCT_TEMPLATES: "GET_ALL_PRODUCT_TEMPLATES",
   GET_PRODUCT_TEMPLATE_BY_ID: "GET_PRODUCT_TEMPLATE_BY_ID",
+
+  GET_ALL_ORDERS: "GET_ALL_ORDERS",
+  GET_ORDER_BY_ID: "GET_ORDER_BY_ID",
+
+  GET_SYSTEM_CONFIG: "GET_SYSTEM_CONFIG",
+  GET_DELIVERY_PRICE_CONFIG: "GET_DELIVERY_PRICE_CONFIG",
 };
