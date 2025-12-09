@@ -75,7 +75,7 @@ export default function UserManagementPageTemplate() {
               <Download className="mr-2 h-4 w-4" />
               Export CSV
             </Button>
-            <Button>
+            <Button variant="default_blue">
               <UserPlus className="mr-2 h-4 w-4" />
               Add User
             </Button>

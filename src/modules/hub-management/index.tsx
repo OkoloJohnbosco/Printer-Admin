@@ -10,10 +10,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import useGetAllHubs from "@/lib/hooks/admin/use-get-all-hubs";
+import useGetAllHubs, { HubStatus } from "@/lib/hooks/admin/use-get-all-hubs";
 import { useCursorPagination } from "@/lib/hooks/common/use-cursor-pagination";
-import { cn } from "@/lib/utils";
-import { Activity, MapPin, Package, Plus, Search, Users } from "lucide-react";
+import useDebounce from "@/lib/hooks/common/use-debounce";
+import { cn, formatStatusText } from "@/lib/utils";
+import {
+  Activity,
+  Loader,
+  MapPin,
+  Package,
+  Plus,
+  Search,
+  Users,
+} from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import PrintHubTable from "./components/printhub-table";
@@ -30,6 +39,37 @@ const tabs = [
   },
 ];
 
+const cities = [
+  {
+    label: "Ikeja",
+    value: "ikeja",
+  },
+  {
+    label: "Ajah",
+    value: "ajah",
+  },
+  {
+    label: "Lekki",
+    value: "lekki",
+  },
+  {
+    label: "Victoria Island",
+    value: "victoria-island",
+  },
+  {
+    label: "Festac",
+    value: "festac",
+  },
+  {
+    label: "Ogba",
+    value: "ogba",
+  },
+  {
+    label: "Yaba",
+    value: "yaba",
+  },
+];
+
 export default function PrintHubsPageTemplate() {
   const pagination = useCursorPagination({
     initialItemsPerPage: 12,
@@ -41,18 +81,18 @@ export default function PrintHubsPageTemplate() {
     statusFilter: "all",
     locationFilter: "all",
   });
+  const debouncedSearchTerm = useDebounce(filters.searchTerm, 500);
 
   const getAllHubs = useGetAllHubs({
     limit: pagination.itemsPerPage,
+    search: debouncedSearchTerm,
+    location:
+      filters.locationFilter === "all" ? undefined : filters.locationFilter,
     cursor: pagination.currentCursor || "",
     status:
       filters.statusFilter === "all"
         ? undefined
-        : (filters.statusFilter as
-            | "PENDING"
-            | "APPROVED"
-            | "REJECTED"
-            | undefined),
+        : (filters.statusFilter as HubStatus),
   });
   const [active, setActive] = useState<string>("list");
 
@@ -131,8 +171,12 @@ export default function PrintHubsPageTemplate() {
                 onChange={(e) =>
                   setFilters({ ...filters, searchTerm: e.target.value })
                 }
-                className="pl-10"
+                type="search"
+                className="pr-6 pl-10"
               />
+              {getAllHubs?.isLoading && filters.searchTerm && (
+                <Loader className="text-foundation-black-200 absolute top-1/2 right-2 h-4 w-4 -translate-y-1/2 animate-spin" />
+              )}
             </div>
             <Select
               value={filters.statusFilter}
@@ -140,14 +184,23 @@ export default function PrintHubsPageTemplate() {
                 setFilters({ ...filters, statusFilter: value })
               }
             >
-              <SelectTrigger className="w-fit">
-                <SelectValue placeholder="Filter by status" />
+              <SelectTrigger className="w-fit capitalize">
+                <SelectValue
+                  className="capitalize"
+                  placeholder="Filter by status"
+                />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="PENDING">Pending</SelectItem>
-                <SelectItem value="APPROVED">Approved</SelectItem>
-                <SelectItem value="REJECTED">Rejected</SelectItem>
+                {Object.values(HubStatus).map((status) => (
+                  <SelectItem
+                    className="capitalize"
+                    key={status}
+                    value={status}
+                  >
+                    {formatStatusText(status?.toLowerCase())}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Select
@@ -161,9 +214,11 @@ export default function PrintHubsPageTemplate() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Locations</SelectItem>
-                <SelectItem value="ny">New York</SelectItem>
-                <SelectItem value="ca">California</SelectItem>
-                <SelectItem value="il">Illinois</SelectItem>
+                {cities.map((city) => (
+                  <SelectItem key={city.value} value={city.value}>
+                    {city.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
 

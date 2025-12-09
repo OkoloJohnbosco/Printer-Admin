@@ -201,3 +201,7 @@ export function formatDateForExport(date: string | Date): string {
   const d = typeof date === "string" ? new Date(date) : date;
   return d.toISOString().split("T")[0];
 }
+
+export const formatStatusText = (text: string): string => {
+  return text.replace(/[_-]/g, " ").toLowerCase();
+};

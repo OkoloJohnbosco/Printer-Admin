@@ -1,3 +1,4 @@
+import { HubStatus } from "./hooks/admin/use-get-all-hubs/index";
 import { GetAllOrdersParams } from "./hooks/orders/use-get-all-orders/use-get-all-orders.types";
 
 export const ENDPOINTS = {
@@ -21,9 +22,11 @@ export const ENDPOINTS = {
   GET_ALL_HUBS: (
     cursor: string,
     limit: number,
-    status?: "PENDING" | "APPROVED" | "REJECTED",
+    status?: HubStatus,
+    search?: string,
+    location?: string,
   ) =>
-    `admin/hubs${limit ? `?limit=${limit}` : ""}${cursor ? `&cursor=${cursor}` : ""}${status ? `&status=${status}` : ""}`,
+    `admin/hubs${limit ? `?limit=${limit}` : ""}${cursor ? `&cursor=${cursor}` : ""}${status ? `&status=${status}` : ""}${search ? `&search=${search}` : ""}${location ? `&location=${location}` : ""}`,
   GET_HUB_BY_ID: (hubId: string) => `admin/hubs/${hubId}`,
   UPDATE_VERIFICATION_STATUS: (hubId: string) =>
     `admin/hubs/${hubId}/verification-status`,

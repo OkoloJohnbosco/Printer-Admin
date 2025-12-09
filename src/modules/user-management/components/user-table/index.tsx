@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import EmptyState from "@/components/ui/empty-state";
 import {
   Table,
   TableBody,
@@ -10,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Eye } from "lucide-react";
+import { Eye, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface User {
@@ -35,9 +36,11 @@ export default function UserTable({ users }: UserTableProps) {
 
   if (users.length === 0) {
     return (
-      <div className="flex h-64 items-center justify-center">
-        <p className="text-muted-foreground">No users found</p>
-      </div>
+      <EmptyState
+        icon={Users}
+        title="No Users Found"
+        description="No users match your current filters. Try adjusting your search criteria or clear the filters to see all users."
+      />
     );
   }
 
@@ -69,7 +72,7 @@ export default function UserTable({ users }: UserTableProps) {
               <Badge
                 variant={
                   user.role === "ADMIN"
-                    ? "default"
+                    ? "info"
                     : user.role === "HUB_OWNER"
                       ? "secondary"
                       : "outline"
@@ -80,13 +83,13 @@ export default function UserTable({ users }: UserTableProps) {
             </TableCell>
             <TableCell>
               <Badge
-                variant={user.status === "ACTIVE" ? "default" : "destructive"}
+                variant={user.status === "ACTIVE" ? "info" : "destructive"}
               >
                 {user.status}
               </Badge>
             </TableCell>
             <TableCell>
-              <Badge variant={user.verified ? "default" : "secondary"}>
+              <Badge variant={user.verified ? "info" : "secondary"}>
                 {user.verified ? "Verified" : "Unverified"}
               </Badge>
             </TableCell>

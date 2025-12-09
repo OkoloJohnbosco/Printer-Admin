@@ -4,6 +4,7 @@ import BackButton from "@/components/ui/back-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import EmptyState from "@/components/ui/empty-state";
 import {
   Table,
   TableBody,
@@ -17,10 +18,12 @@ import {
   Activity,
   Calendar,
   CreditCard,
+  FileText,
   Mail,
   MapPin,
   Phone,
   Shield,
+  ShoppingBag,
   User,
 } from "lucide-react";
 import { useState } from "react";
@@ -115,17 +118,17 @@ export default function UserDetailsPageTemplate({
             </div>
             <div className="flex gap-2">
               <Badge
-                variant={user.status === "ACTIVE" ? "default" : "destructive"}
+                variant={user.status === "ACTIVE" ? "info" : "destructive"}
               >
                 {user.status}
               </Badge>
-              <Badge variant={user.verified ? "default" : "secondary"}>
+              <Badge variant={user.verified ? "info" : "secondary"}>
                 {user.verified ? "Verified" : "Unverified"}
               </Badge>
               <Badge
                 variant={
                   user.role === "ADMIN"
-                    ? "default"
+                    ? "info"
                     : user.role === "HUB_OWNER"
                       ? "secondary"
                       : "outline"
@@ -272,9 +275,12 @@ export default function UserDetailsPageTemplate({
                     ))}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground py-8 text-center">
-                    No activity history available
-                  </p>
+                  <EmptyState
+                    icon={FileText}
+                    title="No Activity Yet"
+                    description="This user hasn't performed any actions yet. Activity will appear here once they start using the platform."
+                    className="border-0 py-12"
+                  />
                 )}
               </CardContent>
             </Card>
@@ -317,9 +323,12 @@ export default function UserDetailsPageTemplate({
                     </TableBody>
                   </Table>
                 ) : (
-                  <p className="text-muted-foreground py-8 text-center">
-                    No orders found
-                  </p>
+                  <EmptyState
+                    icon={ShoppingBag}
+                    title="No Orders Yet"
+                    description="This user hasn't placed any orders. Orders will appear here once they make a purchase."
+                    className="border-0 py-12"
+                  />
                 )}
               </CardContent>
             </Card>
@@ -356,7 +365,7 @@ export default function UserDetailsPageTemplate({
                             <Badge
                               variant={
                                 login.status === "SUCCESS"
-                                  ? "default"
+                                  ? "info"
                                   : "destructive"
                               }
                             >
@@ -368,9 +377,12 @@ export default function UserDetailsPageTemplate({
                     </TableBody>
                   </Table>
                 ) : (
-                  <p className="text-muted-foreground py-8 text-center">
-                    No login history available
-                  </p>
+                  <EmptyState
+                    icon={Shield}
+                    title="No Login History"
+                    description="No login attempts have been recorded for this user yet."
+                    className="border-0 py-12"
+                  />
                 )}
               </CardContent>
             </Card>
@@ -392,7 +404,9 @@ export default function UserDetailsPageTemplate({
                     <Button
                       className="w-full"
                       variant={
-                        localStatus === "SUSPENDED" ? "default" : "destructive"
+                        localStatus === "SUSPENDED"
+                          ? "default_blue"
+                          : "destructive"
                       }
                     >
                       {localStatus === "SUSPENDED"

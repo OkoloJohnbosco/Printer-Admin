@@ -29,26 +29,43 @@ export interface Document {
   id: string;
   hubId: string;
   type: string;
-  status: "PENDING_REVIEW" | "APPROVED" | "REJECTED";
+  status: HubStatus;
   rejectionReason: string;
   createdAt: string;
   updatedAt: string;
   url: string;
 }
 
+export enum HubStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  ACTION_REQUIRED = "ACTION_REQUIRED",
+}
 const useGetAllHubs = ({
   limit,
   cursor,
   status,
+  search,
+  location,
 }: {
   limit: number;
   cursor: string;
-  status?: "PENDING" | "APPROVED" | "REJECTED";
+  status?: HubStatus;
+  search?: string;
+  location?: string;
 }) => {
   return useQueryActionHook<UseGetAllHubsResponse>({
     method: "get",
-    endpoint: ENDPOINTS.GET_ALL_HUBS(cursor, limit, status),
-    queryKey: [QUERYKEYS.GET_ALL_HUBS, `${cursor}`, `${limit}`, `${status}`],
+    endpoint: ENDPOINTS.GET_ALL_HUBS(cursor, limit, status, search, location),
+    queryKey: [
+      QUERYKEYS.GET_ALL_HUBS,
+      `${cursor}`,
+      `${limit}`,
+      `${status}`,
+      `${search}`,
+      `${location}`,
+    ],
   });
 };
 

@@ -1,5 +1,7 @@
 "use client";
+import EmptyState from "@/components/ui/empty-state";
 import useGetAllHubs from "@/lib/hooks/admin/use-get-all-hubs";
+import { Printer } from "lucide-react";
 import PrintHubGridCard from "../../components/print-hub-grid-card";
 import { PrintHubGridSkeletons } from "../../components/print-hub-grid-card-skeleton";
 
@@ -8,8 +10,6 @@ function PrintHubGrid({
 }: {
   getAllHubs: ReturnType<typeof useGetAllHubs>;
 }) {
-  console.log(getAllHubs);
-
   const isLoading = getAllHubs.isLoading && !getAllHubs?.value;
 
   const renderGridBody = () => {
@@ -22,9 +22,11 @@ function PrintHubGrid({
 
     if (getAllHubs?.value?.data?.hubs?.length === 0)
       return (
-        <div className="page-fade-in border-t py-10 text-center">
-          <p>No print hubs found</p>
-        </div>
+        <EmptyState
+          icon={Printer}
+          title="No Print Hubs Found"
+          description="There are currently no print hubs matching your filters. Try adjusting your search criteria or add a new hub to get started."
+        />
       );
 
     return (

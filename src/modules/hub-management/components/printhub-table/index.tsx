@@ -1,3 +1,4 @@
+import EmptyState from "@/components/ui/empty-state";
 import {
   Table,
   TableBody,
@@ -5,10 +6,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import TableSkeletonRowLoader, {
-  EmptyTable,
-} from "@/components/ui/table-row-skeleton";
+import TableSkeletonRowLoader from "@/components/ui/table-row-skeleton";
 import useGetAllHubs from "@/lib/hooks/admin/use-get-all-hubs";
+import { Printer } from "lucide-react";
 import PrintHubTableRow from "../printhub-tablerow";
 
 function PrintHubTable({
@@ -21,8 +21,22 @@ function PrintHubTable({
   const renderTableBody = () => {
     if (isLoading) return <TableSkeletonRowLoader length={8} noOfRows={8} />;
 
-    if (getAllHubs?.value?.data?.hubs?.length === 0)
-      return <EmptyTable length={8} />;
+    if (getAllHubs?.value?.data?.hubs?.length === 0) {
+      return (
+        <TableBody>
+          <TableRow>
+            <td colSpan={8}>
+              <EmptyState
+                icon={Printer}
+                title="No Print Hubs Found"
+                description="There are currently no print hubs matching your filters. Try adjusting your search criteria."
+                className="border-0"
+              />
+            </td>
+          </TableRow>
+        </TableBody>
+      );
+    }
 
     return (
       <TableBody className="page-fade-in">
