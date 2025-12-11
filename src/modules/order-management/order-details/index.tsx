@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -10,12 +9,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useGetAllHubs, { HubStatus } from "@/lib/hooks/admin/use-get-all-hubs";
 import { OrderStatus } from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import useGetOrderDetails from "@/lib/hooks/orders/use-get-order-details";
 import { formatCurrency, formatStatusText, formatToMDY } from "@/lib/utils";
 import { ArrowLeft, Calendar, Hash, MapPin, Package, User } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { AssignedHubCard } from "./components/assigned-hub-card";
 import { OrderDetailsError } from "./components/order-details-error";
 import { OrderDetailsSkeleton } from "./components/order-details-skeleton";
 import { StatusUpdateDialog } from "./components/status-update-modal";
@@ -30,7 +31,10 @@ export default function OrderDetailPageTemplate({
   );
   const orderDetails = value?.data;
   const [selectedHub, setSelectedHub] = useState("");
-
+  const getAllHubs = useGetAllHubs({
+    limit: 100,
+    status: HubStatus.APPROVED,
+  });
   // Initialize status from API data
   const [status, setStatus] = useState("");
 
@@ -78,21 +82,20 @@ export default function OrderDetailPageTemplate({
     completed: index <= currentStatusIndex,
   }));
 
-  const availableHubs = [
-    { name: "NYC Hub", distance: "2.3 miles", capacity: "Available" },
-    { name: "Brooklyn Hub", distance: "5.1 miles", capacity: "Available" },
-    { name: "Queens Hub", distance: "8.7 miles", capacity: "Limited" },
-  ];
+  // Get available hubs from API
+  const availableHubs = getAllHubs.value?.data?.hubs || [];
+
+  // Check if a different hub is selected
+  const selectedHubData = availableHubs.find(
+    (hub) => hub.businessName === selectedHub,
+  );
+  const isDifferentHubSelected = Boolean(
+    selectedHubData && selectedHubData.id !== orderDetails.hub.id,
+  );
 
   const handleStatusUpdate = (newStatus: string, notes?: string) => {
     console.log("Updating status to:", newStatus, "Notes:", notes);
     setStatus(newStatus);
-    // TODO: Implement API call to update order status
-  };
-
-  const handleHubAssignment = () => {
-    console.log("Assigning to hub:", selectedHub);
-    // TODO: Implement API call to assign hub
   };
 
   return (
@@ -321,93 +324,16 @@ export default function OrderDetailPageTemplate({
               </CardContent>
             </Card>
 
-            <Card className="@container/card shadow-none">
-              <CardHeader>
-                <CardTitle>Assigned Print Hub</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="border-border rounded-md border p-4">
-                  <div className="mb-2 flex items-start justify-between">
-                    <div>
-                      <p className="font-medium">
-                        {orderDetails.hub.businessName}
-                      </p>
-                      <p className="text-muted-foreground text-sm">
-                        {orderDetails.hub.businessAddress}
-                      </p>
-                      <p className="text-muted-foreground text-sm">
-                        {orderDetails.hub.city}, {orderDetails.hub.state}
-                      </p>
-                    </div>
-                    <Badge
-                      variant={
-                        orderDetails.hub.status === "active"
-                          ? "default"
-                          : "secondary"
-                      }
-                      className="capitalize"
-                    >
-                      {orderDetails.hub.status}
-                    </Badge>
-                  </div>
-                  <div className="border-border mt-3 border-t pt-3">
-                    <p className="text-muted-foreground text-xs">
-                      Email: {orderDetails.hub.businessEmail}
-                    </p>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-muted-foreground mb-2 block text-sm">
-                    Reassign Hub
-                  </label>
-                  <Select value={selectedHub} onValueChange={setSelectedHub}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableHubs.map((hub) => (
-                        <SelectItem key={hub.name} value={hub.name}>
-                          {hub.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Available Hubs</p>
-                  {availableHubs.map((hub) => (
-                    <div
-                      key={hub.name}
-                      className="border-border flex items-center justify-between rounded-md border p-3"
-                    >
-                      <div>
-                        <p className="text-sm font-medium">{hub.name}</p>
-                        <p className="text-muted-foreground text-xs">
-                          {hub.distance}
-                        </p>
-                      </div>
-                      <Badge
-                        variant="secondary"
-                        className="bg-primary/10 text-primary"
-                      >
-                        {hub.capacity}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-
-                <Button
-                  onClick={handleHubAssignment}
-                  className="w-full"
-                  size="lg"
-                  variant="outline"
-                >
-                  Reassign Hub
-                </Button>
-              </CardContent>
-            </Card>
+            <AssignedHubCard
+              orderStatus={orderDetails.status}
+              currentHub={orderDetails.hub}
+              orderId={orderDetails.id}
+              availableHubs={availableHubs}
+              selectedHub={selectedHub}
+              onSelectedHubChange={setSelectedHub}
+              isDifferentHubSelected={isDifferentHubSelected}
+              onRefetchOrder={refetch}
+            />
           </div>
         </div>
       </main>
