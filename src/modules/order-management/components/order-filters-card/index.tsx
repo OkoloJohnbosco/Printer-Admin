@@ -26,6 +26,7 @@ import { formatStatusText } from "@/lib/utils";
 import { Calendar1Icon, Loader, Search } from "lucide-react";
 import React, { useCallback, useState } from "react";
 import { DateRange } from "react-day-picker";
+import ActiveFiltersBar from "../active-filters-bar";
 import OrderTable from "../order-table";
 
 export default function OrderFiltersCard() {
@@ -67,11 +68,26 @@ export default function OrderFiltersCard() {
         : (filters.statusFilter as OrderStatus),
     hubId: filters.hubFilter === "all" ? undefined : filters.hubFilter,
     search: debouncedSearch,
-    // startDate: date?.toISOString(),
-    // endDate: date?.toISOString(),
+    startDate: dateRange?.from?.toISOString(),
+    endDate: dateRange?.to?.toISOString(),
   });
 
   const isDateSelected = dateRange?.from && dateRange?.to;
+
+  const clearAllFilters = () => {
+    setFilters({
+      searchQuery: "",
+      statusFilter: "all",
+      hubFilter: undefined,
+    });
+    setDateRange(undefined);
+  };
+
+  const getHubName = (hubId: string | undefined) => {
+    if (!hubId) return "";
+    const hub = getAllHubs?.value?.data?.hubs?.find((h) => h.id === hubId);
+    return hub?.businessName || hubId;
+  };
 
   return (
     <Card className="@container/card border-0 shadow-none">
@@ -167,6 +183,14 @@ export default function OrderFiltersCard() {
             </PopoverContent>
           </Popover>
         </div>
+
+        <ActiveFiltersBar
+          filters={filters}
+          dateRange={dateRange}
+          resultCount={getAllOrders?.value?.data?.orders?.length}
+          onClearAll={clearAllFilters}
+          getHubName={getHubName}
+        />
 
         <OrderTable getAllOrders={getAllOrders} />
         <div className="rounded-2xl bg-white p-4">

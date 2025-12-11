@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
+import ActiveFiltersBar from "./components/active-filters-bar";
 import PrintHubTable from "./components/printhub-table";
 import PrintHubGrid from "./templates/print-hub-grid";
 
@@ -95,6 +96,19 @@ export default function PrintHubsPageTemplate() {
         : (filters.statusFilter as HubStatus),
   });
   const [active, setActive] = useState<string>("list");
+
+  const clearAllFilters = () => {
+    setFilters({
+      searchTerm: "",
+      statusFilter: "all",
+      locationFilter: "all",
+    });
+  };
+
+  const getLocationName = (locationValue: string) => {
+    const city = cities.find((c) => c.value === locationValue);
+    return city?.label || locationValue;
+  };
 
   const stats = [
     {
@@ -255,6 +269,14 @@ export default function PrintHubsPageTemplate() {
               ))}
             </div>
           </div>
+
+          <ActiveFiltersBar
+            filters={filters}
+            resultCount={getAllHubs.value?.data?.hubs?.length}
+            onClearAll={clearAllFilters}
+            getLocationName={getLocationName}
+          />
+
           <div>
             {/* Print Hubs Grid */}
             {active === "gallery" ? (
