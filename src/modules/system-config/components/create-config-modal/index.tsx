@@ -69,6 +69,12 @@ export function CreateConfigModal({
     }
   };
 
+  // Check if all required fields are filled
+  const isFormValid =
+    formData.key.trim() !== "" &&
+    formData.value.trim() !== "" &&
+    formData.description.trim() !== "";
+
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
@@ -135,7 +141,7 @@ export function CreateConfigModal({
             </AlertDialogCancel>
             <AlertDialogAction
               type="submit"
-              disabled={createConfig.isPending}
+              disabled={!isFormValid || createConfig.isPending}
               onClick={(e) => {
                 e.preventDefault();
                 handleSubmit(e as React.FormEvent);

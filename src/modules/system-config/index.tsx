@@ -13,10 +13,6 @@ export default function SystemConfigPageTemplate() {
   const { value, isLoading, refetch, isFetching } = useGetSystemConfigs();
   const configs = (value?.data || []) as ConfigItem[];
 
-  const handleRefresh = () => {
-    refetch();
-  };
-
   return (
     <div className="page-fade-in w-full">
       <main>
@@ -92,7 +88,7 @@ export default function SystemConfigPageTemplate() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={handleRefresh}
+                onClick={() => refetch()}
                 disabled={isFetching}
               >
                 <RefreshCw
@@ -102,7 +98,7 @@ export default function SystemConfigPageTemplate() {
               </Button>
 
               <CreateConfigModal
-                onSuccess={handleRefresh}
+                onSuccess={refetch}
                 trigger={
                   <Button size="sm">
                     <Plus className="mr-2 h-4 w-4" />
@@ -134,7 +130,7 @@ export default function SystemConfigPageTemplate() {
                   No system configurations yet
                 </p>
                 <CreateConfigModal
-                  onSuccess={handleRefresh}
+                  onSuccess={refetch}
                   trigger={
                     <Button>
                       <Plus className="mr-2 h-4 w-4" />
@@ -150,7 +146,7 @@ export default function SystemConfigPageTemplate() {
                 <SystemConfigCard
                   key={config.id}
                   config={config}
-                  onSuccess={handleRefresh}
+                  onSuccess={refetch}
                 />
               ))}
             </div>

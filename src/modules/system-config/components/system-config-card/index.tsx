@@ -18,13 +18,13 @@ import { EditConfigModal } from "./edit-config-modal";
 
 interface SystemConfigCardProps {
   config: ConfigItem;
-  onSuccess: () => void;
+  onSuccess: () => Promise<unknown>;
 }
 
 export function SystemConfigCard({ config, onSuccess }: SystemConfigCardProps) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const deleteConfig = useDeleteSystemConfig(config.id);
+  const deleteConfig = useDeleteSystemConfig(config.key);
 
   const handleCopyValue = () => {
     const valueString =
@@ -36,13 +36,16 @@ export function SystemConfigCard({ config, onSuccess }: SystemConfigCardProps) {
   };
 
   const handleDelete = async () => {
-    try {
-      await deleteConfig.mutateAsync({});
-      setShowDeleteDialog(false);
-      onSuccess();
-    } catch (error) {
-      console.error("Failed to delete config:", error);
-    }
+    deleteConfig
+      .mutateAsync({})
+      .then(() => {
+        onSuccess().then(() => {
+          setShowDeleteDialog(false);
+        });
+      })
+      .catch((error) => {
+        console.error("Failed to delete config:", error);
+      });
   };
 
   // Determine config type based on value

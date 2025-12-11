@@ -70,6 +70,12 @@ export function EditConfigModal({
     }
   };
 
+  // Check if all required fields are filled
+  const isFormValid =
+    formData.key.trim() !== "" &&
+    formData.value.trim() !== "" &&
+    formData.description.trim() !== "";
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="sm:max-w-[525px]">
@@ -135,7 +141,7 @@ export function EditConfigModal({
             </AlertDialogCancel>
             <AlertDialogAction
               type="submit"
-              disabled={updateConfig.isPending}
+              disabled={!isFormValid || updateConfig.isPending}
               onClick={(e) => {
                 e.preventDefault();
                 handleSubmit(e as React.FormEvent);
