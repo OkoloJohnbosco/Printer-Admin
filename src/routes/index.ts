@@ -23,7 +23,7 @@ const routes = {
   ORDER_MANAGEMENT: "/orders",
   HUB_MANAGEMENT: "/print-hubs",
   USER_MANAGEMENT: "/users",
-  MY_ACCOUNT: "/my-account",
+  MY_ACCOUNT: "/system-config",
 
   NOTIFICATIONS: "/notifications",
   HELP_AND_SUPPORT: "/help-and-support",
