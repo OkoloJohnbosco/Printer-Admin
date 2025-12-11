@@ -20,8 +20,8 @@ export const ENDPOINTS = {
 
   //  Admin Endpoints
   GET_ALL_HUBS: (
-    cursor: string,
     limit: number,
+    cursor?: string,
     status?: HubStatus,
     search?: string,
     location?: string,
@@ -87,6 +87,9 @@ export const ENDPOINTS = {
     }
     if (params.endDate) {
       searchParams.set("endDate", params.endDate);
+    }
+    if (params.search) {
+      searchParams.set("search", params.search);
     }
     return `admin/orders?${searchParams.toString()}`;
   },

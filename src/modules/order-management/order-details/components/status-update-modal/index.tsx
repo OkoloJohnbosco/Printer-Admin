@@ -21,6 +21,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { OrderStatus } from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
+import { formatStatusText } from "@/lib/utils";
 import { CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 
@@ -67,15 +69,19 @@ export function StatusUpdateDialog({
           <div className="space-y-2">
             <Label htmlFor="status">New Status</Label>
             <Select value={status} onValueChange={setStatus}>
-              <SelectTrigger id="status">
+              <SelectTrigger className="capitalize" id="status">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Received">Received</SelectItem>
-                <SelectItem value="In Progress">In Progress</SelectItem>
-                <SelectItem value="Shipped">Shipped</SelectItem>
-                <SelectItem value="Delivered">Delivered</SelectItem>
-                <SelectItem value="Completed">Completed</SelectItem>
+                {Object.values(OrderStatus).map((status) => (
+                  <SelectItem
+                    className="capitalize"
+                    key={status}
+                    value={status}
+                  >
+                    {formatStatusText(status?.toLowerCase())}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

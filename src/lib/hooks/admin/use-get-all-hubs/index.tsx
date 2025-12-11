@@ -50,14 +50,14 @@ const useGetAllHubs = ({
   location,
 }: {
   limit: number;
-  cursor: string;
+  cursor?: string;
   status?: HubStatus;
   search?: string;
   location?: string;
 }) => {
   return useQueryActionHook<UseGetAllHubsResponse>({
     method: "get",
-    endpoint: ENDPOINTS.GET_ALL_HUBS(cursor, limit, status, search, location),
+    endpoint: ENDPOINTS.GET_ALL_HUBS(limit, cursor, status, search, location),
     queryKey: [
       QUERYKEYS.GET_ALL_HUBS,
       `${cursor}`,

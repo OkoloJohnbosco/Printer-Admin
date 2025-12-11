@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CursorPaginationDetailed } from "@/components/ui/cursor-pagination";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -16,30 +17,62 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CalendarIcon, Search } from "lucide-react";
+import useGetAllHubs from "@/lib/hooks/admin/use-get-all-hubs";
+import { useCursorPagination } from "@/lib/hooks/common/use-cursor-pagination";
+import useDebounce from "@/lib/hooks/common/use-debounce";
+import useGetAllOrders from "@/lib/hooks/orders/use-get-all-orders";
+import { OrderStatus } from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
+import { formatStatusText } from "@/lib/utils";
+import { Calendar1Icon, Loader, Search } from "lucide-react";
+import React, { useCallback, useState } from "react";
+import { DateRange } from "react-day-picker";
 import OrderTable from "../order-table";
 
-interface OrderFiltersCardProps {
-  filters: {
-    searchQuery: string;
-    statusFilter: string;
-    hubFilter: string;
-  };
-  date: Date | undefined;
-  onFiltersChange: (filters: {
-    searchQuery: string;
-    statusFilter: string;
-    hubFilter: string;
-  }) => void;
-  onDateChange: (date: Date | undefined) => void;
-}
+export default function OrderFiltersCard() {
+  const [dateRange, setDateRangeState] = useState<DateRange | undefined>({
+    from: undefined,
+    to: undefined,
+  });
 
-export default function OrderFiltersCard({
-  filters,
-  date,
-  onFiltersChange,
-  onDateChange,
-}: OrderFiltersCardProps) {
+  const setDateRange = useCallback((newDateRange: DateRange | undefined) => {
+    setDateRangeState(newDateRange);
+  }, []);
+
+  const pagination = useCursorPagination({
+    initialItemsPerPage: 12,
+    scrollOnPageChange: true,
+  });
+
+  const [filters, setFilters] = React.useState<{
+    searchQuery: string;
+    statusFilter: OrderStatus | "all";
+    hubFilter: string | undefined;
+  }>({
+    searchQuery: "",
+    statusFilter: "all",
+    hubFilter: undefined,
+  });
+  const debouncedSearch = useDebounce(filters.searchQuery, 500);
+
+  const getAllHubs = useGetAllHubs({
+    limit: 20,
+  });
+
+  const getAllOrders = useGetAllOrders({
+    cursor: pagination.currentCursor || "",
+    limit: pagination.itemsPerPage,
+    status:
+      filters.statusFilter === "all"
+        ? undefined
+        : (filters.statusFilter as OrderStatus),
+    hubId: filters.hubFilter === "all" ? undefined : filters.hubFilter,
+    search: debouncedSearch,
+    // startDate: date?.toISOString(),
+    // endDate: date?.toISOString(),
+  });
+
+  const isDateSelected = dateRange?.from && dateRange?.to;
+
   return (
     <Card className="@container/card border-0 shadow-none">
       <CardHeader>
@@ -53,45 +86,52 @@ export default function OrderFiltersCard({
               placeholder="Search by order ID, customer, or product..."
               value={filters.searchQuery}
               onChange={(e) =>
-                onFiltersChange({ ...filters, searchQuery: e.target.value })
+                setFilters({ ...filters, searchQuery: e.target.value })
               }
-              className="pl-9"
+              type="search"
+              className="px-9"
             />
+            {getAllOrders.isLoading && filters.searchQuery && (
+              <Loader className="text-foundation-black-200 absolute top-1/2 right-2 h-4 w-4 -translate-y-1/2 animate-spin" />
+            )}
           </div>
           <Select
             value={filters.statusFilter}
             onValueChange={(value) =>
-              onFiltersChange({ ...filters, statusFilter: value })
+              setFilters({
+                ...filters,
+                statusFilter: value as OrderStatus | "all",
+              })
             }
           >
-            <SelectTrigger className="w-full md:w-[180px]">
+            <SelectTrigger className="w-full capitalize md:w-[180px]">
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="received">Received</SelectItem>
-              <SelectItem value="in-progress">In Progress</SelectItem>
-              <SelectItem value="shipped">Shipped</SelectItem>
-              <SelectItem value="delivered">Delivered</SelectItem>
-              <SelectItem value="completed">Completed</SelectItem>
+              {Object.values(OrderStatus).map((status) => (
+                <SelectItem className="capitalize" key={status} value={status}>
+                  {formatStatusText(status?.toLowerCase())}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Select
             value={filters.hubFilter}
             onValueChange={(value) =>
-              onFiltersChange({ ...filters, hubFilter: value })
+              setFilters({ ...filters, hubFilter: value })
             }
           >
-            <SelectTrigger className="w-full md:w-[180px]">
+            <SelectTrigger className="w-full capitalize md:w-[180px]">
               <SelectValue placeholder="Filter by hub" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Hubs</SelectItem>
-              <SelectItem value="nyc">NYC Hub</SelectItem>
-              <SelectItem value="la">LA Hub</SelectItem>
-              <SelectItem value="chicago">Chicago Hub</SelectItem>
-              <SelectItem value="miami">Miami Hub</SelectItem>
-              <SelectItem value="unassigned">Unassigned</SelectItem>
+              {getAllHubs?.value?.data?.hubs?.map((hub) => (
+                <SelectItem className="capitalize" key={hub.id} value={hub.id}>
+                  {hub?.businessName}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Popover>
@@ -101,19 +141,26 @@ export default function OrderFiltersCard({
                 id="date"
                 className="h-10 w-fit justify-between rounded-md font-normal"
               >
-                <CalendarIcon />
-                {date ? date.toLocaleDateString() : "Date range"}
+                <Calendar1Icon />
+                {isDateSelected ? (
+                  <>
+                    {dateRange?.from?.toLocaleDateString()} -{" "}
+                    {dateRange?.to?.toLocaleDateString()}
+                  </>
+                ) : (
+                  "Date range"
+                )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto overflow-hidden p-0" align="end">
+            <PopoverContent
+              className="w-auto overflow-hidden p-0"
+              align="center"
+            >
               <Calendar
-                mode="single"
-                selected={date}
-                captionLayout="dropdown"
-                onSelect={(date) => {
-                  onDateChange(date);
-                }}
-                defaultMonth={date}
+                mode="range"
+                defaultMonth={dateRange?.from}
+                selected={dateRange}
+                onSelect={setDateRange}
                 numberOfMonths={2}
                 className="rounded-lg border shadow-sm"
               />
@@ -121,20 +168,20 @@ export default function OrderFiltersCard({
           </Popover>
         </div>
 
-        <OrderTable />
-
-        <div className="mt-4 flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">
-            Showing 5 of 1,284 orders
-          </p>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" disabled>
-              Previous
-            </Button>
-            <Button variant="outline" size="sm">
-              Next
-            </Button>
-          </div>
+        <OrderTable getAllOrders={getAllOrders} />
+        <div className="rounded-2xl bg-white p-4">
+          <CursorPaginationDetailed
+            hasNextPage={pagination.hasNextPage}
+            hasPreviousPage={pagination.hasPreviousPage}
+            onNextPage={pagination.handleNextPage}
+            onPreviousPage={pagination.handlePreviousPage}
+            isLoading={getAllOrders.isLoading}
+            currentPage={pagination.currentPage}
+            itemsPerPage={pagination.itemsPerPage}
+            totalItemsOnCurrentPage={
+              getAllOrders.value?.data?.orders?.length || 0
+            }
+          />
         </div>
       </CardContent>
     </Card>

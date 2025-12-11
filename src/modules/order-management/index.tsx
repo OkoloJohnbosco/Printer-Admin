@@ -4,18 +4,10 @@ import { Button } from "@/components/ui/button";
 import { orders } from "@/lib/constants";
 import { exportToCSV } from "@/lib/utils";
 import { Download } from "lucide-react";
-import { useState } from "react";
 import OrderFiltersCard from "./components/order-filters-card";
 import OrderStatsRow from "./components/order-stats-row";
 
 export default function OrdersPageTemplate() {
-  const [filters, setFilters] = useState({
-    searchQuery: "",
-    statusFilter: "all",
-    hubFilter: "all",
-  });
-  const [date, setDate] = useState<Date | undefined>(new Date(2025, 5, 12));
-
   const handleExportCSV = () => {
     const exportData = orders.map((order) => ({
       "Order ID": order.id,
@@ -47,12 +39,7 @@ export default function OrdersPageTemplate() {
         </div>
         {/* Stats Cards */}
         <OrderStatsRow />
-        <OrderFiltersCard
-          filters={filters}
-          date={date}
-          onFiltersChange={setFilters}
-          onDateChange={setDate}
-        />
+        <OrderFiltersCard />
       </main>
     </div>
   );

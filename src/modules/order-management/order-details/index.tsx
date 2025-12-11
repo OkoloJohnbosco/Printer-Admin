@@ -10,9 +10,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { OrderStatus } from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
+import useGetOrderDetails from "@/lib/hooks/orders/use-get-order-details";
+import { formatCurrency, formatStatusText, formatToMDY } from "@/lib/utils";
 import { ArrowLeft, Calendar, Hash, MapPin, Package, User } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { OrderDetailsError } from "./components/order-details-error";
+import { OrderDetailsSkeleton } from "./components/order-details-skeleton";
 import { StatusUpdateDialog } from "./components/status-update-modal";
 
 export default function OrderDetailPageTemplate({
@@ -20,36 +25,58 @@ export default function OrderDetailPageTemplate({
 }: {
   params: { id: string };
 }) {
-  const [status, setStatus] = useState("In Progress");
-  const [selectedHub, setSelectedHub] = useState("NYC Hub");
+  const { isLoading, isError, error, refetch, value } = useGetOrderDetails(
+    params.id,
+  );
+  const orderDetails = value?.data;
+  const [selectedHub, setSelectedHub] = useState("");
 
-  // Mock order data
-  const order = {
-    id: params.id,
-    date: "2025-09-30",
-    customer: {
-      name: "John Smith",
-      email: "john.smith@example.com",
-      phone: "+1 (555) 123-4567",
-      address: "123 Main St, New York, NY 10001",
-    },
-    product: {
-      name: "Custom T-Shirt",
-      type: "Apparel",
-      quantity: 50,
-      price: "$15.00",
-      total: "$750.00",
-    },
-    hub: "NYC Hub",
-    status: "In Progress",
-    timeline: [
-      { status: "Received", date: "2025-09-30 09:00 AM", completed: true },
-      { status: "In Progress", date: "2025-09-30 10:30 AM", completed: true },
-      { status: "Shipped", date: "Pending", completed: false },
-      { status: "Delivered", date: "Pending", completed: false },
-      { status: "Completed", date: "Pending", completed: false },
-    ],
-  };
+  // Initialize status from API data
+  const [status, setStatus] = useState("");
+
+  // Update status when orderDetails loads
+  useMemo(() => {
+    if (orderDetails?.status) {
+      setStatus(orderDetails.status);
+    }
+    if (orderDetails?.hub?.businessName) {
+      setSelectedHub(orderDetails.hub.businessName);
+    }
+  }, [orderDetails]);
+
+  if (isLoading) {
+    return <OrderDetailsSkeleton />;
+  }
+
+  // Show error state
+  if (isError || !orderDetails) {
+    return (
+      <OrderDetailsError
+        message={error?.message || "Failed to load order details"}
+        onRetry={() => refetch()}
+      />
+    );
+  }
+
+  const totalQuantity = orderDetails.items.reduce(
+    (sum: number, item) => sum + item.quantity,
+    0,
+  );
+  const firstItem = orderDetails.items[0];
+
+  const orderDate = formatToMDY(orderDetails.createdAt);
+
+  // Generate timeline based on order status using OrderStatus enum
+  const statusOrder = Object.values(OrderStatus);
+  const currentStatusIndex = statusOrder.findIndex(
+    (s) => s.toLowerCase() === orderDetails.status.toLowerCase(),
+  );
+
+  const timeline = statusOrder.map((statusValue, index) => ({
+    status: formatStatusText(statusValue.toLowerCase()),
+    date: index <= currentStatusIndex ? orderDate : "Pending",
+    completed: index <= currentStatusIndex,
+  }));
 
   const availableHubs = [
     { name: "NYC Hub", distance: "2.3 miles", capacity: "Available" },
@@ -60,12 +87,12 @@ export default function OrderDetailPageTemplate({
   const handleStatusUpdate = (newStatus: string, notes?: string) => {
     console.log("Updating status to:", newStatus, "Notes:", notes);
     setStatus(newStatus);
-    // In a real app, this would make an API call
+    // TODO: Implement API call to update order status
   };
 
   const handleHubAssignment = () => {
     console.log("Assigning to hub:", selectedHub);
-    // Hub assignment logic would go here
+    // TODO: Implement API call to assign hub
   };
 
   return (
@@ -80,7 +107,7 @@ export default function OrderDetailPageTemplate({
           </Link>
           <h1 className="mb-2 text-3xl font-bold">Order Details</h1>
           <p className="text-muted-foreground">
-            View and manage order {params.id}
+            View and manage order {orderDetails.reference}
           </p>
         </div>
 
@@ -93,36 +120,47 @@ export default function OrderDetailPageTemplate({
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-start gap-3">
-                    <Hash className="text-muted-foreground mt-0.5 h-5 w-5" />
+                    <Hash className="text-muted-foreground mt-1 h-5 w-5" />
                     <div>
-                      <p className="text-muted-foreground text-sm">Order ID</p>
-                      <p className="font-mono font-medium">{order.id}</p>
+                      <p className="text-muted-foreground text-sm">
+                        Order Reference
+                      </p>
+                      <p className="font-mono font-medium">
+                        {orderDetails.reference}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Calendar className="text-muted-foreground mt-0.5 h-5 w-5" />
+                    <Calendar className="text-muted-foreground mt-1 h-5 w-5" />
                     <div>
                       <p className="text-muted-foreground text-sm">
                         Order Date
                       </p>
-                      <p className="font-medium">{order.date}</p>
+                      <p className="font-medium">{orderDate}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Package className="text-muted-foreground mt-0.5 h-5 w-5" />
+                    <Package className="text-muted-foreground mt-1 h-5 w-5" />
                     <div>
                       <p className="text-muted-foreground text-sm">Product</p>
-                      <p className="font-medium">{order.product.name}</p>
+                      <p className="font-medium">
+                        {firstItem?.productName || "N/A"}
+                      </p>
                       <p className="text-muted-foreground text-sm">
-                        {order.product.type}
+                        {firstItem?.offering?.template?.name || ""}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <MapPin className="text-muted-foreground mt-0.5 h-5 w-5" />
+                    <MapPin className="text-muted-foreground mt-1 h-5 w-5" />
                     <div>
                       <p className="text-muted-foreground text-sm">Print Hub</p>
-                      <p className="font-medium">{order.hub}</p>
+                      <p className="font-medium">
+                        {orderDetails.hub.businessName}
+                      </p>
+                      <p className="text-muted-foreground text-xs">
+                        {orderDetails.hub.city}, {orderDetails.hub.state}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -131,18 +169,45 @@ export default function OrderDetailPageTemplate({
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-muted-foreground text-sm">Quantity</p>
-                      <p className="text-2xl font-bold">
-                        {order.product.quantity}
-                      </p>
+                      <p className="text-2xl font-bold">{totalQuantity}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-muted-foreground text-sm">
                         Total Amount
                       </p>
                       <p className="text-2xl font-bold">
-                        {order.product.total}
+                        {formatCurrency(parseFloat(orderDetails.total))}
                       </p>
                     </div>
+                  </div>
+                </div>
+
+                {/* Order Items */}
+                <div className="border-border border-t pt-4">
+                  <p className="text-muted-foreground mb-3 text-sm font-medium">
+                    Order Items
+                  </p>
+                  <div className="space-y-2">
+                    {orderDetails.items.map((item) => (
+                      <div
+                        key={item.id}
+                        className="border-border flex items-center justify-between rounded-md border p-3"
+                      >
+                        <div className="flex-1">
+                          <p className="font-medium">{item.productName}</p>
+                          <p className="text-muted-foreground text-xs">
+                            Quantity: {item.quantity} •{" "}
+                            {formatCurrency(
+                              parseFloat(item.price) / item.quantity,
+                            )}{" "}
+                            each
+                          </p>
+                        </div>
+                        <p className="font-semibold">
+                          {formatCurrency(parseFloat(item.price))}
+                        </p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </CardContent>
@@ -156,20 +221,30 @@ export default function OrderDetailPageTemplate({
                 <div className="mb-4 flex items-start gap-3">
                   <User className="text-muted-foreground mt-0.5 h-5 w-5" />
                   <div className="flex-1">
-                    <p className="font-medium">{order.customer.name}</p>
-                    <p className="text-muted-foreground text-sm">
-                      {order.customer.email}
+                    <p className="font-medium">
+                      {orderDetails.user.firstName} {orderDetails.user.lastName}
                     </p>
                     <p className="text-muted-foreground text-sm">
-                      {order.customer.phone}
+                      {orderDetails.user.email}
+                    </p>
+                    <p className="text-muted-foreground mt-1 text-xs">
+                      Customer ID: {orderDetails.user.id}
                     </p>
                   </div>
                 </div>
                 <div className="border-border border-t pt-4">
                   <p className="text-muted-foreground mb-1 text-sm">
-                    Delivery Address
+                    Delivery Type
                   </p>
-                  <p className="text-sm">{order.customer.address}</p>
+                  <p className="font-medium capitalize">
+                    {orderDetails.deliveryType}
+                  </p>
+                  {orderDetails.deliveryFee && (
+                    <p className="text-muted-foreground text-sm">
+                      Delivery Fee:{" "}
+                      {formatCurrency(parseFloat(orderDetails.deliveryFee))}
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -180,7 +255,7 @@ export default function OrderDetailPageTemplate({
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {order.timeline.map((item, index) => (
+                  {timeline.map((item, index) => (
                     <div key={index} className="flex items-start gap-3">
                       <div
                         className={`mt-2 h-2 w-2 rounded-full ${item.completed ? "bg-primary" : "bg-muted"}`}
@@ -188,7 +263,7 @@ export default function OrderDetailPageTemplate({
                       <div className="border-border last flex-1 border-b pb-4 last:pb-0">
                         <div className="flex items-center justify-between">
                           <p
-                            className={`font-medium ${item.completed ? "text-foreground" : "text-muted-foreground"}`}
+                            className={`font-medium capitalize ${item.completed ? "text-foreground" : "text-muted-foreground"}`}
                           >
                             {item.status}
                           </p>
@@ -215,15 +290,19 @@ export default function OrderDetailPageTemplate({
                     Current Status
                   </label>
                   <Select value={status} onValueChange={setStatus}>
-                    <SelectTrigger disabled>
+                    <SelectTrigger className="capitalize" disabled>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Received">Received</SelectItem>
-                      <SelectItem value="In Progress">In Progress</SelectItem>
-                      <SelectItem value="Shipped">Shipped</SelectItem>
-                      <SelectItem value="Delivered">Delivered</SelectItem>
-                      <SelectItem value="Completed">Completed</SelectItem>
+                      {Object.values(OrderStatus).map((status) => (
+                        <SelectItem
+                          className="capitalize"
+                          key={status}
+                          value={status}
+                        >
+                          {formatStatusText(status?.toLowerCase())}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -244,12 +323,43 @@ export default function OrderDetailPageTemplate({
 
             <Card className="@container/card shadow-none">
               <CardHeader>
-                <CardTitle>Assign Print Hub</CardTitle>
+                <CardTitle>Assigned Print Hub</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div className="border-border rounded-md border p-4">
+                  <div className="mb-2 flex items-start justify-between">
+                    <div>
+                      <p className="font-medium">
+                        {orderDetails.hub.businessName}
+                      </p>
+                      <p className="text-muted-foreground text-sm">
+                        {orderDetails.hub.businessAddress}
+                      </p>
+                      <p className="text-muted-foreground text-sm">
+                        {orderDetails.hub.city}, {orderDetails.hub.state}
+                      </p>
+                    </div>
+                    <Badge
+                      variant={
+                        orderDetails.hub.status === "active"
+                          ? "default"
+                          : "secondary"
+                      }
+                      className="capitalize"
+                    >
+                      {orderDetails.hub.status}
+                    </Badge>
+                  </div>
+                  <div className="border-border mt-3 border-t pt-3">
+                    <p className="text-muted-foreground text-xs">
+                      Email: {orderDetails.hub.businessEmail}
+                    </p>
+                  </div>
+                </div>
+
                 <div>
                   <label className="text-muted-foreground mb-2 block text-sm">
-                    Select Hub
+                    Reassign Hub
                   </label>
                   <Select value={selectedHub} onValueChange={setSelectedHub}>
                     <SelectTrigger>
@@ -292,8 +402,9 @@ export default function OrderDetailPageTemplate({
                   onClick={handleHubAssignment}
                   className="w-full"
                   size="lg"
+                  variant="outline"
                 >
-                  Assign Hub
+                  Reassign Hub
                 </Button>
               </CardContent>
             </Card>

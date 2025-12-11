@@ -205,3 +205,61 @@ export function formatDateForExport(date: string | Date): string {
 export const formatStatusText = (text: string): string => {
   return text.replace(/[_-]/g, " ").toLowerCase();
 };
+
+/**
+ * Formats a Date object into "YYYY-MM-DD" format.
+ * @param date - The Date object to format.
+ * @returns A string in "YYYY-MM-DD" format.
+ */
+export function formatToFullYMD(date: Date | string): string {
+  if (!date) return "";
+  return format(new Date(date), "dd MMM, yyyy");
+}
+
+const localeMap: Record<string, string> = {
+  US: "en-US",
+  GB: "en-GB",
+  NG: "en-NG",
+  KE: "en-KE",
+  CA: "en-CA",
+  EU: "fr-FR",
+  IN: "en-IN",
+  JP: "ja-JP",
+  CN: "zh-CN",
+  ZA: "en-ZA",
+};
+
+const currencyMap: Record<string, string> = {
+  US: "USD",
+  GB: "GBP",
+  NG: "NGN",
+  KE: "KES",
+  CA: "CAD",
+  EU: "EUR",
+  IN: "INR",
+  JP: "JPY",
+  CN: "CNY",
+  ZA: "ZAR",
+};
+
+export function formatCurrency(amount?: number, countryCode?: string): string {
+  if (typeof amount !== "number" || !isFinite(amount) || amount < 0) {
+    return "Invalid amount";
+  }
+
+  const code = countryCode?.toUpperCase() ?? "NG";
+  const currency = currencyMap[code] ?? "NGN";
+  const locale = localeMap[code] ?? "en-NG";
+
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+export function formatToMDY(date?: Date | string): string {
+  if (!date) return "";
+  return format(new Date(date), "MMMM dd, yyyy");
+}
