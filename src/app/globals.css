@@ -428,3 +428,20 @@
   /* Adjust to make it faint */
   /* Push behind content */
 }
+
+.loader {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(farthest-side, var(--brand-primary) 94%, #0000) top/8px 8px no-repeat,
+    conic-gradient(var(--brand-foreground) 30%, #0000);
+  mask: radial-gradient(farthest-side, var(--brand-foreground) calc(100% - 8px), var(--brand-primary) 0);
+  -webkit-mask: radial-gradient(farthest-side, var(--brand-foreground) calc(100% - 8px), var(--brand-primary) 0);
+  animation: l13 1s infinite linear;
+}
+
+@keyframes l13 {
+  100% {
+    transform: rotate(1turn);
+  }
+}

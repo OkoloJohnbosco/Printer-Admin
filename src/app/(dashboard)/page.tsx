@@ -1,9 +1,14 @@
-import { AccountTabLayout } from "@/modules/settings/account/components/account-tab-layout";
+import Home from "@/modules/home";
+import { Metadata } from "next";
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: "Home",
+};
+
+export default function HomePage() {
   return (
-    <div className="space-y-5 min-h-screen">
-      <AccountTabLayout />
+    <div>
+      <Home />
     </div>
   );
 }
