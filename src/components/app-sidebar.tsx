@@ -1,15 +1,14 @@
 "use client";
 
 import {
-  AudioWaveform,
-  Command,
+  CircleDollarSign,
   FolderTree,
-  GalleryVerticalEnd,
   LayoutDashboard,
   Package,
   Palette,
   Printer,
-  ShieldCheck,
+  Settings,
+  User2Icon,
   Users,
 } from "lucide-react";
 import * as React from "react";
@@ -29,23 +28,6 @@ import Link from "next/link";
 
 // This is sample data.
 const data = {
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
       title: "Dashboard",
@@ -67,6 +49,14 @@ const data = {
       url: routes.USER_MANAGEMENT,
       icon: Users,
     },
+
+    {
+      title: "Revenue & Payout",
+      url: routes.REVENUE_AND_PAYOUT,
+      icon: CircleDollarSign,
+    },
+  ],
+  navProducts: [
     {
       title: "Design Requests",
       url: routes.DESIGN_REQUESTS,
@@ -82,10 +72,17 @@ const data = {
       url: routes.TEMPLATES,
       icon: Palette,
     },
+  ],
+  navSettings: [
     {
-      title: "Settings",
+      title: "My profile",
       url: routes.MY_ACCOUNT,
-      icon: ShieldCheck,
+      icon: User2Icon,
+    },
+    {
+      title: "System Config",
+      url: routes.SYSTEM_CONFIG,
+      icon: Settings,
     },
   ],
 };
@@ -121,6 +118,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain label="Main" items={data.navMain} />
+        <NavMain label="Products" items={data.navProducts} />
+        <NavMain label="Settings" items={data.navSettings} />
       </SidebarContent>
       <SidebarFooter></SidebarFooter>
     </Sidebar>

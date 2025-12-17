@@ -1,5 +1,6 @@
 import { HubStatus } from "./hooks/admin/use-get-all-hubs/index";
 import { GetAllOrdersParams } from "./hooks/orders/use-get-all-orders/use-get-all-orders.types";
+import { GetAllPayoutsParams } from "./hooks/payouts/use-get-all-payouts/use-get-all-payouts.types";
 
 export const ENDPOINTS = {
   // Auth Endpoint
@@ -103,6 +104,31 @@ export const ENDPOINTS = {
   DELETE_SYSTEM_CONFIG: (configId: string) => `admin/configs/${configId}`,
   GET_DELIVERY_PRICE_CONFIG: "admin/configs/delivery",
   UPDATE_DELIVERY_PRICE_CONFIG: "admin/configs/delivery",
+
+  // Payouts Endpoints
+  REVIEW_PAYOUT_REQUEST: (orderId: string) => `admin/payouts/${orderId}/review`,
+  GET_ALL_PAYOUTS: (params: GetAllPayoutsParams) => {
+    const searchParams = new URLSearchParams();
+    if (params.cursor) {
+      searchParams.set("cursor", params.cursor);
+    }
+    if (params.limit) {
+      searchParams.set("limit", params.limit.toString());
+    }
+    if (params.status) {
+      searchParams.set("status", params.status);
+    }
+    if (params.hubId) {
+      searchParams.set("hubId", params.hubId);
+    }
+    if (params.orderId) {
+      searchParams.set("orderId", params.orderId);
+    }
+    if (params.type) {
+      searchParams.set("type", params.type);
+    }
+    return `admin/payouts?${searchParams.toString()}`;
+  },
 };
 
 //  for tracking react-query useQuery hooks and for revalidation
@@ -129,4 +155,6 @@ export const QUERYKEYS = {
 
   GET_SYSTEM_CONFIG: "GET_SYSTEM_CONFIG",
   GET_DELIVERY_PRICE_CONFIG: "GET_DELIVERY_PRICE_CONFIG",
+
+  GET_ALL_PAYOUTS: "GET_ALL_PAYOUTS",
 };

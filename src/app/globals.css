@@ -322,7 +322,7 @@
   }
 
   body {
-    @apply bg-background font-[family-name:var(--font-work-sans)] text-brand-gray-300 font-[400] scroll-smooth;
+    @apply bg-background font-[family-name:var(--font-work-sans)] text-brand-gray-300 font-normal scroll-smooth;
   }
 
   h1,
@@ -331,7 +331,7 @@
   h4,
   h5,
   h6 {
-    @apply font-[family-name:var(--font-manrope-heading)] text-brand-gray-400 font-[600];
+    @apply font-[family-name:var(--font-manrope-heading)] text-brand-gray-400 font-bold;
   }
 }
 

@@ -23,7 +23,9 @@ const routes = {
   ORDER_MANAGEMENT: "/orders",
   HUB_MANAGEMENT: "/print-hubs",
   USER_MANAGEMENT: "/users",
-  MY_ACCOUNT: "/system-config",
+  MY_ACCOUNT: "/my-account",
+  SYSTEM_CONFIG: "/system-config",
+  REVENUE_AND_PAYOUT: "/revenue-and-payout",
 
   NOTIFICATIONS: "/notifications",
   HELP_AND_SUPPORT: "/help-and-support",
