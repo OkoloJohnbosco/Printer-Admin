@@ -47,10 +47,11 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
 
   const getDocumentName = (type: string): string => {
     const typeMap: Record<string, string> = {
-      TAX_CLEARANCE: "Tax Clearance Certificate",
       BUSINESS_LICENSE: "Business License",
       BUSINESS_REGISTRATION: "Business Registration Certificate",
-      IDENTIFICATION: "Identification Document",
+      TAX_IDENTIFICATION_NUMBER_CERTIFICATE: "Tax Clearance Certificate",
+      BUSINESS_PROOF_OF_ADDRESS: "Proof of Address",
+      BUSINESS_REGISTRATION_CERTIFICATE: "Registration Certificate",
     };
     return typeMap[type] || type.replace(/_/g, " ");
   };

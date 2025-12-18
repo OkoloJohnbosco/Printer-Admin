@@ -39,7 +39,7 @@ function RecentTransactions() {
     orderId: undefined,
   });
   const getAllHubs = useGetAllHubs({
-    limit: 200,
+    limit: 100,
   });
 
   const getAllPayouts = useGetAllPayouts({
@@ -62,7 +62,7 @@ function RecentTransactions() {
       searchQuery: "",
       statusFilter: "all",
       typeFilter: "all",
-      hubFilter: undefined,
+      hubFilter: "all",
       orderId: undefined,
     });
   };

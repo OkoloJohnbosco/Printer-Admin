@@ -161,7 +161,7 @@ export default function DocumentViewer({ documents }: DocumentViewerProps) {
         </div>
 
         <div className="grid gap-3">
-          {documents.map((document, index) => {
+          {documents.map((document) => {
             const isApproved = document.status === "APPROVED";
             return (
               <Card
@@ -176,10 +176,7 @@ export default function DocumentViewer({ documents }: DocumentViewerProps) {
                       {getDocumentIcon(document.type)}
                     </div>
                     <div>
-                      <p className="font-medium">Document {index + 1}</p>
-                      <p className="text-muted-foreground text-sm">
-                        {document.name}
-                      </p>
+                      <p className="text-sm text-slate-700">{document.name}</p>
                       <p className="text-muted-foreground text-xs">
                         Uploaded:{" "}
                         {new Date(document.uploadedAt).toLocaleDateString()}
