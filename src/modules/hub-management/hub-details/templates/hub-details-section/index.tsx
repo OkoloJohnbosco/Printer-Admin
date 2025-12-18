@@ -1,5 +1,15 @@
 "use client";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import BackButton from "@/components/ui/back-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,15 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { orders } from "@/lib/constants";
 import { QUERYKEYS } from "@/lib/endpoints";
 import { PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
 import useUpdateVerificationStatus from "@/lib/hooks/admin/use-update-verification-status";
@@ -28,9 +29,11 @@ import { AlertCircle, MapPin } from "lucide-react";
 import { useState } from "react";
 import DocumentViewer, { Document } from "../../components/document-viewer";
 import HubDetailsStats from "../../components/hub-details-stats";
+import HubOrdersTable from "../../components/hub-orders-table";
 
 export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
   const [status, setStatus] = useState(hub.status);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const queryClient = useQueryClient();
 
   // Map hub documents to DocumentViewer format
@@ -72,12 +75,9 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
   const allDocumentsApproved =
     approvedDocuments.length === hubDocuments.length && hubDocuments.length > 0;
 
-  const statusColors: Record<string, string> = {
-    PENDING: "bg-primary/10 text-primary",
-    APPROVED: "border-transparent text-brand-green-700! bg-brand-green-150!",
-    REJECTED: "bg-primary/20 text-primary",
-  };
   const updateVerificationStatus = useUpdateVerificationStatus(hub.userId);
+
+  const isStatusUnchanged = status === hub.status;
 
   const handleStatusUpdate = () => {
     updateVerificationStatus
@@ -88,10 +88,15 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
         queryClient.invalidateQueries({
           queryKey: [QUERYKEYS.GET_HUB_BY_ID, hub.userId],
         });
+        setIsConfirmModalOpen(false);
       })
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const formatStatus = (status: string) => {
+    return status.charAt(0) + status.slice(1).toLowerCase();
   };
 
   return (
@@ -121,48 +126,7 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
               </CardContent>
             </Card>
 
-            <Card className="@container/card shadow-none">
-              <CardHeader>
-                <CardTitle>Hub Orders</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="border-border rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="hover:bg-transparent">
-                        <TableHead>Order ID</TableHead>
-                        <TableHead>Product</TableHead>
-                        <TableHead>Quantity</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Started At</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {orders.map((order) => (
-                        <TableRow key={order.id}>
-                          <TableCell className="font-mono text-sm">
-                            {order.id}
-                          </TableCell>
-                          <TableCell>{order.product}</TableCell>
-                          <TableCell>{order.quantity}</TableCell>
-                          <TableCell>
-                            <Badge
-                              variant="secondary"
-                              className={statusColors[order.status]}
-                            >
-                              {order.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {order.date}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
+            <HubOrdersTable hubId={hub.id} />
 
             <Card className="@container/card shadow-none">
               <CardHeader>
@@ -261,7 +225,7 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
               <CardContent className="space-y-4">
                 {!allDocumentsApproved && (
                   <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4">
-                    <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-600" />
+                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                     <div>
                       <p className="text-sm font-medium text-amber-800">
                         Document Approval Required
@@ -276,7 +240,7 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
 
                 <div>
                   <label className="text-muted-foreground mb-2 block text-sm">
-                    Current Status
+                    Current Hub Status
                   </label>
                   <Select
                     value={status}
@@ -296,18 +260,59 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
                   </Select>
                 </div>
                 <Button
-                  onClick={handleStatusUpdate}
+                  onClick={() => setIsConfirmModalOpen(true)}
                   fullWidth
                   variant="default_blue"
-                  isLoading={updateVerificationStatus.isPending}
-                  disabled={!allDocumentsApproved}
+                  disabled={!allDocumentsApproved || isStatusUnchanged}
                 >
                   {!allDocumentsApproved
                     ? `Approve Documents First (${approvedDocuments.length}/${hubDocuments.length} Approved)`
-                    : "Update Status"}
+                    : isStatusUnchanged
+                      ? "No Changes to Update"
+                      : "Update Hub Status"}
                 </Button>
               </CardContent>
             </Card>
+
+            <AlertDialog
+              open={isConfirmModalOpen}
+              onOpenChange={setIsConfirmModalOpen}
+            >
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Confirm Status Update</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to change the hub status from{" "}
+                    <span className="font-semibold">
+                      {formatStatus(hub.status)}
+                    </span>{" "}
+                    to{" "}
+                    <span className="font-semibold">
+                      {formatStatus(status)}
+                    </span>
+                    ? This action will affect the hub&apos;s operational state.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel
+                    disabled={updateVerificationStatus.isPending}
+                  >
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleStatusUpdate();
+                    }}
+                    disabled={updateVerificationStatus.isPending}
+                  >
+                    {updateVerificationStatus.isPending
+                      ? "Updating..."
+                      : "Confirm Update"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
 
             <Card className="@container/card shadow-none">
               <CardHeader>
