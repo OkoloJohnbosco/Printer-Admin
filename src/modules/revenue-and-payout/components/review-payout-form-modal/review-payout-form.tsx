@@ -22,7 +22,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Payout } from "@/lib/hooks/payouts/use-get-all-payouts/use-get-all-payouts.types";
 import useReviewPayoutRequest from "@/lib/hooks/payouts/use-review-payout-request";
+import { formatCurrency } from "@/lib/utils";
 
 const reviewPayoutSchema = z
   .object({
@@ -49,7 +51,9 @@ type ReviewPayoutFormValues = z.infer<typeof reviewPayoutSchema>;
 export default function ReviewPayoutForm({
   onCancel,
   reviewPayoutRequest,
+  payout,
 }: {
+  payout: Payout;
   reviewPayoutRequest: ReturnType<typeof useReviewPayoutRequest>;
   onCancel: () => void;
 }) {
@@ -81,7 +85,9 @@ export default function ReviewPayoutForm({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-1 rounded-lg border bg-white p-4">
             <p className="text-brand-gray-300">Payout Amount</p>
-            <Heading size="h4">₦300,485.75</Heading>
+            <Heading size="h4">
+              ₦{formatCurrency(Number(payout.amount))}
+            </Heading>
           </div>
           {/* Action/Status */}
           <FormField

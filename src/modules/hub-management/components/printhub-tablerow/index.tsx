@@ -7,9 +7,28 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
-import { Eye, MoreHorizontal } from "lucide-react";
+import { HubStatus, PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
+import {
+  formatStatusText,
+  getHubStatusBadgeVariant,
+  getHubStatusIconKey,
+} from "@/lib/utils";
+import {
+  AlertCircle,
+  Check,
+  Clock,
+  Eye,
+  MoreHorizontal,
+  X,
+} from "lucide-react";
 import Link from "next/link";
+
+const hubStatusIcons = {
+  pending: <Clock className="size-3" />,
+  approved: <Check className="size-3" />,
+  rejected: <X className="size-3" />,
+  action_required: <AlertCircle className="size-3" />,
+};
 
 function PrintHubTableRow({ printHub }: { printHub: PrintHub }) {
   return (
@@ -20,20 +39,11 @@ function PrintHubTableRow({ printHub }: { printHub: PrintHub }) {
       <TableCell className="text-muted-foreground">
         {printHub.businessAddress}
       </TableCell>
-      <TableCell className="px-5">12</TableCell>
-      <TableCell className="px-5">12</TableCell>
-      <TableCell className="px-5">12</TableCell>
       <TableCell className="px-5">{printHub.businessEmail}</TableCell>
       <TableCell className="px-5">
-        <Badge
-          variant={
-            printHub?.status.toLowerCase() as
-              | "approved"
-              | "rejected"
-              | "pending"
-          }
-        >
-          {printHub.status}
+        <Badge variant={getHubStatusBadgeVariant(printHub.status as HubStatus)}>
+          {hubStatusIcons[getHubStatusIconKey(printHub.status as HubStatus)]}
+          {formatStatusText(printHub.status)}
         </Badge>
       </TableCell>
       <TableCell className="px-5">

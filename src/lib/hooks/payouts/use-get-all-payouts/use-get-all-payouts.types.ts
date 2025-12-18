@@ -32,12 +32,24 @@ export interface Data {
 
 export interface Payout {
   id: string;
-  total: string;
+  hubId: string;
+  orderId: string;
+  amount: string;
   status: string;
+  type: string;
   reference: string;
+  rejectionReason: string | null;
   createdAt: string;
-  itemCount: number;
-  productionTime: string;
-  hubName: string;
-  customerName: string;
+  updatedAt: string;
+  metadata: object | null;
+  order: Order;
+  hub: Hub;
+}
+
+export interface Order {
+  reference: string;
+}
+
+export interface Hub {
+  businessName: string;
 }

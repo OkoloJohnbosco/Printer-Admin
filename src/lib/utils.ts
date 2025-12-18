@@ -2,6 +2,8 @@ import { clsx, type ClassValue } from "clsx";
 import { format, getYear, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
+import { HubStatus } from "./hooks/admin/use-get-all-hubs";
+import { PayoutStatus } from "./hooks/payouts/use-get-all-payouts/use-get-all-payouts.types";
 
 type keys<T> = keyof T;
 
@@ -263,3 +265,68 @@ export function formatToMDY(date?: Date | string): string {
   if (!date) return "";
   return format(new Date(date), "MMMM dd, yyyy");
 }
+
+// Hub Status Badge Utilities
+export const getHubStatusBadgeVariant = (status: HubStatus) => {
+  const variantMap: Record<
+    HubStatus,
+    "pending" | "approved" | "rejected" | "action_required"
+  > = {
+    [HubStatus.PENDING]: "pending",
+    [HubStatus.APPROVED]: "approved",
+    [HubStatus.REJECTED]: "rejected",
+    [HubStatus.ACTION_REQUIRED]: "action_required",
+  };
+  return variantMap[status] || "pending";
+};
+
+export type HubStatusIconKey =
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "action_required";
+
+export const getHubStatusIconKey = (status: HubStatus): HubStatusIconKey => {
+  const iconKeyMap: Record<HubStatus, HubStatusIconKey> = {
+    [HubStatus.PENDING]: "pending",
+    [HubStatus.APPROVED]: "approved",
+    [HubStatus.REJECTED]: "rejected",
+    [HubStatus.ACTION_REQUIRED]: "action_required",
+  };
+  return iconKeyMap[status] || "pending";
+};
+
+// Payout Status Badge Utilities
+export const getPayoutStatusBadgeVariant = (status: PayoutStatus) => {
+  const variantMap: Record<
+    PayoutStatus,
+    "pending" | "approved" | "rejected" | "success" | "destructive"
+  > = {
+    [PayoutStatus.PENDING]: "pending",
+    [PayoutStatus.APPROVED]: "approved",
+    [PayoutStatus.REJECTED]: "rejected",
+    [PayoutStatus.PROCESSED]: "success",
+    [PayoutStatus.FAILED]: "destructive",
+  };
+  return variantMap[status] || "pending";
+};
+
+export type PayoutStatusIconKey =
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "processed"
+  | "failed";
+
+export const getPayoutStatusIconKey = (
+  status: PayoutStatus,
+): PayoutStatusIconKey => {
+  const iconKeyMap: Record<PayoutStatus, PayoutStatusIconKey> = {
+    [PayoutStatus.PENDING]: "pending",
+    [PayoutStatus.APPROVED]: "approved",
+    [PayoutStatus.REJECTED]: "rejected",
+    [PayoutStatus.PROCESSED]: "processed",
+    [PayoutStatus.FAILED]: "failed",
+  };
+  return iconKeyMap[status] || "pending";
+};

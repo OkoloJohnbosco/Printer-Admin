@@ -7,16 +7,17 @@ import {
   ModalProps,
 } from "@/components/ui/alert-dialog";
 import Heading from "@/components/ui/heading";
+import { Payout } from "@/lib/hooks/payouts/use-get-all-payouts/use-get-all-payouts.types";
 import useReviewPayoutRequest from "@/lib/hooks/payouts/use-review-payout-request";
 import ReviewPayoutForm from "./review-payout-form";
-import SucessfulPayout from "./successful-payout";
+import SuccessfulPayout from "./successful-payout";
 
 export default function ReviewPayoutFormModal({
   isOpen,
   onClose,
-  orderId = "",
-}: ModalProps & { orderId?: string }) {
-  const reviewPayoutRequest = useReviewPayoutRequest(orderId);
+  payout,
+}: ModalProps & { payout: Payout }) {
+  const reviewPayoutRequest = useReviewPayoutRequest(payout?.id);
   return (
     <AlertDialog open={isOpen}>
       <AlertDialogContent className="bg-brand-gray-500 max-h-[88vh] w-full space-y-0 overflow-auto scroll-smooth border-0 px-0 pt-0 pb-0 shadow-none sm:max-w-lg">
@@ -27,11 +28,12 @@ export default function ReviewPayoutFormModal({
           </Heading>
         </AlertDialogHeader>
         {reviewPayoutRequest.isSuccess ? (
-          <SucessfulPayout />
+          <SuccessfulPayout payout={payout} onClose={onClose} />
         ) : (
           <ReviewPayoutForm
             onCancel={onClose}
             reviewPayoutRequest={reviewPayoutRequest}
+            payout={payout}
           />
         )}
       </AlertDialogContent>

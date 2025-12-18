@@ -5,6 +5,7 @@ import {
   GetAllPayoutsParams,
   GetAllPayoutsResponse,
 } from "./use-get-all-payouts.types";
+
 const useGetAllPayouts = (params: GetAllPayoutsParams) => {
   return useQueryActionHook<GetAllPayoutsResponse>({
     method: "get",

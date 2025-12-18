@@ -10,100 +10,6 @@ import useGetAllPayouts from "@/lib/hooks/payouts/use-get-all-payouts";
 import NoRevenueCard from "../no-revenue-card";
 import TransactionTableRow from "../transaction-tablerow";
 
-export const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-    jobId: "TRX-8723941",
-    customer: "John Doe",
-    jobDetails: "Job Details",
-    dueDate: "2025-01-01",
-    status: "Active",
-    progress: 77,
-    actions: "Actions",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-    jobId: "TRX-8723941",
-    customer: "John Doe",
-    jobDetails: "Job Details",
-    dueDate: "2025-01-01",
-    status: "Active",
-    progress: 77,
-    actions: "Actions",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-    jobId: "TRX-8723941",
-    customer: "John Doe",
-    jobDetails: "Job Details",
-    dueDate: "2025-01-01",
-    status: "Active",
-    progress: 77,
-    actions: "Actions",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-    jobId: "TRX-8723941",
-    customer: "John Doe",
-    jobDetails: "Job Details",
-    dueDate: "2025-01-01",
-    status: "Active",
-    progress: 77,
-    actions: "Actions",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-    jobId: "TRX-8723941",
-    customer: "John Doe",
-    jobDetails: "Job Details",
-    dueDate: "2025-01-01",
-    status: "Active",
-    progress: 77,
-    actions: "Actions",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-    jobId: "TRX-8723941",
-    customer: "John Doe",
-    jobDetails: "Job Details",
-    dueDate: "2025-01-01",
-    status: "Active",
-    progress: 44,
-    actions: "Actions",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-    jobId: "TRX-8723941",
-    customer: "John Doe",
-    jobDetails: "Job Details",
-    dueDate: "2025-01-01",
-    status: "Active",
-    progress: 55,
-    actions: "Actions",
-  },
-];
-
 export default function TransactionTable({
   getAllPayouts,
 }: {
@@ -128,14 +34,9 @@ export default function TransactionTable({
     }
 
     return (
-      // <TableBody className="page-fade-in">
-      //   {payouts?.map((order) => (
-      //     <OrderTableRow key={order.id} order={order} />
-      //   ))}
-      // </TableBody>
-      <TableBody>
-        {invoices.map((invoice) => (
-          <TransactionTableRow key={invoice.invoice} invoice={invoice} />
+      <TableBody className="page-fade-in">
+        {payouts?.map((payout) => (
+          <TransactionTableRow key={payout.id} payout={payout} />
         ))}
       </TableBody>
     );
@@ -146,8 +47,8 @@ export default function TransactionTable({
       <TableHeader>
         <TableRow className="bg-foundation-gray-50 text-foundation-black-400 bg-brand-gray-40">
           <TableHead className="px-7">Date and time</TableHead>
-          <TableHead className="px-7">Transaction ID</TableHead>
-          <TableHead className="px-7">Description</TableHead>
+          <TableHead className="px-7">Hub</TableHead>
+          <TableHead className="px-7">Type</TableHead>
           <TableHead className="px-7">Amount</TableHead>
           <TableHead className="px-7">Status</TableHead>
           <TableHead className="px-7 text-center">Actions</TableHead>

@@ -2,10 +2,30 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
-import { Clock, MapPin, Package, TrendingUp } from "lucide-react";
+import { HubStatus, PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
+import {
+  formatStatusText,
+  getHubStatusBadgeVariant,
+  getHubStatusIconKey,
+} from "@/lib/utils";
+import {
+  AlertCircle,
+  Check,
+  Clock,
+  MapPin,
+  Package,
+  TrendingUp,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
+const hubStatusIcons = {
+  pending: <Clock className="size-3" />,
+  approved: <Check className="size-3" />,
+  rejected: <X className="size-3" />,
+  action_required: <AlertCircle className="size-3" />,
+};
 
 function PrintHubGridCard({ hub }: { hub: PrintHub }) {
   console.log(hub, "hub");
@@ -29,12 +49,9 @@ function PrintHubGridCard({ hub }: { hub: PrintHub }) {
               <p className="text-muted-foreground text-sm">{hub.city}</p>
             </div>
           </div>
-          <Badge
-            variant={
-              hub?.status.toLowerCase() as "approved" | "rejected" | "pending"
-            }
-          >
-            {hub.status}
+          <Badge variant={getHubStatusBadgeVariant(hub.status as HubStatus)}>
+            {hubStatusIcons[getHubStatusIconKey(hub.status as HubStatus)]}
+            {formatStatusText(hub.status)}
           </Badge>
         </div>
       </CardHeader>
