@@ -17,14 +17,15 @@ const badgeVariants = cva(
           "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
           "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
-        approved: "border-transparent text-brand-green-700 bg-brand-green-150",
-        pending: "border-transparent bg-primary/10 text-primary",
+        approved: "border-green-400 text-green-700 bg-green-100",
+        pending: "border-orange-400 bg-orange-50 text-orange-700",
         action_required: "border-yellow-500 text-yellow-700 bg-yellow-100",
-        info: "border-transparent bg-brand-alternative text-white [a&]:hover:bg-brand-alternative/90",
-        success: "border-transparent text-brand-green-700 bg-brand-green-150",
-        purple: "border-transparent text-brand-purple-400 bg-brand-purple-100",
+        info: "border-brand-alternative text-brand-alternative  bg-brand-alternative/10",
+        success: "border-green-400 text-green-700 bg-green-100",
+        purple:
+          "border-brand-purple-400 text-brand-purple-400 bg-brand-purple-100",
         warning: "border-transparent text-brand-yellow-700 bg-brand-yellow-150",
-        rejected: "border-transparent text-brand-red-700 bg-brand-red-150",
+        rejected: "border-red-500 text-red-700 bg-red-50",
       },
     },
     defaultVariants: {

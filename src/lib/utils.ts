@@ -3,6 +3,7 @@ import { format, getYear, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import { HubStatus } from "./hooks/admin/use-get-all-hubs";
+import { OrderStatus } from "./hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import { PayoutStatus } from "./hooks/payouts/use-get-all-payouts/use-get-all-payouts.types";
 
 type keys<T> = keyof T;
@@ -327,6 +328,44 @@ export const getPayoutStatusIconKey = (
     [PayoutStatus.REJECTED]: "rejected",
     [PayoutStatus.PROCESSED]: "processed",
     [PayoutStatus.FAILED]: "failed",
+  };
+  return iconKeyMap[status] || "pending";
+};
+
+// Order Status Badge Utilities
+export const getOrderStatusBadgeVariant = (status: OrderStatus) => {
+  const variantMap: Record<
+    OrderStatus,
+    "pending" | "info" | "purple" | "success" | "rejected" | "destructive"
+  > = {
+    [OrderStatus.PENDING]: "pending",
+    [OrderStatus.QUEUED]: "info",
+    [OrderStatus.PROCESSING]: "purple",
+    [OrderStatus.COMPLETED]: "success",
+    [OrderStatus.REJECTED]: "rejected",
+    [OrderStatus.FAILED]: "destructive",
+  };
+  return variantMap[status] || "pending";
+};
+
+export type OrderStatusIconKey =
+  | "pending"
+  | "queued"
+  | "processing"
+  | "completed"
+  | "rejected"
+  | "failed";
+
+export const getOrderStatusIconKey = (
+  status: OrderStatus,
+): OrderStatusIconKey => {
+  const iconKeyMap: Record<OrderStatus, OrderStatusIconKey> = {
+    [OrderStatus.PENDING]: "pending",
+    [OrderStatus.QUEUED]: "queued",
+    [OrderStatus.PROCESSING]: "processing",
+    [OrderStatus.COMPLETED]: "completed",
+    [OrderStatus.REJECTED]: "rejected",
+    [OrderStatus.FAILED]: "failed",
   };
   return iconKeyMap[status] || "pending";
 };

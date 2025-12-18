@@ -1,17 +1,35 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Order } from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
-import { formatCurrency, formatToFullYMD } from "@/lib/utils";
-import { Eye } from "lucide-react";
+import {
+  Order,
+  OrderStatus,
+} from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
+import {
+  formatCurrency,
+  formatStatusText,
+  formatToFullYMD,
+  getOrderStatusBadgeVariant,
+  getOrderStatusIconKey,
+} from "@/lib/utils";
+import {
+  AlertCircle,
+  Check,
+  Clock,
+  Eye,
+  ListTodo,
+  Loader,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 
-const statusColors: Record<string, string> = {
-  Received: "bg-muted text-muted-foreground",
-  "In Progress": "bg-primary/10 text-primary",
-  Shipped: "bg-chart-2/10 text-chart-2",
-  Delivered: "bg-chart-4/10 text-chart-4",
-  Completed: "bg-primary/20 text-primary",
+const orderStatusIcons = {
+  pending: <Clock className="size-3" />,
+  queued: <ListTodo className="size-3" />,
+  processing: <Loader className="size-3" />,
+  completed: <Check className="size-3" />,
+  rejected: <X className="size-3" />,
+  failed: <AlertCircle className="size-3" />,
 };
 
 function OrderTableRow({ order }: { order: Order }) {
@@ -27,8 +45,11 @@ function OrderTableRow({ order }: { order: Order }) {
       <TableCell className="px-6">{order.itemCount}</TableCell>
       <TableCell className="px-6">{order.hubName}</TableCell>
       <TableCell className="px-6">
-        <Badge variant="secondary" className={statusColors[order.status]}>
-          {order.status}
+        <Badge
+          variant={getOrderStatusBadgeVariant(order.status as OrderStatus)}
+        >
+          {orderStatusIcons[getOrderStatusIconKey(order.status as OrderStatus)]}
+          {formatStatusText(order.status)}
         </Badge>
       </TableCell>
       <TableCell className="px-6 text-right">
