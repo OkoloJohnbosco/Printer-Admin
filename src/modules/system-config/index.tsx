@@ -14,23 +14,22 @@ import { SystemConfigSkeleton } from "./components/system-config-skeleton";
 
 const tabs = [
   {
-    title: "All Configs",
-    value: "all",
+    title: "Normal Configs",
+    value: "number",
   },
   {
     title: "Delivery Configs",
     value: "delivery",
   },
-  {
-    title: "Number Configs",
-    value: "number",
-  },
 ];
 
 export default function SystemConfigPageTemplate() {
   const { value, isLoading, refetch, isFetching } = useGetSystemConfigs();
-  const configs = (value?.data || []) as ConfigItem[];
-  const [activeTab, setActiveTab] = useState<string>("all");
+  const configs = useMemo(
+    () => (value?.data || []) as ConfigItem[],
+    [value?.data],
+  );
+  const [activeTab, setActiveTab] = useState<string>("number");
 
   const filteredConfigs = useMemo(() => {
     if (activeTab === "all") return configs;

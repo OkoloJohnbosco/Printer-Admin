@@ -12,7 +12,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { QUERYKEYS } from "@/lib/endpoints";
+import useGetDeliveryPriceConfig from "@/lib/hooks/system-config/use-get-delivery-price-config";
 import type { ConfigItem } from "@/lib/hooks/system-config/use-get-system-configs/use-get-system-configs.types";
+import useUpdateDeliveryPriceConfig from "@/lib/hooks/system-config/use-update-delivery-price-config";
 import useUpdateSystemConfig from "@/lib/hooks/system-config/use-update-system-config";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -32,6 +34,8 @@ export function EditConfigModal({
 }: EditConfigModalProps) {
   const queryClient = useQueryClient();
   const updateConfig = useUpdateSystemConfig(config.id);
+  useGetDeliveryPriceConfig();
+  const updateDeliveryPriceConfig = useUpdateDeliveryPriceConfig();
 
   const [formData, setFormData] = useState({
     key: config.key || "",
@@ -41,6 +45,10 @@ export function EditConfigModal({
         : String(config.value),
     description: config.description || "",
   });
+
+  const isDeliveryTiers = config.key === "DELIVERY_TIERS";
+  const isUpdating =
+    updateConfig.isPending || updateDeliveryPriceConfig.isPending;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,11 +63,20 @@ export function EditConfigModal({
         parsedValue = Number(formData.value);
       }
 
-      await updateConfig.mutateAsync({
-        key: formData.key,
-        value: parsedValue,
-        description: formData.description,
-      });
+      if (isDeliveryTiers) {
+        // Use delivery price config endpoint for DELIVERY_TIERS
+        await updateDeliveryPriceConfig.mutateAsync({
+          tiers: parsedValue,
+        });
+      } else {
+        // Use regular update endpoint for other configs
+        await updateConfig.mutateAsync({
+          key: formData.key,
+          value: parsedValue,
+          description: formData.description,
+        });
+      }
+
       await queryClient.invalidateQueries({
         queryKey: [QUERYKEYS.GET_SYSTEM_CONFIG],
       });
@@ -136,18 +153,16 @@ export function EditConfigModal({
           </div>
 
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={updateConfig.isPending}>
-              Cancel
-            </AlertDialogCancel>
+            <AlertDialogCancel disabled={isUpdating}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               type="submit"
-              disabled={!isFormValid || updateConfig.isPending}
+              disabled={!isFormValid || isUpdating}
               onClick={(e) => {
                 e.preventDefault();
                 handleSubmit(e as React.FormEvent);
               }}
             >
-              {updateConfig.isPending ? "Updating..." : "Update Config"}
+              {isUpdating ? "Updating..." : "Update Config"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </form>
