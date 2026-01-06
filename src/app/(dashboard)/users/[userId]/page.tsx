@@ -1,4 +1,4 @@
-import UserDetailsPageTemplate from "@/modules/user-management/user-details";
+import UserDetailsPageTemplate from "@/modules/user-details";
 
 async function UserDetailPage({
   params,

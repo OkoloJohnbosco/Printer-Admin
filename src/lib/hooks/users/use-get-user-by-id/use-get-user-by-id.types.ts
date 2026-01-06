@@ -1,6 +1,15 @@
-import { User } from "../use-get-all-users/use-get-all-users.types";
-
 export interface GetUserByIdResponse {
-  data: User;
+  data: IUser;
   status: boolean;
+}
+
+export interface IUser {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  passwordHash: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
 }
