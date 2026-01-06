@@ -1,6 +1,8 @@
 import { HubStatus } from "./hooks/admin/use-get-all-hubs/index";
+import { GetAuditLogsParams } from "./hooks/audit-logs/use-get-audit-logs/use-get-audit-logs.types";
 import { GetAllOrdersParams } from "./hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import { GetAllPayoutsParams } from "./hooks/payouts/use-get-all-payouts/use-get-all-payouts.types";
+import { GetAllUsersParams } from "./hooks/users/use-get-all-users/use-get-all-users.types";
 
 export const ENDPOINTS = {
   // Auth Endpoint
@@ -65,8 +67,26 @@ export const ENDPOINTS = {
   GET_PRODUCT_BY_ID: (productId: string) => `admin/product/${productId}`,
   GET_ALL_PRODUCTS: (page: number, limit: number) =>
     `admin/products${page ? `?cursor=${page}` : ""}${limit ? `&limit=${limit}` : ""}`,
-  GET_ALL_USERS: (page: number, limit: number) =>
-    `admin/users${page ? `?cursor=${page}` : ""}${limit ? `&limit=${limit}` : ""}`,
+  GET_ALL_USERS: (params: GetAllUsersParams) => {
+    const searchParams = new URLSearchParams();
+    if (params.cursor) {
+      searchParams.set("cursor", params.cursor);
+    }
+    if (params.limit) {
+      searchParams.set("limit", params.limit.toString());
+    }
+    if (params.role) {
+      searchParams.set("role", params.role);
+    }
+    if (params.startDate) {
+      searchParams.set("startDate", params.startDate);
+    }
+    if (params.endDate) {
+      searchParams.set("endDate", params.endDate);
+    }
+    return `admin/users?${searchParams.toString()}`;
+  },
+  GET_USER_BY_ID: (userId: string) => `admin/users/${userId}`,
 
   // Order Endpoints
   GET_ALL_ORDERS: (params: GetAllOrdersParams) => {
@@ -95,6 +115,8 @@ export const ENDPOINTS = {
     return `admin/orders?${searchParams.toString()}`;
   },
   GET_ORDER_BY_ID: (orderId: string) => `admin/orders/${orderId}`,
+  GET_ELIGIBLE_HUBS: (orderId: string) =>
+    `admin/orders/${orderId}/eligible-hubs`,
   REASSIGN_ORDER: (orderId: string) => `admin/orders/${orderId}/reassign`,
 
   // System Config Endpoints
@@ -129,6 +151,30 @@ export const ENDPOINTS = {
     }
     return `admin/payouts?${searchParams.toString()}`;
   },
+
+  // Audit Logs Endpoints
+  GET_AUDIT_LOGS: (params: GetAuditLogsParams) => {
+    const searchParams = new URLSearchParams();
+    if (params.cursor) {
+      searchParams.set("cursor", params.cursor);
+    }
+    if (params.limit) {
+      searchParams.set("limit", params.limit.toString());
+    }
+    if (params.actorId) {
+      searchParams.set("actorId", params.actorId);
+    }
+    if (params.action) {
+      searchParams.set("action", params.action);
+    }
+    if (params.startDate) {
+      searchParams.set("startDate", params.startDate);
+    }
+    if (params.endDate) {
+      searchParams.set("endDate", params.endDate);
+    }
+    return `admin/logs/audit?${searchParams.toString()}`;
+  },
 };
 
 //  for tracking react-query useQuery hooks and for revalidation
@@ -141,6 +187,7 @@ export const QUERYKEYS = {
   GET_ALL_HUBS: "GET_ALL_HUBS",
   GET_ALL_PRODUCTS: "GET_ALL_PRODUCTS",
   GET_ALL_USERS: "GET_ALL_USERS",
+  GET_USER_BY_ID: "GET_USER_BY_ID",
   GET_PRODUCT_BY_ID: "GET_PRODUCT_BY_ID",
   GET_PRODUCT_CATEGORY_BY_ID: "GET_PRODUCT_CATEGORY_BY_ID",
   GET_ALL_PRODUCT_CATEGORIES: "GET_ALL_PRODUCT_CATEGORIES",
@@ -152,9 +199,12 @@ export const QUERYKEYS = {
 
   GET_ALL_ORDERS: "GET_ALL_ORDERS",
   GET_ORDER_BY_ID: "GET_ORDER_BY_ID",
+  GET_ELIGIBLE_HUBS: "GET_ELIGIBLE_HUBS",
 
   GET_SYSTEM_CONFIG: "GET_SYSTEM_CONFIG",
   GET_DELIVERY_PRICE_CONFIG: "GET_DELIVERY_PRICE_CONFIG",
 
   GET_ALL_PAYOUTS: "GET_ALL_PAYOUTS",
+
+  GET_AUDIT_LOGS: "GET_AUDIT_LOGS",
 };
