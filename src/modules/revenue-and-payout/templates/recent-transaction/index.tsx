@@ -15,7 +15,7 @@ import {
   PayoutType,
 } from "@/lib/hooks/payouts/use-get-all-payouts/use-get-all-payouts.types";
 import { formatStatusText } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ActiveFiltersBar from "../../components/active-filters-bar";
 import TransactionTable from "../../components/transaction-table";
 
@@ -56,6 +56,12 @@ function RecentTransactions() {
         : (filters.typeFilter as PayoutType),
     orderId: filters.orderId === "all" ? undefined : filters.orderId,
   });
+  const nextCursor = getAllPayouts.value?.data?.nextCursor;
+
+  // Update the next cursor when data changes
+  useEffect(() => {
+    pagination.setNextCursor(nextCursor);
+  }, [nextCursor, pagination]);
 
   const clearAllFilters = () => {
     setFilters({

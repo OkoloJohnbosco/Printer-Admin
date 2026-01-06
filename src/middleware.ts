@@ -13,9 +13,15 @@ interface User {
   updatedAt: string;
 }
 
-// 1. Specify protected and public routes
-
-const publicRoutes = ["/auth/login", "/auth/sign-up", "/forgot-password"];
+// 1. Specify public routes (everything else will be protected)
+const publicRoutes = [
+  "/auth/login",
+  "/auth/sign-up",
+  "/auth/sign-up/verify-email",
+  "/auth/forgot-password",
+  "/auth/forgot-password/verify-email",
+  "/auth/reset-password",
+];
 
 async function checkUserRole(token: string) {
   try {

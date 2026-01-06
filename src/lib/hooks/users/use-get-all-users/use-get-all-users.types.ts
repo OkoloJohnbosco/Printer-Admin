@@ -20,26 +20,15 @@ export interface GetAllUsersResponse {
 
 export interface UsersData {
   nextCursor: string | null;
-  users: User[];
+  data: User[];
 }
 
 export interface User {
   id: string;
+  role: string;
   email: string;
-  firstName: string;
   lastName: string;
-  phone: string | null;
-  role: UserRole;
-  status: UserStatus;
-  verified: boolean;
+  firstName: string;
   createdAt: string;
   updatedAt: string;
-  lastLogin: string | null;
-  profileImage: string | null;
-}
-
-export enum UserStatus {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-  SUSPENDED = "SUSPENDED",
 }

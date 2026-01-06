@@ -24,7 +24,7 @@ import {
   Users,
 } from "lucide-react";
 import { motion } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ActiveFiltersBar from "./components/active-filters-bar";
 import PrintHubTable from "./components/printhub-table";
 import PrintHubGrid from "./templates/print-hub-grid";
@@ -73,7 +73,7 @@ const cities = [
 
 export default function PrintHubsPageTemplate() {
   const pagination = useCursorPagination({
-    initialItemsPerPage: 12,
+    initialItemsPerPage: 20,
     scrollOnPageChange: true,
   });
 
@@ -95,6 +95,13 @@ export default function PrintHubsPageTemplate() {
         ? undefined
         : (filters.statusFilter as HubStatus),
   });
+  const nextCursor = getAllHubs.value?.data?.nextCursor;
+
+  // Update the next cursor when data changes
+  useEffect(() => {
+    pagination.setNextCursor(nextCursor);
+  }, [nextCursor, pagination]);
+
   const [active, setActive] = useState<string>("list");
 
   const clearAllFilters = () => {
