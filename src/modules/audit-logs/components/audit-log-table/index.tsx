@@ -26,8 +26,8 @@ export default function AuditLogTable({ logs, isLoading }: AuditLogTableProps) {
           <TableRow>
             <TableHead>Actor</TableHead>
             <TableHead>Action</TableHead>
-            <TableHead>Target Type</TableHead>
-            <TableHead>Target ID</TableHead>
+            <TableHead>Entity Type</TableHead>
+            <TableHead>Entity ID</TableHead>
             <TableHead>Date</TableHead>
           </TableRow>
         </TableHeader>
@@ -52,8 +52,8 @@ export default function AuditLogTable({ logs, isLoading }: AuditLogTableProps) {
         <TableRow>
           <TableHead>Actor</TableHead>
           <TableHead>Action</TableHead>
-          <TableHead>Target Type</TableHead>
-          <TableHead>Target ID</TableHead>
+          <TableHead>Entity Type</TableHead>
+          <TableHead>Entity ID</TableHead>
           <TableHead>Date</TableHead>
         </TableRow>
       </TableHeader>

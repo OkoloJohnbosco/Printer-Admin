@@ -19,8 +19,8 @@ import {
 import useGetAuditLogs from "@/lib/hooks/audit-logs/use-get-audit-logs";
 import { AuditLogAction } from "@/lib/hooks/audit-logs/use-get-audit-logs/use-get-audit-logs.types";
 import { useCursorPagination } from "@/lib/hooks/common/use-cursor-pagination";
-import { exportToCSV, formatStatusText } from "@/lib/utils";
-import { Calendar1Icon, Download } from "lucide-react";
+import { formatStatusText } from "@/lib/utils";
+import { Calendar1Icon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import ActiveFiltersBar from "./components/active-filters-bar";
@@ -73,22 +73,6 @@ export default function AuditLogsPageTemplate() {
     });
   };
 
-  const handleExportCSV = () => {
-    const exportData = logs.map((log) => ({
-      ID: log.id,
-      Actor: log.actor
-        ? `${log.actor.firstName} ${log.actor.lastName}`
-        : "System",
-      "Actor Email": log.actor?.email || "N/A",
-      Action: log.action,
-      "Target Type": log.targetType,
-      "Target ID": log.targetId,
-      Date: new Date(log.createdAt).toLocaleString(),
-    }));
-
-    exportToCSV(exportData, "audit-logs-export");
-  };
-
   // Group actions by category for better UX
   const actionGroups = {
     Documents: [
@@ -124,10 +108,6 @@ export default function AuditLogsPageTemplate() {
               Track and monitor all administrative actions on the platform
             </p>
           </div>
-          <Button variant="outline" onClick={handleExportCSV}>
-            <Download className="mr-2 h-4 w-4" />
-            Export CSV
-          </Button>
         </div>
 
         {/* Stats Cards */}

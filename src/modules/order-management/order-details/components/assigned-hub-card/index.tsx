@@ -8,7 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { OrderStatus } from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
+import useGetEligibleHubs from "@/lib/hooks/orders/use-get-eligible-hubs";
 import { ReassignHubModal } from "../reassign-hub-modal";
 
 interface Hub {
@@ -25,10 +27,8 @@ interface AssignedHubCardProps {
   orderStatus: string;
   currentHub: Hub;
   orderId: string;
-  availableHubs: Hub[];
   selectedHub: string;
   onSelectedHubChange: (value: string) => void;
-  isDifferentHubSelected: boolean;
   onRefetchOrder: () => Promise<unknown>;
 }
 
@@ -36,12 +36,20 @@ export function AssignedHubCard({
   orderStatus,
   currentHub,
   orderId,
-  availableHubs,
   selectedHub,
   onSelectedHubChange,
-  isDifferentHubSelected,
   onRefetchOrder,
 }: AssignedHubCardProps) {
+  const getEligibleHubs = useGetEligibleHubs(orderId ?? "");
+  const eligibleHubs = getEligibleHubs.value?.data || [];
+  const isLoadingHubs = getEligibleHubs.isLoading;
+
+  // Check if selected hub is different from current hub and exists in eligible hubs
+  const selectedHubExists = eligibleHubs.some((hub) => hub.id === selectedHub);
+  const isDifferentHubSelected = Boolean(
+    selectedHub && selectedHub !== currentHub.id && selectedHubExists,
+  );
+
   // Only show this card when the order status is REJECTED
   if (orderStatus !== OrderStatus.REJECTED) {
     return null;
@@ -82,13 +90,17 @@ export function AssignedHubCard({
           <label className="text-muted-foreground mb-2 block text-sm">
             Reassign Hub
           </label>
-          <Select value={selectedHub} onValueChange={onSelectedHubChange}>
+          <Select
+            value={selectedHub}
+            onValueChange={onSelectedHubChange}
+            disabled={isLoadingHubs}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select a hub" />
             </SelectTrigger>
             <SelectContent>
-              {availableHubs.map((hub) => (
-                <SelectItem key={hub.id} value={hub.businessName}>
+              {eligibleHubs.map((hub) => (
+                <SelectItem key={hub.id} value={hub.id}>
                   {hub.businessName}
                 </SelectItem>
               ))}
@@ -97,13 +109,27 @@ export function AssignedHubCard({
         </div>
 
         <div className="space-y-2">
-          <p className="text-sm font-medium">Available Hubs</p>
-          {availableHubs.length === 0 ? (
+          <p className="text-sm font-medium">Eligible Hubs</p>
+          {isLoadingHubs ? (
+            <div className="space-y-2">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="border-border flex items-center justify-between rounded-md border p-3"
+                >
+                  <div className="space-y-1">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-48" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : eligibleHubs.length === 0 ? (
             <p className="text-muted-foreground text-sm">
-              No hubs available at the moment
+              No hubs eligible at the moment
             </p>
           ) : (
-            availableHubs.map((hub) => (
+            eligibleHubs.map((hub) => (
               <div
                 key={hub.id}
                 className="border-border flex items-center justify-between rounded-md border p-3"
@@ -111,15 +137,9 @@ export function AssignedHubCard({
                 <div>
                   <p className="text-sm font-medium">{hub.businessName}</p>
                   <p className="text-muted-foreground text-xs">
-                    {hub.city}, {hub.state}
+                    {hub.businessAddress}
                   </p>
                 </div>
-                <Badge
-                  variant={hub.status === "active" ? "default" : "secondary"}
-                  className="capitalize"
-                >
-                  {hub.status}
-                </Badge>
               </div>
             ))
           )}
@@ -129,7 +149,7 @@ export function AssignedHubCard({
           orderId={orderId}
           currentHub={currentHub}
           selectedHubName={selectedHub}
-          availableHubs={availableHubs}
+          eligibleHubs={eligibleHubs}
           onRefetchOrder={onRefetchOrder}
           trigger={
             <Button
@@ -137,6 +157,7 @@ export function AssignedHubCard({
               size="lg"
               variant="default_blue"
               disabled={!isDifferentHubSelected}
+              isLoading={isLoadingHubs}
             >
               Reassign Hub
             </Button>

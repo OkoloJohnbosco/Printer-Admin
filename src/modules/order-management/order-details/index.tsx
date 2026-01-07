@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import useGetAllHubs, { HubStatus } from "@/lib/hooks/admin/use-get-all-hubs";
 import { OrderStatus } from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import useGetOrderDetails from "@/lib/hooks/orders/use-get-order-details";
 import { formatCurrency, formatStatusText, formatToMDY } from "@/lib/utils";
@@ -31,10 +30,6 @@ export default function OrderDetailPageTemplate({
   );
   const orderDetails = value?.data;
   const [selectedHub, setSelectedHub] = useState("");
-  const getAllHubs = useGetAllHubs({
-    limit: 100,
-    status: HubStatus.APPROVED,
-  });
   // Initialize status from API data
   const [status, setStatus] = useState("");
 
@@ -81,17 +76,6 @@ export default function OrderDetailPageTemplate({
     date: index <= currentStatusIndex ? orderDate : "Pending",
     completed: index <= currentStatusIndex,
   }));
-
-  // Get available hubs from API
-  const availableHubs = getAllHubs.value?.data?.hubs || [];
-
-  // Check if a different hub is selected
-  const selectedHubData = availableHubs.find(
-    (hub) => hub.businessName === selectedHub,
-  );
-  const isDifferentHubSelected = Boolean(
-    selectedHubData && selectedHubData.id !== orderDetails.hub.id,
-  );
 
   const handleStatusUpdate = (newStatus: string, notes?: string) => {
     console.log("Updating status to:", newStatus, "Notes:", notes);
@@ -328,10 +312,8 @@ export default function OrderDetailPageTemplate({
               orderStatus={orderDetails.status}
               currentHub={orderDetails.hub}
               orderId={orderDetails.id}
-              availableHubs={availableHubs}
               selectedHub={selectedHub}
               onSelectedHubChange={setSelectedHub}
-              isDifferentHubSelected={isDifferentHubSelected}
               onRefetchOrder={refetch}
             />
           </div>

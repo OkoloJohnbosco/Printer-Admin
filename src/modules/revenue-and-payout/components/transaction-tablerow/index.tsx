@@ -29,6 +29,9 @@ const payoutStatusIcons = {
 
 export default function TransactionTableRow({ payout }: { payout: Payout }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const isPayoutApproved = payout.status === PayoutStatus.APPROVED;
+
   return (
     <TableRow key={payout.id} className="cursor-pointer">
       <TableCell className="px-7">
@@ -68,6 +71,7 @@ export default function TransactionTableRow({ payout }: { payout: Payout }) {
             size="sm"
             className="text-foundation-black-400"
             onClick={onOpen}
+            disabled={isPayoutApproved}
           >
             Review Payout
           </Button>

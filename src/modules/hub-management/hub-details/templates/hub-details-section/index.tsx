@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { QUERYKEYS } from "@/lib/endpoints";
-import { PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
+import { HubStatus, PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
 import useUpdateVerificationStatus from "@/lib/hooks/admin/use-update-verification-status";
 import { useQueryClient } from "@tanstack/react-query";
 import { AlertCircle, MapPin } from "lucide-react";
@@ -73,7 +73,9 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
     (doc) => doc.status === "APPROVED",
   );
   const allDocumentsApproved =
-    approvedDocuments.length === hubDocuments.length && hubDocuments.length > 0;
+    (approvedDocuments.length === hubDocuments.length &&
+      hubDocuments.length > 0) ||
+    hub.status === HubStatus.APPROVED;
 
   const updateVerificationStatus = useUpdateVerificationStatus(hub.userId);
 

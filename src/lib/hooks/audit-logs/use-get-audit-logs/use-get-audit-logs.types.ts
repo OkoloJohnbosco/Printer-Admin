@@ -40,15 +40,16 @@ export interface AuditLogsData {
 export interface AuditLog {
   id: string;
   actorId: string;
-  action: AuditLogAction;
-  targetId: string;
-  targetType: string;
-  metadata: Record<string, unknown> | null;
+  actorType: string;
+  action: string;
+  entityType: string;
+  entityId: string;
+  metadata: Metadata;
   createdAt: string;
-  actor?: {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-  };
+}
+
+export interface Metadata {
+  hubId: string;
+  amount: number;
+  orderId: string;
 }

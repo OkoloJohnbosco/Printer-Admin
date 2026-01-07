@@ -10,11 +10,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { EligibleHub } from "@/lib/hooks/orders/use-get-eligible-hubs/use-get-eligible-hubs.types";
 import useReassignOrder from "@/lib/hooks/orders/use-reassign-order";
 import { AlertTriangle, ArrowDown, Building2 } from "lucide-react";
 import { ReactNode, useState } from "react";
 
-interface Hub {
+interface CurrentHub {
   id: string;
   businessName: string;
   businessEmail: string;
@@ -26,9 +27,9 @@ interface Hub {
 
 interface ReassignHubModalProps {
   orderId: string;
-  currentHub: Hub;
+  currentHub: CurrentHub;
   selectedHubName: string;
-  availableHubs: Hub[];
+  eligibleHubs: EligibleHub[];
   trigger: ReactNode;
   onRefetchOrder: () => Promise<unknown>;
 }
@@ -37,16 +38,14 @@ export function ReassignHubModal({
   orderId,
   currentHub,
   selectedHubName,
-  availableHubs,
+  eligibleHubs,
   trigger,
   onRefetchOrder,
 }: ReassignHubModalProps) {
   const [open, setOpen] = useState(false);
   const reassignOrder = useReassignOrder(orderId);
-  // Find the selected hub from available hubs
-  const selectedHub = availableHubs.find(
-    (hub) => hub.businessName === selectedHubName,
-  );
+  // Find the selected hub from eligible hubs by ID
+  const selectedHub = eligibleHubs.find((hub) => hub.id === selectedHubName);
 
   const handleConfirm = async () => {
     if (!selectedHub) return;
@@ -129,16 +128,6 @@ export function ReassignHubModal({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold">New Hub</p>
-                {selectedHub && (
-                  <Badge
-                    variant={
-                      selectedHub.status === "active" ? "default" : "secondary"
-                    }
-                    className="text-xs capitalize"
-                  >
-                    {selectedHub.status}
-                  </Badge>
-                )}
               </div>
               {selectedHub ? (
                 <div className="bg-primary/5 border-primary rounded-lg border p-4">
@@ -146,14 +135,6 @@ export function ReassignHubModal({
                   <p className="text-muted-foreground mt-2 text-sm">
                     {selectedHub.businessAddress}
                   </p>
-                  <p className="text-muted-foreground text-sm">
-                    {selectedHub.city}, {selectedHub.state}
-                  </p>
-                  <div className="border-border mt-3 border-t pt-3">
-                    <p className="text-muted-foreground text-xs">
-                      {selectedHub.businessEmail}
-                    </p>
-                  </div>
                 </div>
               ) : (
                 <div className="border-border rounded-lg border border-dashed p-4">
@@ -182,7 +163,10 @@ export function ReassignHubModal({
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            onClick={handleConfirm}
+            onClick={(e) => {
+              e.preventDefault();
+              handleConfirm();
+            }}
             disabled={!isDifferentHub || reassignOrder.isPending}
           >
             {reassignOrder.isPending

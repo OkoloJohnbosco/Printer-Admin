@@ -79,16 +79,47 @@ export default function ReviewPayoutForm({
       });
   }
 
+  const isInitialPayout = payout.type === "INITIAL";
+
   return (
     <div className="w-full p-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-1 rounded-lg border bg-white p-4">
-            <p className="text-brand-gray-300">Payout Amount</p>
-            <Heading size="h4">
-              ₦{formatCurrency(Number(payout.amount))}
-            </Heading>
+          {/* Payout Details */}
+          <div className="space-y-4 rounded-lg border bg-white p-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <p className="text-muted-foreground text-sm">Hub Name</p>
+                <p className="font-medium">
+                  {payout.hub?.businessName || "N/A"}
+                </p>
+              </div>
+              <div className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium">
+                {isInitialPayout ? "Initial Payout" : "Final Payout"}
+              </div>
+            </div>
+            <div className="border-t pt-4">
+              <p className="text-muted-foreground text-sm">Payout Amount</p>
+              <Heading size="h4">
+                {formatCurrency(Number(payout.amount))}
+              </Heading>
+            </div>
+            <div className="grid grid-cols-2 gap-4 border-t pt-4">
+              <div className="space-y-1">
+                <p className="text-muted-foreground text-sm">Order Reference</p>
+                <p className="font-mono text-sm">
+                  {payout.order?.reference || "N/A"}
+                </p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-muted-foreground text-sm">
+                  Payout Reference
+                </p>
+                <p className="font-mono text-sm">{payout.reference}</p>
+              </div>
+            </div>
           </div>
+
           {/* Action/Status */}
           <FormField
             control={form.control}

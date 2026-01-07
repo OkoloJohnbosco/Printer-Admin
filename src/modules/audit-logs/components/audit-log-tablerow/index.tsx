@@ -31,16 +31,12 @@ const getActionBadgeVariant = (
 };
 
 export default function AuditLogTableRow({ log }: AuditLogTableRowProps) {
-  const actorName = log.actor
-    ? `${log.actor.firstName} ${log.actor.lastName}`
-    : "System";
-
   return (
     <TableRow>
       <TableCell>
-        <div className="font-medium">{actorName}</div>
-        <div className="text-muted-foreground text-xs">
-          {log.actor?.email || "N/A"}
+        <div className="font-medium">{log.actorId.slice(0, 8)}...</div>
+        <div className="text-muted-foreground text-xs capitalize">
+          {log.actorType.toLowerCase().replace(/_/g, " ")}
         </div>
       </TableCell>
       <TableCell>
@@ -49,10 +45,12 @@ export default function AuditLogTableRow({ log }: AuditLogTableRowProps) {
         </Badge>
       </TableCell>
       <TableCell>
-        <span className="capitalize">{log.targetType.toLowerCase()}</span>
+        <span className="capitalize">
+          {log.entityType.toLowerCase().replace(/_/g, " ")}
+        </span>
       </TableCell>
       <TableCell className="font-mono text-xs">
-        {log.targetId.slice(0, 8)}...
+        {log.entityId.slice(0, 8)}...
       </TableCell>
       <TableCell>
         {new Date(log.createdAt).toLocaleDateString("en-US", {
