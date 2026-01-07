@@ -25,6 +25,7 @@ const routes = {
   USER_MANAGEMENT: "/users",
   MY_ACCOUNT: "/my-account",
   SYSTEM_CONFIG: "/system-config",
+  AUDIT_LOGS: "/audit-logs",
   REVENUE_AND_PAYOUT: "/revenue-and-payout",
 
   NOTIFICATIONS: "/notifications",

@@ -4,6 +4,7 @@ import {
   CircleDollarSign,
   FolderTree,
   LayoutDashboard,
+  Logs,
   Package,
   Palette,
   Printer,
@@ -83,6 +84,11 @@ const data = {
       title: "System Config",
       url: routes.SYSTEM_CONFIG,
       icon: Settings,
+    },
+    {
+      title: "Audit Logs",
+      url: routes.AUDIT_LOGS,
+      icon: Logs,
     },
   ],
 };
