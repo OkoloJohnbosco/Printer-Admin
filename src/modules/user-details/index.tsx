@@ -3,63 +3,26 @@
 import BackButton from "@/components/ui/back-button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import EmptyState from "@/components/ui/empty-state";
-import { userDetails } from "@/lib/constants";
 import useGetUserById from "@/lib/hooks/users/use-get-user-by-id";
-import {
-  Activity,
-  Calendar,
-  CreditCard,
-  FileText,
-  Mail,
-  MapPin,
-  Phone,
-  Shield,
-  User,
-} from "lucide-react";
-import { useState } from "react";
+import { Calendar, Mail, Phone, Shield, User } from "lucide-react";
 import { toast } from "sonner";
 import UserActionsSidebar from "./components/user-actions-sidebar";
 import UserDetailsSkeleton from "./components/user-details-skeleton";
-import UserOrdersCard from "./components/user-orders-card";
-
-// Type guards for optional properties
-type UserWithAddress = (typeof userDetails)[keyof typeof userDetails] & {
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    country: string;
-  };
-};
-
-type UserWithWallet = (typeof userDetails)[keyof typeof userDetails] & {
-  wallet: {
-    balance: number;
-    currency: string;
-  };
-};
 
 export default function UserDetailsPageTemplate({
   params,
 }: {
   params: { id: string };
 }) {
-  const mockUserData = userDetails[params.id as keyof typeof userDetails];
   const getUserById = useGetUserById(params.id);
   const apiUser = getUserById.value?.data;
-
-  const [localStatus, setLocalStatus] = useState<"ACTIVE" | "SUSPENDED">(
-    mockUserData?.status || "ACTIVE",
-  );
 
   // Loading state
   if (getUserById.isLoading) {
     return <UserDetailsSkeleton />;
   }
 
-  if (!apiUser && !mockUserData) {
+  if (!apiUser) {
     return (
       <div className="page-fade-in w-full">
         <main>
@@ -77,20 +40,13 @@ export default function UserDetailsPageTemplate({
 
   // Use API data where available, fall back to mock data for other fields
   const user = {
-    ...mockUserData,
+    ...apiUser,
     // Override with API data
-    firstName: apiUser?.firstName || mockUserData?.firstName || "",
-    lastName: apiUser?.lastName || mockUserData?.lastName || "",
-    email: apiUser?.email || mockUserData?.email || "",
-    role: apiUser?.role || mockUserData?.role || "USER",
-    createdAt: apiUser?.createdAt || mockUserData?.createdAt || "",
-  };
-
-  const handleStatusUpdate = async (status: "ACTIVE" | "SUSPENDED") => {
-    setLocalStatus(status);
-    toast.success(
-      `User ${status === "ACTIVE" ? "reactivated" : "suspended"} successfully`,
-    );
+    firstName: apiUser?.firstName || "",
+    lastName: apiUser?.lastName || "",
+    email: apiUser?.email || "",
+    role: apiUser?.role || "USER",
+    createdAt: apiUser?.createdAt || "",
   };
 
   const handlePasswordReset = async () => {
@@ -104,10 +60,6 @@ export default function UserDetailsPageTemplate({
   const handleRoleChange = async (role: "USER" | "ADMIN" | "HUB_OWNER") => {
     toast.success(`Role updated to ${role} successfully`);
   };
-
-  // Type-safe checks for optional properties
-  const hasAddress = "address" in user && user.address;
-  const hasWallet = "wallet" in user && user.wallet;
 
   return (
     <div className="page-fade-in w-full">
@@ -145,15 +97,15 @@ export default function UserDetailsPageTemplate({
             <UserActionsSidebar
               userId={params.id}
               userName={`${user.firstName} ${user.lastName}`}
-              currentStatus={localStatus}
+              currentStatus={"ACTIVE"}
               currentRole={user.role as "USER" | "ADMIN" | "HUB_OWNER"}
               currentProfile={{
                 email: user.email,
-                phone: user.phone,
+                phone: "",
                 firstName: user.firstName,
                 lastName: user.lastName,
               }}
-              onStatusUpdate={handleStatusUpdate}
+              onStatusUpdate={() => {}}
               onPasswordReset={handlePasswordReset}
               onProfileUpdate={handleProfileUpdate}
               onRoleChange={handleRoleChange}
@@ -190,7 +142,7 @@ export default function UserDetailsPageTemplate({
                     <Phone className="text-muted-foreground mt-0.5 h-5 w-5 shrink-0" />
                     <div className="min-w-0">
                       <p className="text-muted-foreground text-sm">Phone</p>
-                      <p className="font-medium">{user.phone ?? "N/A"}</p>
+                      <p className="font-medium">N/A</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -209,105 +161,12 @@ export default function UserDetailsPageTemplate({
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <Activity className="text-muted-foreground mt-0.5 h-5 w-5 shrink-0" />
-                    <div className="min-w-0">
-                      <p className="text-muted-foreground text-sm">
-                        Last Login
-                      </p>
-                      <p className="font-medium">
-                        {user.lastLogin
-                          ? new Date(user.lastLogin).toLocaleDateString()
-                          : "Never"}
-                      </p>
-                    </div>
-                  </div>
                 </div>
-
-                {hasAddress && (
-                  <div className="border-border border-t pt-4">
-                    <div className="flex items-start gap-3">
-                      <MapPin className="text-muted-foreground mt-0.5 h-5 w-5 shrink-0" />
-                      <div className="min-w-0">
-                        <p className="text-muted-foreground mb-1 text-sm">
-                          Address
-                        </p>
-                        <p className="text-sm">
-                          {(user as UserWithAddress).address.street}
-                          <br />
-                          {(user as UserWithAddress).address.city},{" "}
-                          {(user as UserWithAddress).address.state}{" "}
-                          {(user as UserWithAddress).address.zipCode}
-                          <br />
-                          {(user as UserWithAddress).address.country}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {hasWallet && (
-                  <div className="border-border border-t pt-4">
-                    <div className="flex items-start gap-3">
-                      <CreditCard className="text-muted-foreground mt-0.5 h-5 w-5 shrink-0" />
-                      <div className="min-w-0">
-                        <p className="text-muted-foreground mb-1 text-sm">
-                          Wallet Balance
-                        </p>
-                        <p className="text-xl font-bold sm:text-2xl">
-                          {(user as UserWithWallet).wallet.currency}{" "}
-                          {(user as UserWithWallet).wallet.balance.toFixed(2)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Activity History */}
-            <Card className="@container/card shadow-none">
-              <CardHeader>
-                <CardTitle>Activity History</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {user.activityHistory && user.activityHistory.length > 0 ? (
-                  <div className="space-y-4">
-                    {user.activityHistory.slice(0, 5).map((activity) => (
-                      <div key={activity.id} className="flex items-start gap-3">
-                        <div className="bg-brand-alternative mt-2 h-2 w-2 shrink-0 rounded-full" />
-                        <div className="border-border min-w-0 flex-1 border-b pb-4 last:border-b-0">
-                          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                            <p className="font-medium">{activity.action}</p>
-                            <p className="text-muted-foreground text-xs sm:text-sm">
-                              {new Date(activity.timestamp).toLocaleString()}
-                            </p>
-                          </div>
-                          <p className="text-muted-foreground text-sm">
-                            {activity.description}
-                          </p>
-                          {activity.ipAddress && (
-                            <p className="text-muted-foreground text-xs">
-                              IP: {activity.ipAddress}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <EmptyState
-                    icon={FileText}
-                    title="No Activity Yet"
-                    description="This user hasn't performed any actions yet. Activity will appear here once they start using the platform."
-                    className="border-0 py-12"
-                  />
-                )}
               </CardContent>
             </Card>
 
             {/* Orders */}
-            <UserOrdersCard orders={user.orders} />
+            {/* <UserOrdersCard orders={user.orders} /> */}
           </div>
         </div>
       </main>

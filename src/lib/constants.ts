@@ -1,3 +1,19 @@
+export const specificationTypes = [
+  { value: "sizeOptions", label: "Size Options" },
+  { value: "shapeOptions", label: "Shape Options" },
+  { value: "sideOptions", label: "Side Options" },
+  { value: "coverOptions", label: "Cover Options" },
+  { value: "bindingOptions", label: "Binding Options" },
+  { value: "paperOptions", label: "Paper Options" },
+  { value: "pageOptions", label: "Page Options" },
+  { value: "orientationOptions", label: "Orientation Options" },
+  { value: "thicknessOptions", label: "Thickness/Material Options" },
+  { value: "finishOptions", label: "Finish/Quality Options" },
+  { value: "cornersOptions", label: "Corners Options" },
+  { value: "paperStockOptions", label: "Paper Stock Options" },
+  { value: "fillerPaperOptions", label: "Filler Paper Options" },
+];
+
 export const PRINTA_APP_KEY = {
   TOKEN: "printa__app_auth_session",
   REFRESH: "printa__app_refresh_session",
@@ -117,151 +133,3 @@ export const users = [
     lastLogin: "2024-11-28T11:50:00Z",
   },
 ];
-
-// Mock user details data
-export const userDetails = {
-  "user-1": {
-    ...users[0],
-    address: {
-      street: "123 Main Street, Apt 4B",
-      city: "New York",
-      state: "NY",
-      zipCode: "10001",
-      country: "United States",
-    },
-    wallet: {
-      balance: 1250.75,
-      currency: "$",
-    },
-    activityHistory: [
-      {
-        id: "act-1",
-        action: "Order Placed",
-        description: "Placed order #ORD-1284 for Custom T-Shirt",
-        timestamp: "2024-12-09T08:00:00Z",
-        ipAddress: "192.168.1.1",
-      },
-      {
-        id: "act-2",
-        action: "Profile Updated",
-        description: "Updated phone number",
-        timestamp: "2024-12-08T14:20:00Z",
-        ipAddress: "192.168.1.1",
-      },
-      {
-        id: "act-3",
-        action: "Password Changed",
-        description: "Successfully changed account password",
-        timestamp: "2024-12-05T10:15:00Z",
-        ipAddress: "192.168.1.1",
-      },
-    ],
-    orders: [
-      {
-        id: "ORD-1284",
-        date: "2024-12-09",
-        total: 750.0,
-        status: "In Progress",
-        productName: "Custom T-Shirt",
-      },
-      {
-        id: "ORD-1180",
-        date: "2024-11-15",
-        total: 450.5,
-        status: "Completed",
-        productName: "Tote Bag",
-      },
-    ],
-    loginHistory: [
-      {
-        id: "log-1",
-        timestamp: "2024-12-09T08:15:00Z",
-        ipAddress: "192.168.1.1",
-        device: "Chrome on MacOS",
-        location: "New York, NY",
-        status: "SUCCESS" as const,
-      },
-      {
-        id: "log-2",
-        timestamp: "2024-12-08T09:30:00Z",
-        ipAddress: "192.168.1.1",
-        device: "Chrome on MacOS",
-        location: "New York, NY",
-        status: "SUCCESS" as const,
-      },
-      {
-        id: "log-3",
-        timestamp: "2024-12-07T10:45:00Z",
-        ipAddress: "192.168.1.50",
-        device: "Safari on iPhone",
-        location: "New York, NY",
-        status: "SUCCESS" as const,
-      },
-    ],
-  },
-  "user-2": {
-    ...users[1],
-    address: {
-      street: "456 Oak Avenue",
-      city: "Los Angeles",
-      state: "CA",
-      zipCode: "90001",
-      country: "United States",
-    },
-    wallet: {
-      balance: 3450.25,
-      currency: "$",
-    },
-    activityHistory: [
-      {
-        id: "act-1",
-        action: "Hub Order Completed",
-        description: "Completed order #ORD-1283",
-        timestamp: "2024-12-08T16:45:00Z",
-        ipAddress: "10.0.0.5",
-      },
-    ],
-    orders: [
-      {
-        id: "ORD-1283",
-        date: "2024-12-08",
-        total: 1200.0,
-        status: "Completed",
-        productName: "Tote Bag",
-      },
-    ],
-    loginHistory: [
-      {
-        id: "log-1",
-        timestamp: "2024-12-08T10:30:00Z",
-        ipAddress: "10.0.0.5",
-        device: "Chrome on Windows",
-        location: "Los Angeles, CA",
-        status: "SUCCESS" as const,
-      },
-    ],
-  },
-  "user-3": {
-    ...users[2],
-    activityHistory: [
-      {
-        id: "act-1",
-        action: "Account Suspended",
-        description: "Account suspended due to policy violation",
-        timestamp: "2024-12-05T11:10:00Z",
-        ipAddress: "172.16.0.1",
-      },
-    ],
-    orders: [],
-    loginHistory: [
-      {
-        id: "log-1",
-        timestamp: "2024-12-01T15:20:00Z",
-        ipAddress: "172.16.0.1",
-        device: "Firefox on Linux",
-        location: "Chicago, IL",
-        status: "SUCCESS" as const,
-      },
-    ],
-  },
-};
