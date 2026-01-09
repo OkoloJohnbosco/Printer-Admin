@@ -1,7 +1,10 @@
 "use client";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import useGetUserData from "@/lib/hooks/auth/use-get-user-data";
+import useGetUnreadNotificationCount from "@/lib/hooks/notification/use-get-unread-count";
+import routes from "@/routes";
 import { Bell } from "lucide-react";
+import Link from "next/link";
 import { NavUser } from "./nav-user";
 import { Button } from "./ui/button";
 import Heading from "./ui/heading";
@@ -10,6 +13,9 @@ import { Skeleton } from "./ui/skeleton";
 function NavHeader() {
   const getUserData = useGetUserData();
   const isLoading = getUserData.isLoading && !getUserData?.value;
+  const unreadCount = useGetUnreadNotificationCount();
+  const count = unreadCount.value?.data?.count ?? 0;
+
   return (
     <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b border-gray-100 bg-white transition-[width,height] ease-linear">
       <div className="container-wrapper flex w-full items-center justify-between">
@@ -18,9 +24,21 @@ function NavHeader() {
           <Heading size="h5">Admin Dashboard</Heading>
         </div>
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon">
-            <Bell className="h-5 w-5" />
-          </Button>
+          <Link href={routes.NOTIFICATIONS}>
+            <Button
+              // asChild
+              variant="ghost"
+              size="icon"
+              className="relative shrink-0"
+            >
+              <Bell className="h-5 w-5" />
+              {count > 0 && (
+                <span className="bg-brand-alternative absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-medium text-white">
+                  {count > 99 ? "99+" : count}
+                </span>
+              )}
+            </Button>
+          </Link>
           {isLoading ? (
             <div className="page-fade-in flex items-center gap-2">
               <Skeleton className="h-9 w-9 rounded-full" />

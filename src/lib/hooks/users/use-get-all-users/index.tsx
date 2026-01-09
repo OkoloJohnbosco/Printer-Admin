@@ -17,6 +17,7 @@ const useGetAllUsers = (params: GetAllUsersParams) => {
       `${params.role}`,
       `${params.startDate}`,
       `${params.endDate}`,
+      `${params.search}`,
     ],
   });
 };

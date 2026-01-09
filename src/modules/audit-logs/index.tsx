@@ -17,13 +17,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useGetAuditLogs from "@/lib/hooks/audit-logs/use-get-audit-logs";
-import { AuditLogAction } from "@/lib/hooks/audit-logs/use-get-audit-logs/use-get-audit-logs.types";
+import {
+  AuditLog,
+  AuditLogAction,
+} from "@/lib/hooks/audit-logs/use-get-audit-logs/use-get-audit-logs.types";
 import { useCursorPagination } from "@/lib/hooks/common/use-cursor-pagination";
 import { formatStatusText } from "@/lib/utils";
 import { Calendar1Icon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import ActiveFiltersBar from "./components/active-filters-bar";
+import AuditLogDetailsSheet from "./components/audit-log-details-sheet";
 import AuditLogTable from "./components/audit-log-table";
 import AuditLogsStatsRow from "./components/audit-logs-stats-row";
 
@@ -44,6 +48,14 @@ export default function AuditLogsPageTemplate() {
   const [filters, setFilters] = useState({
     actionFilter: "all",
   });
+
+  const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  const handleSelectLog = useCallback((log: AuditLog) => {
+    setSelectedLog(log);
+    setIsSheetOpen(true);
+  }, []);
 
   const getAuditLogs = useGetAuditLogs({
     limit: pagination.itemsPerPage,
@@ -191,7 +203,11 @@ export default function AuditLogsPageTemplate() {
               onClearAll={clearAllFilters}
             />
 
-            <AuditLogTable logs={logs} isLoading={getAuditLogs.isLoading} />
+            <AuditLogTable
+              logs={logs}
+              isLoading={getAuditLogs.isLoading}
+              onSelectLog={handleSelectLog}
+            />
 
             <div className="mt-4">
               <CursorPaginationDetailed
@@ -208,6 +224,12 @@ export default function AuditLogsPageTemplate() {
           </CardContent>
         </Card>
       </main>
+
+      <AuditLogDetailsSheet
+        log={selectedLog}
+        open={isSheetOpen}
+        onOpenChange={setIsSheetOpen}
+      />
     </div>
   );
 }

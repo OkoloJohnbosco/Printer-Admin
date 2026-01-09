@@ -46,8 +46,14 @@ export interface AuditLog {
   entityId: string;
   metadata: Metadata;
   createdAt: string;
+  actor: Actor;
 }
 
+export interface Actor {
+  email: string;
+  lastName: string;
+  firstName: string;
+}
 export interface Metadata {
   hubId: string;
   amount: number;

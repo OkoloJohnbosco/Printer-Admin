@@ -7,6 +7,7 @@ import { formatStatusText } from "@/lib/utils";
 
 interface AuditLogTableRowProps {
   log: AuditLog;
+  onSelect: (log: AuditLog) => void;
 }
 
 const getActionBadgeVariant = (
@@ -30,14 +31,47 @@ const getActionBadgeVariant = (
   return "outline";
 };
 
-export default function AuditLogTableRow({ log }: AuditLogTableRowProps) {
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(amount);
+};
+
+export default function AuditLogTableRow({
+  log,
+  onSelect,
+}: AuditLogTableRowProps) {
+  const actorName = log.actor
+    ? `${log.actor.firstName} ${log.actor.lastName}`
+    : null;
+  const actorEmail = log.actor?.email;
+
+  const hasMetadata =
+    log.metadata &&
+    (log.metadata.hubId || log.metadata.orderId || log.metadata.amount);
+
   return (
-    <TableRow>
+    <TableRow
+      className="hover:bg-muted/50 cursor-pointer transition-colors"
+      onClick={() => onSelect(log)}
+    >
       <TableCell>
-        <div className="font-medium">{log.actorId.slice(0, 8)}...</div>
-        <div className="text-muted-foreground text-xs capitalize">
-          {log.actorType.toLowerCase().replace(/_/g, " ")}
-        </div>
+        {actorName ? (
+          <>
+            <div className="font-medium">{actorName}</div>
+            <div className="text-muted-foreground text-xs">{actorEmail}</div>
+          </>
+        ) : (
+          <>
+            <div className="font-medium">{log.actorId.slice(0, 8)}...</div>
+            <div className="text-muted-foreground text-xs capitalize">
+              {log.actorType.toLowerCase().replace(/_/g, " ")}
+            </div>
+          </>
+        )}
       </TableCell>
       <TableCell>
         <Badge variant={getActionBadgeVariant(log.action)}>
@@ -45,12 +79,45 @@ export default function AuditLogTableRow({ log }: AuditLogTableRowProps) {
         </Badge>
       </TableCell>
       <TableCell>
-        <span className="capitalize">
+        <div className="capitalize">
           {log.entityType.toLowerCase().replace(/_/g, " ")}
-        </span>
+        </div>
+        <div className="text-muted-foreground font-mono text-xs">
+          {log.entityId.slice(0, 8)}...
+        </div>
       </TableCell>
-      <TableCell className="font-mono text-xs">
-        {log.entityId.slice(0, 8)}...
+      <TableCell>
+        {hasMetadata ? (
+          <div className="space-y-1 text-xs">
+            {log.metadata.orderId && (
+              <div>
+                <span className="text-muted-foreground">Order: </span>
+                <span className="font-mono">
+                  {log.metadata.orderId.slice(0, 8)}...
+                </span>
+              </div>
+            )}
+            {log.metadata.hubId && (
+              <div>
+                <span className="text-muted-foreground">Hub: </span>
+                <span className="font-mono">
+                  {log.metadata.hubId.slice(0, 8)}...
+                </span>
+              </div>
+            )}
+            {log.metadata.amount !== undefined &&
+              log.metadata.amount !== null && (
+                <div>
+                  <span className="text-muted-foreground">Amount: </span>
+                  <span className="font-medium">
+                    {formatCurrency(log.metadata.amount)}
+                  </span>
+                </div>
+              )}
+          </div>
+        ) : (
+          <span className="text-muted-foreground text-xs">—</span>
+        )}
       </TableCell>
       <TableCell>
         {new Date(log.createdAt).toLocaleDateString("en-US", {

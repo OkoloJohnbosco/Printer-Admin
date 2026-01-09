@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  BellIcon,
   CircleDollarSign,
   FolderTree,
   LayoutDashboard,
@@ -89,6 +90,11 @@ const data = {
       title: "Audit Logs",
       url: routes.AUDIT_LOGS,
       icon: Logs,
+    },
+    {
+      title: "Notifications",
+      url: routes.NOTIFICATIONS,
+      icon: BellIcon,
     },
   ],
 };

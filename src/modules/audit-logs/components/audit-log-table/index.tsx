@@ -16,9 +16,14 @@ import AuditLogTableRow from "../audit-log-tablerow";
 interface AuditLogTableProps {
   logs: AuditLog[];
   isLoading?: boolean;
+  onSelectLog: (log: AuditLog) => void;
 }
 
-export default function AuditLogTable({ logs, isLoading }: AuditLogTableProps) {
+export default function AuditLogTable({
+  logs,
+  isLoading,
+  onSelectLog,
+}: AuditLogTableProps) {
   if (isLoading) {
     return (
       <Table>
@@ -26,8 +31,8 @@ export default function AuditLogTable({ logs, isLoading }: AuditLogTableProps) {
           <TableRow>
             <TableHead>Actor</TableHead>
             <TableHead>Action</TableHead>
-            <TableHead>Entity Type</TableHead>
-            <TableHead>Entity ID</TableHead>
+            <TableHead>Entity</TableHead>
+            <TableHead>Details</TableHead>
             <TableHead>Date</TableHead>
           </TableRow>
         </TableHeader>
@@ -52,14 +57,14 @@ export default function AuditLogTable({ logs, isLoading }: AuditLogTableProps) {
         <TableRow>
           <TableHead>Actor</TableHead>
           <TableHead>Action</TableHead>
-          <TableHead>Entity Type</TableHead>
-          <TableHead>Entity ID</TableHead>
+          <TableHead>Entity</TableHead>
+          <TableHead>Details</TableHead>
           <TableHead>Date</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {logs.map((log) => (
-          <AuditLogTableRow key={log.id} log={log} />
+          <AuditLogTableRow key={log.id} log={log} onSelect={onSelectLog} />
         ))}
       </TableBody>
     </Table>

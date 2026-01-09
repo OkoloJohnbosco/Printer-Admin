@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCursorPagination } from "@/lib/hooks/common/use-cursor-pagination";
+import useDebounce from "@/lib/hooks/common/use-debounce";
 import useGetAllUsers from "@/lib/hooks/users/use-get-all-users";
 import { UserRole } from "@/lib/hooks/users/use-get-all-users/use-get-all-users.types";
 import { exportToCSV, formatStatusText } from "@/lib/utils";
@@ -51,6 +52,7 @@ export default function UserManagementPageTemplate() {
     searchTerm: "",
     roleFilter: "all",
   });
+  const debouncedSearchTerm = useDebounce(filters.searchTerm, 500);
 
   const getAllUsers = useGetAllUsers({
     limit: pagination.itemsPerPage,
@@ -61,6 +63,7 @@ export default function UserManagementPageTemplate() {
         : (filters.roleFilter as UserRole),
     startDate: dateRange?.from?.toISOString(),
     endDate: dateRange?.to?.toISOString(),
+    search: debouncedSearchTerm,
   });
 
   const nextCursor = getAllUsers.value?.data?.nextCursor;

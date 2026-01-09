@@ -21,7 +21,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import UserActionsSidebar from "./components/user-actions-sidebar";
 import UserDetailsSkeleton from "./components/user-details-skeleton";
-import UserLoginHistoryCard from "./components/user-login-history-card";
 import UserOrdersCard from "./components/user-orders-card";
 
 // Type guards for optional properties
@@ -309,9 +308,6 @@ export default function UserDetailsPageTemplate({
 
             {/* Orders */}
             <UserOrdersCard orders={user.orders} />
-
-            {/* Login History */}
-            <UserLoginHistoryCard loginHistory={user.loginHistory} />
           </div>
         </div>
       </main>

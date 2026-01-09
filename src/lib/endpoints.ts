@@ -84,6 +84,9 @@ export const ENDPOINTS = {
     if (params.endDate) {
       searchParams.set("endDate", params.endDate);
     }
+    if (params.search) {
+      searchParams.set("search", params.search);
+    }
     return `admin/users?${searchParams.toString()}`;
   },
   GET_USER_BY_ID: (userId: string) => `admin/users/${userId}`,
@@ -175,6 +178,15 @@ export const ENDPOINTS = {
     }
     return `admin/logs/audit?${searchParams.toString()}`;
   },
+
+  // Notification Endpoints
+  GET_NOTIFICATIONS: (limit: number, cursor?: string) =>
+    `notifications?limit=${limit}${cursor ? `&cursor=${cursor}` : ""}`,
+  GET_NOTIFICATIONS_STREAM: "notifications/stream",
+  GET_UNREAD_NOTIFICATION_COUNT: "notifications/unread-count",
+  MARK_NOTIFICATION_AS_READ: (notificationId: string) =>
+    `notifications/${notificationId}/read`,
+  MARK_ALL_NOTIFICATIONS_AS_READ: "notifications/read-all",
 };
 
 //  for tracking react-query useQuery hooks and for revalidation
@@ -207,4 +219,8 @@ export const QUERYKEYS = {
   GET_ALL_PAYOUTS: "GET_ALL_PAYOUTS",
 
   GET_AUDIT_LOGS: "GET_AUDIT_LOGS",
+
+  // Notification Query Keys
+  GET_NOTIFICATIONS: "GET_NOTIFICATIONS",
+  GET_UNREAD_NOTIFICATION_COUNT: "GET_UNREAD_NOTIFICATION_COUNT",
 };

@@ -4,6 +4,7 @@ export interface GetAllUsersParams {
   startDate?: string;
   endDate?: string;
   limit?: number;
+  search?: string;
 }
 
 export enum UserRole {

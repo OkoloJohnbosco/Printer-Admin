@@ -94,21 +94,6 @@ export default function UserActionsSidebar({
           />
         </CardContent>
       </Card>
-
-      <Card className="@container/card shadow-none">
-        <CardHeader>
-          <CardTitle>Audit Log</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground text-sm">
-            All actions performed on this user account are logged for audit
-            purposes. View full audit log in the system logs.
-          </p>
-          <Button className="mt-4 w-full" variant="outline" size="sm">
-            View Audit Log
-          </Button>
-        </CardContent>
-      </Card>
     </div>
   );
 }

@@ -12,6 +12,8 @@ export const headerClasses = cva([``], {
       h5: ["sm:text-[20px] text-[18px] leading-[140%]"],
       h6: ["sm:text-[18px] text-[16px] leading-[140%]"],
       h7: ["sm:text-[16px] text-[14px] leading-[140%]"],
+      h8: ["text-[12px] sm:text-[12px] md:text-[14px] leading-[140%]"],
+      h9: ["text-[10px] sm:text-[10px] md:text-[12px] leading-[140%]"],
     },
   },
   defaultVariants: {
