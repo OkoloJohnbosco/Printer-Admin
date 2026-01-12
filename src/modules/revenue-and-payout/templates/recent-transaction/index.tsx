@@ -50,10 +50,7 @@ function RecentTransactions() {
         ? undefined
         : (filters.statusFilter as PayoutStatus),
     hubId: filters.hubFilter === "all" ? undefined : filters.hubFilter,
-    type:
-      filters.typeFilter === "all"
-        ? undefined
-        : (filters.typeFilter as PayoutType),
+    type: PayoutType.FINAL,
     orderId: filters.orderId === "all" ? undefined : filters.orderId,
   });
   const nextCursor = getAllPayouts.value?.data?.nextCursor;
@@ -128,7 +125,7 @@ function RecentTransactions() {
               ))}
             </SelectContent>
           </Select>
-          <Select
+          {/* <Select
             value={filters.typeFilter}
             onValueChange={(value) =>
               setFilters({
@@ -148,7 +145,7 @@ function RecentTransactions() {
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select> */}
         </div>
       </div>
       <div className="col-span-12 px-4">

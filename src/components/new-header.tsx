@@ -2,6 +2,7 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import useGetUserData from "@/lib/hooks/auth/use-get-user-data";
 import useGetUnreadNotificationCount from "@/lib/hooks/notification/use-get-unread-count";
+import useNotificationStream from "@/lib/hooks/notification/use-notification-stream";
 import routes from "@/routes";
 import { Bell } from "lucide-react";
 import Link from "next/link";
@@ -9,12 +10,37 @@ import { NavUser } from "./nav-user";
 import { Button } from "./ui/button";
 import Heading from "./ui/heading";
 import { Skeleton } from "./ui/skeleton";
+import toast from "./ui/toast";
 
 function NavHeader() {
   const getUserData = useGetUserData();
   const isLoading = getUserData.isLoading && !getUserData?.value;
   const unreadCount = useGetUnreadNotificationCount();
   const count = unreadCount.value?.data?.count ?? 0;
+  const isLoggedIn = !!getUserData?.value?.data;
+
+  // Connect to notification stream for real-time updates
+  useNotificationStream({
+    enabled: isLoggedIn,
+    onNotification: (notification) => {
+      // Show toast for new notifications
+      toast.success({
+        description: `${notification.title}: ${notification.message}`,
+        button: {
+          label: "View",
+          onClick: () => {
+            window.location.href = routes.NOTIFICATIONS;
+          },
+        },
+      });
+    },
+    onConnected: () => {
+      console.log("🔔 Notification stream connected");
+    },
+    onError: () => {
+      console.warn("Notification stream disconnected, will retry...");
+    },
+  });
 
   return (
     <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b border-gray-100 bg-white transition-[width,height] ease-linear">
