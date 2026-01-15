@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Activity, Shield, UserCheck, Users } from "lucide-react";
+import { ShoppingBag, Shield, Store, Users } from "lucide-react";
 
 export default function UserStatsRow() {
   const stats = [
@@ -13,24 +13,24 @@ export default function UserStatsRow() {
       changeType: "positive",
     },
     {
-      title: "Active Users",
-      value: "11,892",
-      icon: Activity,
-      change: "95.5% active rate",
+      title: "Total Customers",
+      value: "8,456",
+      icon: ShoppingBag,
+      change: "67.9% of users",
       changeType: "positive",
     },
     {
-      title: "Verified Users",
-      value: "10,234",
-      icon: UserCheck,
-      change: "82.2% verified",
+      title: "Total Vendors",
+      value: "3,892",
+      icon: Store,
+      change: "31.3% of users",
       changeType: "positive",
     },
     {
-      title: "Suspended Users",
-      value: "558",
+      title: "Total Admins",
+      value: "102",
       icon: Shield,
-      change: "4.5% of total",
+      change: "0.8% of total",
       changeType: "neutral",
     },
   ];

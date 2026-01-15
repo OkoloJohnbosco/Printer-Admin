@@ -120,27 +120,27 @@ export default function PrintHubsPageTemplate() {
   const stats = [
     {
       title: "Total Hubs",
-      value: "12",
+      value: "48",
       icon: MapPin,
-      change: "+2 this quarter",
+      change: "+5 this quarter",
     },
     {
       title: "Active Hubs",
-      value: "10",
+      value: "42",
       icon: Activity,
-      change: "83% operational",
+      change: "87.5% operational",
     },
     {
-      title: "Total Capacity",
-      value: "890",
+      title: "Pending Verification",
+      value: "4",
       icon: Package,
-      change: "+15% efficiency",
+      change: "Awaiting review",
     },
     {
-      title: "Avg Rating",
-      value: "4.7",
+      title: "Rejected Hubs",
+      value: "2",
       icon: Users,
-      change: "+0.2 this month",
+      change: "4.2% rejection rate",
     },
   ];
 

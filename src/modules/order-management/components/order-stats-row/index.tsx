@@ -1,11 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarIcon, MapPin, Package } from "lucide-react";
+import { CheckCircle, Clock, Package, XCircle } from "lucide-react";
 
 const stats = [
   { title: "Total Orders", value: "1,234", icon: Package, change: "+12%" },
-  { title: "Pending", value: "23", icon: CalendarIcon, change: "+5%" },
-  { title: "In Progress", value: "45", icon: MapPin, change: "+8%" },
-  { title: "Completed Today", value: "12", icon: Package, change: "+15%" },
+  { title: "Pending Orders", value: "156", icon: Clock, change: "+5%" },
+  { title: "Rejected Orders", value: "45", icon: XCircle, change: "-8%" },
+  {
+    title: "Completed Orders",
+    value: "1,033",
+    icon: CheckCircle,
+    change: "+15%",
+  },
 ];
 
 function OrderStatsRow() {

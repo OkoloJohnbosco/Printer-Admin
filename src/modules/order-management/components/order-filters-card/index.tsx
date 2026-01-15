@@ -24,7 +24,7 @@ import useGetAllOrders from "@/lib/hooks/orders/use-get-all-orders";
 import { OrderStatus } from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import { formatStatusText } from "@/lib/utils";
 import { Calendar1Icon, Loader, Search } from "lucide-react";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import ActiveFiltersBar from "../active-filters-bar";
 import OrderTable from "../order-table";
@@ -82,6 +82,11 @@ export default function OrderFiltersCard() {
     });
     setDateRange(undefined);
   };
+  const nextCursor = getAllOrders.value?.data?.nextCursor;
+  // Update the next cursor when data changes
+  useEffect(() => {
+    pagination.setNextCursor(nextCursor);
+  }, [nextCursor, pagination]);
 
   const getHubName = (hubId: string | undefined) => {
     if (!hubId) return "";
