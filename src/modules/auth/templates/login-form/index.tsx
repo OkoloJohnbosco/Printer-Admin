@@ -58,7 +58,9 @@ export default function LoginForm() {
       .mutateAsync(data)
       .then((res) => {
         setUserSession(res?.data?.data);
-        router.push(routes.DASHBOARD);
+        router.replace(
+          `/api/auth/store-tokens?accessToken=${res?.data?.data?.accessToken}&refreshToken=${res?.data?.data?.refreshToken}`,
+        );
       })
       .catch((err) => {
         console.log(err);

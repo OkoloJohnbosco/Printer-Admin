@@ -1,6 +1,6 @@
-import axios from "axios";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { PRINTA_APP_KEY } from "./lib/constants";
 
 interface User {
   id: string;
@@ -23,19 +23,18 @@ const publicRoutes = [
   "/auth/reset-password",
 ];
 
-async function checkUserRole(token: string) {
+async function getUserFromCookie(): Promise<User | null> {
   try {
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_CORE_BASE_URL}auth/me`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-    return response.data.data as User; // assuming the API returns the role of the user
+    const cookieStore = await cookies();
+    const userCookie = cookieStore.get(PRINTA_APP_KEY.USER)?.value;
+
+    if (!userCookie) {
+      return null;
+    }
+
+    return JSON.parse(userCookie) as User;
   } catch (error) {
-    console.error("Error validating role:", error);
+    console.error("Error parsing user cookie:", error);
     return null;
   }
 }
@@ -47,7 +46,9 @@ export default async function middleware(req: NextRequest) {
   const isProtectedRoute = !isPublicRoute;
 
   // 3. Decrypt the session from the cookie
-  const token = await (await cookies()).get("printa_auth_session")?.value;
+  const userData = await getUserFromCookie();
+  const cookieStore = await cookies();
+  const token = cookieStore.get(PRINTA_APP_KEY.TOKEN)?.value;
 
   // 5. Check if accessing protected route
   if (isProtectedRoute) {
@@ -60,8 +61,7 @@ export default async function middleware(req: NextRequest) {
     }
 
     // If token exists, check if user is ADMIN
-    const givenRole = await checkUserRole(token);
-    const userRole = givenRole ? givenRole?.role : null;
+    const userRole = userData?.role;
 
     // If user is not ADMIN, redirect to login
     if (userRole !== "ADMIN") {
@@ -78,8 +78,7 @@ export default async function middleware(req: NextRequest) {
     !req.nextUrl.pathname.startsWith("/dashboard")
   ) {
     // Verify user is ADMIN before redirecting to dashboard
-    const givenRole = await checkUserRole(token);
-    const userRole = givenRole ? givenRole?.role : null;
+    const userRole = userData?.role;
 
     if (userRole === "ADMIN") {
       return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
