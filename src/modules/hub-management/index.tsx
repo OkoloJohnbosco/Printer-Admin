@@ -14,18 +14,11 @@ import useGetAllHubs, { HubStatus } from "@/lib/hooks/admin/use-get-all-hubs";
 import { useCursorPagination } from "@/lib/hooks/common/use-cursor-pagination";
 import useDebounce from "@/lib/hooks/common/use-debounce";
 import { cn, formatStatusText } from "@/lib/utils";
-import {
-  Activity,
-  Loader,
-  MapPin,
-  Package,
-  Plus,
-  Search,
-  Users,
-} from "lucide-react";
+import { Loader, Plus, Search } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import ActiveFiltersBar from "./components/active-filters-bar";
+import HubStatsRow from "./components/hub-stats-row";
 import PrintHubTable from "./components/printhub-table";
 import PrintHubGrid from "./templates/print-hub-grid";
 
@@ -117,33 +110,6 @@ export default function PrintHubsPageTemplate() {
     return city?.label || locationValue;
   };
 
-  const stats = [
-    {
-      title: "Total Hubs",
-      value: "48",
-      icon: MapPin,
-      change: "+5 this quarter",
-    },
-    {
-      title: "Active Hubs",
-      value: "42",
-      icon: Activity,
-      change: "87.5% operational",
-    },
-    {
-      title: "Pending Verification",
-      value: "4",
-      icon: Package,
-      change: "Awaiting review",
-    },
-    {
-      title: "Rejected Hubs",
-      value: "2",
-      icon: Users,
-      change: "4.2% rejection rate",
-    },
-  ];
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -160,22 +126,7 @@ export default function PrintHubsPageTemplate() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat, index) => (
-          <Card key={index} className="@container/card shadow-none">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {stat.title}
-              </CardTitle>
-              <stat.icon className="text-muted-foreground h-4 w-4" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-success text-xs">{stat.change}</p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <HubStatsRow />
 
       {/* Filters */}
       <Card className="@container/card shadow-none">

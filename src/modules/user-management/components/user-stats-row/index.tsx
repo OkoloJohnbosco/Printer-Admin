@@ -1,62 +1,123 @@
 "use client";
 
+import DatePeriodFilter from "@/components/common/date-period-filter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShoppingBag, Shield, Store, Users } from "lucide-react";
+import Heading from "@/components/ui/heading";
+import { Skeleton } from "@/components/ui/skeleton";
+import useDatePeriodFilter from "@/lib/hooks/common/use-date-period-filter";
+import useGetUserStats from "@/lib/hooks/stats/use-get-user-stats";
+import { Shield, ShoppingBag, Store, Users } from "lucide-react";
 
 export default function UserStatsRow() {
-  const stats = [
-    {
-      title: "Total Users",
-      value: "12,450",
-      icon: Users,
-      change: "+245 this month",
-      changeType: "positive",
-    },
-    {
-      title: "Total Customers",
-      value: "8,456",
-      icon: ShoppingBag,
-      change: "67.9% of users",
-      changeType: "positive",
-    },
-    {
-      title: "Total Vendors",
-      value: "3,892",
-      icon: Store,
-      change: "31.3% of users",
-      changeType: "positive",
-    },
-    {
-      title: "Total Admins",
-      value: "102",
-      icon: Shield,
-      change: "0.8% of total",
-      changeType: "neutral",
-    },
-  ];
+  const dateFilter = useDatePeriodFilter();
+
+  const { value, isLoading } = useGetUserStats({
+    startDate: dateFilter.startDate,
+    endDate: dateFilter.endDate,
+  });
+
+  const stats = value?.data;
 
   return (
-    <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat, index) => (
-        <Card key={index} className="@container/card shadow-none">
+    <div className="mb-6 space-y-4">
+      {/* Header with Date Toggle */}
+      <div className="flex items-center justify-between">
+        <Heading size="h5">User Statistics</Heading>
+        <DatePeriodFilter filter={dateFilter} />
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {/* Total Users */}
+        <Card className="@container/card shadow-none">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-            <stat.icon className="text-muted-foreground h-4 w-4" />
+            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+            <div className="flex size-9 items-center justify-center rounded-full bg-blue-600/10">
+              <Users className="h-4 w-4 text-blue-600" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stat.value}</div>
-            <p
-              className={`text-xs ${
-                stat.changeType === "positive"
-                  ? "text-success"
-                  : "text-muted-foreground"
-              }`}
-            >
-              {stat.change}
+            {isLoading ? (
+              <Skeleton className="mt-1 block h-7 w-16" />
+            ) : (
+              <div className="page-fade-in text-2xl font-bold">
+                {stats?.total?.toLocaleString() ?? "0"}
+              </div>
+            )}
+            <p className="text-muted-foreground text-xs">
+              {dateFilter.periodLabel}
             </p>
           </CardContent>
         </Card>
-      ))}
+
+        {/* Total Customers */}
+        <Card className="@container/card shadow-none">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Total Customers
+            </CardTitle>
+            <div className="flex size-9 items-center justify-center rounded-full bg-green-600/10">
+              <ShoppingBag className="h-4 w-4 text-green-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <Skeleton className="mt-1 block h-7 w-16" />
+            ) : (
+              <div className="page-fade-in text-2xl font-bold">
+                {stats?.customers?.toLocaleString() ?? "0"}
+              </div>
+            )}
+            <p className="text-muted-foreground text-xs">
+              {dateFilter.periodLabel}
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Total Vendors */}
+        <Card className="@container/card shadow-none">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Vendors</CardTitle>
+            <div className="flex size-9 items-center justify-center rounded-full bg-purple-600/10">
+              <Store className="h-4 w-4 text-purple-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <Skeleton className="mt-1 block h-7 w-16" />
+            ) : (
+              <div className="page-fade-in text-2xl font-bold">
+                {stats?.vendors?.toLocaleString() ?? "0"}
+              </div>
+            )}
+            <p className="text-muted-foreground text-xs">
+              {dateFilter.periodLabel}
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Total Admins */}
+        <Card className="@container/card shadow-none">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Admins</CardTitle>
+            <div className="flex size-9 items-center justify-center rounded-full bg-amber-600/10">
+              <Shield className="h-4 w-4 text-amber-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <Skeleton className="mt-1 block h-7 w-12" />
+            ) : (
+              <div className="page-fade-in text-2xl font-bold">
+                {stats?.admins?.toLocaleString() ?? "0"}
+              </div>
+            )}
+            <p className="text-muted-foreground text-xs">
+              {dateFilter.periodLabel}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

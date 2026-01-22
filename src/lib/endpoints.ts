@@ -2,6 +2,10 @@ import { HubStatus } from "./hooks/admin/use-get-all-hubs/index";
 import { GetAuditLogsParams } from "./hooks/audit-logs/use-get-audit-logs/use-get-audit-logs.types";
 import { GetAllOrdersParams } from "./hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import { GetAllPayoutsParams } from "./hooks/payouts/use-get-all-payouts/use-get-all-payouts.types";
+import { GetDashboardStatsParams } from "./hooks/stats/use-get-dashboard-stats/use-get-dashboard-stats.types";
+import { GetHubStatsParams } from "./hooks/stats/use-get-hub-stats/use-get-hub-stats.types";
+import { GetOrderStatsParams } from "./hooks/stats/use-get-order-stats/use-get-order-stats.types";
+import { GetUserStatsParams } from "./hooks/stats/use-get-user-stats/use-get-user-stats.types";
 import { GetAllUsersParams } from "./hooks/users/use-get-all-users/use-get-all-users.types";
 
 export const ENDPOINTS = {
@@ -187,6 +191,52 @@ export const ENDPOINTS = {
   MARK_NOTIFICATION_AS_READ: (notificationId: string) =>
     `notifications/${notificationId}/read`,
   MARK_ALL_NOTIFICATIONS_AS_READ: "notifications/read-all",
+
+  // Stats Endpoints
+  GET_DASHBOARD_STATS: (params: GetDashboardStatsParams) => {
+    const searchParams = new URLSearchParams();
+    if (params.startDate) {
+      searchParams.set("startDate", params.startDate);
+    }
+    if (params.endDate) {
+      searchParams.set("endDate", params.endDate);
+    }
+    const queryString = searchParams.toString();
+    return `admin/stats/dashboard${queryString ? `?${queryString}` : ""}`;
+  },
+  GET_ORDER_STATS: (params: GetOrderStatsParams) => {
+    const searchParams = new URLSearchParams();
+    if (params.startDate) {
+      searchParams.set("startDate", params.startDate);
+    }
+    if (params.endDate) {
+      searchParams.set("endDate", params.endDate);
+    }
+    const queryString = searchParams.toString();
+    return `admin/stats/orders${queryString ? `?${queryString}` : ""}`;
+  },
+  GET_HUB_STATS: (params: GetHubStatsParams) => {
+    const searchParams = new URLSearchParams();
+    if (params.startDate) {
+      searchParams.set("startDate", params.startDate);
+    }
+    if (params.endDate) {
+      searchParams.set("endDate", params.endDate);
+    }
+    const queryString = searchParams.toString();
+    return `admin/stats/hubs${queryString ? `?${queryString}` : ""}`;
+  },
+  GET_USER_STATS: (params: GetUserStatsParams) => {
+    const searchParams = new URLSearchParams();
+    if (params.startDate) {
+      searchParams.set("startDate", params.startDate);
+    }
+    if (params.endDate) {
+      searchParams.set("endDate", params.endDate);
+    }
+    const queryString = searchParams.toString();
+    return `admin/stats/users${queryString ? `?${queryString}` : ""}`;
+  },
 };
 
 //  for tracking react-query useQuery hooks and for revalidation
@@ -223,4 +273,10 @@ export const QUERYKEYS = {
   // Notification Query Keys
   GET_NOTIFICATIONS: "GET_NOTIFICATIONS",
   GET_UNREAD_NOTIFICATION_COUNT: "GET_UNREAD_NOTIFICATION_COUNT",
+
+  // Stats Query Keys
+  GET_DASHBOARD_STATS: "GET_DASHBOARD_STATS",
+  GET_ORDER_STATS: "GET_ORDER_STATS",
+  GET_HUB_STATS: "GET_HUB_STATS",
+  GET_USER_STATS: "GET_USER_STATS",
 };
