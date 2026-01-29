@@ -14,7 +14,7 @@ import PartnerApplicationTable from "./components/partner-application-table";
 
 export default function PartnerApplicationsPageTemplate() {
   const pagination = useCursorPagination({
-    initialItemsPerPage: 12,
+    initialItemsPerPage: 20,
     scrollOnPageChange: true,
   });
 

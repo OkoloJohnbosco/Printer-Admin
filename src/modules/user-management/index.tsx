@@ -37,7 +37,7 @@ import UserTable from "./components/user-table";
 
 export default function UserManagementPageTemplate() {
   const pagination = useCursorPagination({
-    initialItemsPerPage: 12,
+    initialItemsPerPage: 20,
     scrollOnPageChange: true,
   });
   const [dateRange, setDateRangeState] = useState<DateRange | undefined>({

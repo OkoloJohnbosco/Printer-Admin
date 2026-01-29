@@ -21,7 +21,7 @@ import TransactionTable from "../../components/transaction-table";
 
 function RecentTransactions() {
   const pagination = useCursorPagination({
-    initialItemsPerPage: 12,
+    initialItemsPerPage: 20,
     scrollOnPageChange: true,
   });
 
