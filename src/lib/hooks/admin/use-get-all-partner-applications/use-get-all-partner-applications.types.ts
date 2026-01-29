@@ -11,20 +11,14 @@ export interface GetAllPartnerApplicationsResponse {
 
 export interface PartnerApplicationsData {
   nextCursor: string | null;
-  data: PartnerApplication[];
-}
-
-export enum PartnerApplicationStatus {
-  PENDING = "PENDING",
-  APPROVED = "APPROVED",
-  REJECTED = "REJECTED",
+  applications: PartnerApplication[];
 }
 
 export interface PartnerApplication {
   id: string;
+  fullName: string;
   email: string;
   companyName: string;
-  status: PartnerApplicationStatus;
+  businessType: string;
   createdAt: string;
-  updatedAt: string;
 }

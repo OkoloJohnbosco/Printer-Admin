@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CursorPaginationDetailed } from "@/components/ui/cursor-pagination";
 import { Input } from "@/components/ui/input";
+import useGetAllPartnerApplications from "@/lib/hooks/admin/use-get-all-partner-applications";
 import { useCursorPagination } from "@/lib/hooks/common/use-cursor-pagination";
 import useDebounce from "@/lib/hooks/common/use-debounce";
-import useGetAllPartnerApplications from "@/lib/hooks/admin/use-get-all-partner-applications";
-import { exportToCSV, formatStatusText } from "@/lib/utils";
+import { exportToCSV } from "@/lib/utils";
 import { Download, Loader, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import PartnerApplicationTable from "./components/partner-application-table";
@@ -34,14 +34,16 @@ export default function PartnerApplicationsPageTemplate() {
     pagination.setNextCursor(nextCursor);
   }, [nextCursor, pagination]);
 
-  const applications = getAllPartnerApplications.value?.data?.data || [];
+  const applications =
+    getAllPartnerApplications.value?.data?.applications || [];
 
   const handleExportCSV = () => {
     const exportData = applications.map((application) => ({
       "Application ID": application.id,
-      "Company Name": application.companyName,
+      "Full Name": application.fullName,
       Email: application.email,
-      Status: formatStatusText(application.status),
+      "Company Name": application.companyName,
+      "Business Type": application.businessType,
       "Applied Date": new Date(application.createdAt).toLocaleDateString(),
     }));
 

@@ -29,7 +29,7 @@ export default function PartnerApplicationTable({
           <TableRow>
             <TableHead>Company Name</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>Business Type</TableHead>
             <TableHead>Applied Date</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -55,7 +55,7 @@ export default function PartnerApplicationTable({
         <TableRow>
           <TableHead>Company Name</TableHead>
           <TableHead>Email</TableHead>
-          <TableHead>Status</TableHead>
+          <TableHead>Business Type</TableHead>
           <TableHead>Applied Date</TableHead>
           <TableHead className="text-right">Actions</TableHead>
         </TableRow>
