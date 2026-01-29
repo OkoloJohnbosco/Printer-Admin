@@ -2,6 +2,7 @@
 
 import {
   BellIcon,
+  Building2,
   CircleDollarSign,
   FolderTree,
   LayoutDashboard,
@@ -51,7 +52,11 @@ const data = {
       url: routes.USER_MANAGEMENT,
       icon: Users,
     },
-
+    {
+      title: "Partner Applications",
+      url: routes.PARTNER_APPLICATIONS,
+      icon: Building2,
+    },
     {
       title: "Revenue & Payout",
       url: routes.REVENUE_AND_PAYOUT,

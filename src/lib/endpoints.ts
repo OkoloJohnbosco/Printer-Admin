@@ -1,4 +1,5 @@
 import { HubStatus } from "./hooks/admin/use-get-all-hubs/index";
+import { GetAllPartnerApplicationsParams } from "./hooks/admin/use-get-all-partner-applications/use-get-all-partner-applications.types";
 import { GetAuditLogsParams } from "./hooks/audit-logs/use-get-audit-logs/use-get-audit-logs.types";
 import { GetAllOrdersParams } from "./hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import { GetAllPayoutsParams } from "./hooks/payouts/use-get-all-payouts/use-get-all-payouts.types";
@@ -47,6 +48,20 @@ export const ENDPOINTS = {
     `admin/products/categories/${categoryId}`,
   REVIEW_HUB_DOCUMENT: (documentId: string) =>
     `admin/documents/${documentId}/review`,
+
+  GET_ALL_PARTNER_APPLICATIONS: (params: GetAllPartnerApplicationsParams) => {
+    const searchParams = new URLSearchParams();
+    if (params.cursor) {
+      searchParams.set("cursor", params.cursor);
+    }
+    if (params.limit) {
+      searchParams.set("limit", params.limit.toString());
+    }
+    if (params.search) {
+      searchParams.set("search", params.search);
+    }
+    return `admin/partner-applications?${searchParams.toString()}`;
+  },
 
   CREATE_PRODUCT_SUB_CATEGORY: `admin/products/sub-categories`,
   GET_ALL_PRODUCT_SUB_CATEGORIES: (categoryId: string) =>
@@ -247,6 +262,7 @@ export const QUERYKEYS = {
 
   GET_HUB_BY_ID: "GET_HUB_BY_ID",
   GET_ALL_HUBS: "GET_ALL_HUBS",
+  GET_ALL_PARTNER_APPLICATIONS: "GET_ALL_PARTNER_APPLICATIONS",
   GET_ALL_PRODUCTS: "GET_ALL_PRODUCTS",
   GET_ALL_USERS: "GET_ALL_USERS",
   GET_USER_BY_ID: "GET_USER_BY_ID",

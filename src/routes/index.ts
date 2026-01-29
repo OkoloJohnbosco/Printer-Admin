@@ -27,6 +27,7 @@ const routes = {
   SYSTEM_CONFIG: "/system-config",
   AUDIT_LOGS: "/audit-logs",
   REVENUE_AND_PAYOUT: "/revenue-and-payout",
+  PARTNER_APPLICATIONS: "/partner-applications",
 
   NOTIFICATIONS: "/notifications",
   HELP_AND_SUPPORT: "/help-and-support",
