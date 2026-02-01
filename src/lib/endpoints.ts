@@ -22,7 +22,7 @@ export const ENDPOINTS = {
 
   AUTH_VALIDATE_RESET_TOKEN: "auth/validate-reset-token",
 
-  GET_USER_DATA: "auth/me",
+  GET_USER_DATA: "me/profile",
   GOOGLE_AUTH: (callBackURL: string) =>
     `auth/google${callBackURL ? `?callback=${callBackURL}` : ""}`,
 

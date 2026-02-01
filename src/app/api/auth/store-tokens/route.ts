@@ -43,7 +43,7 @@ export async function GET(request: Request) {
   // Fetch user profile to check onboarding status
   try {
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_CORE_BASE_URL}auth/me`,
+      `${process.env.NEXT_PUBLIC_CORE_BASE_URL}me/profile`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,

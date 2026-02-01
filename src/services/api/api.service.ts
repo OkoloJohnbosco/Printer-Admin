@@ -88,7 +88,7 @@ axios.interceptors.request.use(
     const token = session;
     const isAuthRoute = config.url?.includes("/auth");
 
-    if (token && (!isAuthRoute || config.url?.includes("/auth/me"))) {
+    if (token && (!isAuthRoute || config.url?.includes("/me/profile"))) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
 
@@ -105,7 +105,7 @@ axios.interceptors.response.use(
     const originalRequest = error.config;
     const isAuthRoute =
       originalRequest.url?.includes("/auth") &&
-      !originalRequest.url?.includes("/auth/me");
+      !originalRequest.url?.includes("/me/profile");
     if (error?.response?.status === 401 && !isAuthRoute) {
       originalRequest._retry = true;
       // Log the user out and redirect to login page
