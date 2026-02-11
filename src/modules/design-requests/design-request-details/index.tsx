@@ -1,66 +1,75 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { DesignerRequestStatus } from "@/lib/hooks/design-requests/use-get-all-designer-requests/use-get-all-designer-requests.types";
+import useGetDesignerRequestById from "@/lib/hooks/design-requests/use-get-designer-request-by-id";
+import {
+  formatStatusText,
+  formatToFullYMD,
+  getDesignerRequestStatusBadgeVariant,
+} from "@/lib/utils";
 import { AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import AssignDesignerCard from "./components/assign-designer-card";
+import { DesignRequestDetailsError } from "./components/design-request-details-error";
+import { DesignRequestDetailsSkeleton } from "./components/design-request-details-skeleton";
+import ReferenceFilesCard from "./components/reference-files-card";
 import RequestInfoCard from "./components/request-info-card";
 import SpecificationCard from "./components/specification-card";
+import { StatusUpdateModal } from "./components/status-update-modal";
+
+const STATUS_LABELS: Record<DesignerRequestStatus, string> = {
+  [DesignerRequestStatus.PENDING]: "Pending",
+  [DesignerRequestStatus.EXPIRED]: "Expired",
+  [DesignerRequestStatus.REJECTED]: "Rejected",
+  [DesignerRequestStatus.ACCEPTED]: "Accepted",
+  [DesignerRequestStatus.COMPLETED]: "Completed",
+  [DesignerRequestStatus.IN_PROGRESS]: "In Progress",
+};
 
 export default function DesignRequestDetailPageTemplate({
   params,
 }: {
   params: { id: string };
 }) {
-  const [status, setStatus] = useState("Requested");
+  const { isLoading, isError, error, refetch, value } =
+    useGetDesignerRequestById(params.id);
+  const designerRequest = value?.data;
+
   const [notes, setNotes] = useState("");
 
-  const request = {
-    id: params.id,
-    date: "2025-09-30",
-    customer: {
-      name: "Alex Thompson",
-      email: "alex.thompson@example.com",
-      phone: "+1 (555) 234-5678",
-    },
-    productType: "T-Shirt Design",
-    timeline: "3-5 days",
-    status: "Requested",
-    priority: "High",
-    brief:
-      "I need a modern, minimalist design for a tech startup t-shirt. The design should incorporate our logo and tagline 'Innovation Simplified'. Prefer clean lines and a color scheme of navy blue and white. Target audience is young professionals aged 25-35.",
-    specifications: {
-      size: "Standard adult sizes (S-XXL)",
-      colors: "Navy blue, white",
-      printLocation: "Front chest and back",
-      quantity: "100 units",
-    },
-    timeline_details: [
-      {
-        stage: "Request Received",
-        date: "2025-09-30 09:00 AM",
-        completed: true,
-      },
-      { stage: "Designer Assigned", date: "Pending", completed: false },
-      { stage: "Design In Progress", date: "Pending", completed: false },
-      { stage: "Design Completed", date: "Pending", completed: false },
-      { stage: "Customer Approved", date: "Pending", completed: false },
-    ],
-  };
+  if (isLoading) {
+    return <DesignRequestDetailsSkeleton />;
+  }
 
-  const handleStatusUpdate = () => {
-    console.log("Updating status to:", status);
-  };
+  if (isError || !designerRequest) {
+    return (
+      <DesignRequestDetailsError
+        message={error?.message || "Failed to load design request details"}
+        onRetry={() => refetch()}
+      />
+    );
+  }
+
+  const customerName = `${designerRequest.user.firstName} ${designerRequest.user.lastName}`;
+
+  // Generate timeline based on request status
+  const statusOrder = Object.values(DesignerRequestStatus);
+  const currentStatusIndex = statusOrder.findIndex(
+    (s) => s === designerRequest.status,
+  );
+
+  const timeline = statusOrder.map((statusValue, index) => ({
+    stage: STATUS_LABELS[statusValue],
+    date:
+      index <= currentStatusIndex
+        ? formatToFullYMD(designerRequest.createdAt)
+        : "Pending",
+    completed: index <= currentStatusIndex,
+  }));
 
   return (
     <main className="page-fade-in w-full">
@@ -73,24 +82,26 @@ export default function DesignRequestDetailPageTemplate({
         </Link>
         <h1 className="mb-2 text-3xl font-bold">Design Request Details</h1>
         <p className="text-muted-foreground">
-          Review and manage design request {params.id}
+          Review and manage design request {params.id.slice(0, 8)}...
         </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         <div className="space-y-6 md:col-span-2">
-          <RequestInfoCard requestId={params.id} />
+          <RequestInfoCard request={designerRequest} />
 
           <Card className="@container/card shadow-none">
             <CardHeader>
               <CardTitle>Design Brief</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm leading-relaxed">{request.brief}</p>
+              <p className="text-sm leading-relaxed">
+                {designerRequest.description}
+              </p>
             </CardContent>
           </Card>
 
-          <SpecificationCard requestId={params.id} />
+          <SpecificationCard request={designerRequest} />
 
           <Card className="@container/card shadow-none">
             <CardHeader>
@@ -100,25 +111,25 @@ export default function DesignRequestDetailPageTemplate({
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground text-sm">Name</span>
-                  <span className="text-sm font-medium">
-                    {request.customer.name}
-                  </span>
+                  <span className="text-sm font-medium">{customerName}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground text-sm">Email</span>
                   <span className="text-sm font-medium">
-                    {request.customer.email}
+                    {designerRequest.user.email}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground text-sm">Phone</span>
-                  <span className="text-sm font-medium">
-                    {request.customer.phone}
+                  <span className="text-muted-foreground text-sm">User ID</span>
+                  <span className="text-muted-foreground font-mono text-sm">
+                    {designerRequest.userId.slice(0, 8)}...
                   </span>
                 </div>
               </div>
             </CardContent>
           </Card>
+
+          <ReferenceFilesCard references={designerRequest.references} />
 
           <Card className="@container/card shadow-none">
             <CardHeader>
@@ -126,7 +137,7 @@ export default function DesignRequestDetailPageTemplate({
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {request.timeline_details.map((item, index) => (
+                {timeline.map((item, index) => (
                   <div key={index} className="flex items-start gap-3">
                     <div
                       className={`mt-2 h-2 w-2 rounded-full ${item.completed ? "bg-primary" : "bg-muted"}`}
@@ -151,7 +162,7 @@ export default function DesignRequestDetailPageTemplate({
         </div>
 
         <div className="space-y-6">
-          {request.status === "Requested" && (
+          {designerRequest.status === DesignerRequestStatus.PENDING && (
             <Card className="border-brand-alternative bg-brand-alternative/5">
               <CardContent className="pt-6">
                 <div className="mb-4 flex items-start gap-3">
@@ -167,8 +178,6 @@ export default function DesignRequestDetailPageTemplate({
             </Card>
           )}
 
-          <AssignDesignerCard />
-
           <Card className="@container/card shadow-none">
             <CardHeader>
               <CardTitle>Update Status</CardTitle>
@@ -178,26 +187,19 @@ export default function DesignRequestDetailPageTemplate({
                 <label className="text-muted-foreground mb-2 block text-sm">
                   Current Status
                 </label>
-                <Select value={status} onValueChange={setStatus}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Requested">Requested</SelectItem>
-                    <SelectItem value="Assigned">Assigned</SelectItem>
-                    <SelectItem value="In Progress">In Progress</SelectItem>
-                    <SelectItem value="Completed">Completed</SelectItem>
-                    <SelectItem value="Approved">Approved</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Badge
+                  variant={getDesignerRequestStatusBadgeVariant(
+                    designerRequest.status,
+                  )}
+                  className="text-sm"
+                >
+                  {formatStatusText(designerRequest.status)}
+                </Badge>
               </div>
-              <Button
-                onClick={handleStatusUpdate}
-                fullWidth
-                variant="default_blue"
-              >
-                Update Status
-              </Button>
+              <StatusUpdateModal
+                designerRequest={designerRequest}
+                onSuccess={() => refetch()}
+              />
             </CardContent>
           </Card>
 
@@ -217,6 +219,19 @@ export default function DesignRequestDetailPageTemplate({
               </Button>
             </CardContent>
           </Card>
+
+          {designerRequest.rejectionReason && (
+            <Card className="border-destructive/50 shadow-none">
+              <CardHeader>
+                <CardTitle className="text-destructive">
+                  Rejection Reason
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm">{designerRequest.rejectionReason}</p>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </main>

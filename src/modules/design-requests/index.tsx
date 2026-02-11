@@ -1,6 +1,6 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CursorPaginationDetailed } from "@/components/ui/cursor-pagination";
 import Heading from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,17 +10,48 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Filter, Search, UserPlus } from "lucide-react";
-import { useState } from "react";
+import { useCursorPagination } from "@/lib/hooks/common/use-cursor-pagination";
+import useGetAllDesignerRequests from "@/lib/hooks/design-requests/use-get-all-designer-requests";
+import { DesignerRequestStatus } from "@/lib/hooks/design-requests/use-get-all-designer-requests/use-get-all-designer-requests.types";
+import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
 import DesignRequestsStatsCardRow from "./components/design-requests-stats-card-row";
 import DesignRequestsTable from "./components/design-requests-table";
 
+const STATUS_LABELS: Record<DesignerRequestStatus, string> = {
+  [DesignerRequestStatus.PENDING]: "Pending",
+  [DesignerRequestStatus.EXPIRED]: "Expired",
+  [DesignerRequestStatus.REJECTED]: "Rejected",
+  [DesignerRequestStatus.ACCEPTED]: "Accepted",
+  [DesignerRequestStatus.COMPLETED]: "Completed",
+  [DesignerRequestStatus.IN_PROGRESS]: "In Progress",
+};
+
 export default function DesignRequestsPageTemplate() {
-  const [filters, setFilters] = useState({
+  const pagination = useCursorPagination({
+    initialItemsPerPage: 20,
+    scrollOnPageChange: true,
+  });
+  const [filters, setFilters] = useState<{
+    searchTerm: string;
+    statusFilter: DesignerRequestStatus | "all";
+  }>({
     searchTerm: "",
     statusFilter: "all",
-    priorityFilter: "all",
   });
+
+  const getAllDesignerRequests = useGetAllDesignerRequests({
+    cursor: pagination.currentCursor || "",
+    limit: pagination.itemsPerPage,
+    status: filters.statusFilter === "all" ? undefined : filters.statusFilter,
+  });
+
+  const nextCursor = getAllDesignerRequests.value?.data?.nextCursor;
+
+  // Update the next cursor when data changes
+  useEffect(() => {
+    pagination.setNextCursor(nextCursor);
+  }, [nextCursor, pagination]);
 
   return (
     <div className="page-fade-in w-full space-y-6">
@@ -31,10 +62,6 @@ export default function DesignRequestsPageTemplate() {
             Manage customer design requests and designer assignments
           </p>
         </div>
-        <Button>
-          <UserPlus className="mr-2 h-4 w-4" />
-          Assign Designer
-        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -60,7 +87,7 @@ export default function DesignRequestsPageTemplate() {
             </div>
             <Select
               value={filters.statusFilter}
-              onValueChange={(value) =>
+              onValueChange={(value: DesignerRequestStatus | "all") =>
                 setFilters({ ...filters, statusFilter: value })
               }
             >
@@ -69,35 +96,34 @@ export default function DesignRequestsPageTemplate() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="requested">Requested</SelectItem>
-                <SelectItem value="assigned">Assigned</SelectItem>
-                <SelectItem value="in-progress">In Progress</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
+                {Object.values(DesignerRequestStatus).map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {STATUS_LABELS[status]}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
-            <Select
-              value={filters.priorityFilter}
-              onValueChange={(value) =>
-                setFilters({ ...filters, priorityFilter: value })
-              }
-            >
-              <SelectTrigger className="w-fit">
-                <SelectValue placeholder="Filter by priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Priorities</SelectItem>
-                <SelectItem value="high">High Priority</SelectItem>
-                <SelectItem value="medium">Medium Priority</SelectItem>
-                <SelectItem value="low">Low Priority</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline_gray">
-              <Filter className="h-4 w-4" />
-              More Filters
-            </Button>
           </div>
-          <DesignRequestsTable />
+          <div className="col-span-12 grid">
+            <DesignRequestsTable
+              getAllDesignerRequests={getAllDesignerRequests}
+            />
+            <div className="rounded-2xl bg-white p-4">
+              <CursorPaginationDetailed
+                hasNextPage={pagination.hasNextPage}
+                hasPreviousPage={pagination.hasPreviousPage}
+                onNextPage={pagination.handleNextPage}
+                onPreviousPage={pagination.handlePreviousPage}
+                isLoading={getAllDesignerRequests.isLoading}
+                currentPage={pagination.currentPage}
+                itemsPerPage={pagination.itemsPerPage}
+                totalItemsOnCurrentPage={
+                  getAllDesignerRequests.value?.data?.designerRequests
+                    ?.length || 0
+                }
+              />
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

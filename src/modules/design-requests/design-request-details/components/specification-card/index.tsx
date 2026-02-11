@@ -1,74 +1,63 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DesignerRequest } from "@/lib/hooks/design-requests/use-get-all-designer-requests/use-get-all-designer-requests.types";
 
-export default function SpecificationCard({
-  requestId,
-}: {
-  requestId: string;
-}) {
-  const request = {
-    id: requestId,
-    date: "2025-09-30",
-    customer: {
-      name: "Alex Thompson",
-      email: "alex.thompson@example.com",
-      phone: "+1 (555) 234-5678",
-    },
-    productType: "T-Shirt Design",
-    timeline: "3-5 days",
-    status: "Requested",
-    priority: "High",
-    brief:
-      "I need a modern, minimalist design for a tech startup t-shirt. The design should incorporate our logo and tagline 'Innovation Simplified'. Prefer clean lines and a color scheme of navy blue and white. Target audience is young professionals aged 25-35.",
-    specifications: {
-      size: "Standard adult sizes (S-XXL)",
-      colors: "Navy blue, white",
-      printLocation: "Front chest and back",
-      quantity: "100 units",
-    },
-    timeline_details: [
-      {
-        stage: "Request Received",
-        date: "2025-09-30 09:00 AM",
-        completed: true,
-      },
-      { stage: "Designer Assigned", date: "Pending", completed: false },
-      { stage: "Design In Progress", date: "Pending", completed: false },
-      { stage: "Design Completed", date: "Pending", completed: false },
-      { stage: "Customer Approved", date: "Pending", completed: false },
-    ],
-  };
+interface SpecificationCardProps {
+  request: DesignerRequest;
+}
+
+export default function SpecificationCard({ request }: SpecificationCardProps) {
+  const preferences = request.preferences;
 
   return (
     <Card className="@container/card shadow-none">
       <CardHeader>
         <CardTitle>Specifications</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-muted-foreground mb-1 text-sm">Size</p>
-            <p className="text-sm font-medium">{request.specifications.size}</p>
+            <p className="text-muted-foreground mb-1 text-sm">Style</p>
+            <p className="text-sm font-medium capitalize">
+              {preferences?.style || "Not specified"}
+            </p>
           </div>
           <div>
             <p className="text-muted-foreground mb-1 text-sm">Colors</p>
-            <p className="text-sm font-medium">
-              {request.specifications.colors}
-            </p>
+            <div className="flex flex-wrap gap-1">
+              {preferences?.colors?.length > 0 ? (
+                preferences.colors.map((color, index) => (
+                  <Badge key={index} variant="secondary" className="text-xs">
+                    {color}
+                  </Badge>
+                ))
+              ) : (
+                <p className="text-sm font-medium">Not specified</p>
+              )}
+            </div>
           </div>
-          <div>
-            <p className="text-muted-foreground mb-1 text-sm">Print Location</p>
-            <p className="text-sm font-medium">
-              {request.specifications.printLocation}
-            </p>
+          <div className="col-span-2">
+            <p className="text-muted-foreground mb-1 text-sm">Deliverables</p>
+            <div className="flex flex-wrap gap-1">
+              {preferences?.deliverables?.length > 0 ? (
+                preferences.deliverables.map((deliverable, index) => (
+                  <Badge key={index} variant="outline" className="text-xs">
+                    {deliverable}
+                  </Badge>
+                ))
+              ) : (
+                <p className="text-sm font-medium">Not specified</p>
+              )}
+            </div>
           </div>
-          <div>
-            <p className="text-muted-foreground mb-1 text-sm">Quantity</p>
-            <p className="text-sm font-medium">
-              {request.specifications.quantity}
-            </p>
-          </div>
+          {preferences?.instructions && (
+            <div className="col-span-2">
+              <p className="text-muted-foreground mb-1 text-sm">Instructions</p>
+              <p className="text-sm font-medium">{preferences.instructions}</p>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

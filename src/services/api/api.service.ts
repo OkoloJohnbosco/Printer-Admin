@@ -88,7 +88,7 @@ axios.interceptors.request.use(
     const token = session;
     const isAuthRoute = config.url?.includes("/auth");
 
-    if (token && (!isAuthRoute || config.url?.includes("/me/profile"))) {
+    if (token && !isAuthRoute) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
 

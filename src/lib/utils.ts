@@ -3,6 +3,7 @@ import { format, getYear, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 import { HubStatus } from "./hooks/admin/use-get-all-hubs";
+import { DesignerRequestStatus } from "./hooks/design-requests/use-get-all-designer-requests/use-get-all-designer-requests.types";
 import { OrderStatus } from "./hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import { PayoutStatus } from "./hooks/payouts/use-get-all-payouts/use-get-all-payouts.types";
 
@@ -366,6 +367,49 @@ export const getOrderStatusIconKey = (
     [OrderStatus.COMPLETED]: "completed",
     [OrderStatus.REJECTED]: "rejected",
     [OrderStatus.FAILED]: "failed",
+  };
+  return iconKeyMap[status] || "pending";
+};
+
+// Designer Request Status Badge Utilities
+export const getDesignerRequestStatusBadgeVariant = (
+  status: DesignerRequestStatus,
+) => {
+  const variantMap: Record<
+    DesignerRequestStatus,
+    "pending" | "info" | "purple" | "success" | "rejected" | "destructive"
+  > = {
+    [DesignerRequestStatus.PENDING]: "pending",
+    [DesignerRequestStatus.EXPIRED]: "destructive",
+    [DesignerRequestStatus.REJECTED]: "rejected",
+    [DesignerRequestStatus.ACCEPTED]: "success",
+    [DesignerRequestStatus.COMPLETED]: "success",
+    [DesignerRequestStatus.IN_PROGRESS]: "purple",
+  };
+  return variantMap[status] || "pending";
+};
+
+export type DesignerRequestStatusIconKey =
+  | "pending"
+  | "expired"
+  | "rejected"
+  | "accepted"
+  | "completed"
+  | "in_progress";
+
+export const getDesignerRequestStatusIconKey = (
+  status: DesignerRequestStatus,
+): DesignerRequestStatusIconKey => {
+  const iconKeyMap: Record<
+    DesignerRequestStatus,
+    DesignerRequestStatusIconKey
+  > = {
+    [DesignerRequestStatus.PENDING]: "pending",
+    [DesignerRequestStatus.EXPIRED]: "expired",
+    [DesignerRequestStatus.REJECTED]: "rejected",
+    [DesignerRequestStatus.ACCEPTED]: "accepted",
+    [DesignerRequestStatus.COMPLETED]: "completed",
+    [DesignerRequestStatus.IN_PROGRESS]: "in_progress",
   };
   return iconKeyMap[status] || "pending";
 };

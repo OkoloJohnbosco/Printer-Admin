@@ -1,6 +1,7 @@
 import { HubStatus } from "./hooks/admin/use-get-all-hubs/index";
 import { GetAllPartnerApplicationsParams } from "./hooks/admin/use-get-all-partner-applications/use-get-all-partner-applications.types";
 import { GetAuditLogsParams } from "./hooks/audit-logs/use-get-audit-logs/use-get-audit-logs.types";
+import { GetAllDesignerRequestsParams } from "./hooks/design-requests/use-get-all-designer-requests/use-get-all-designer-requests.types";
 import { GetAllOrdersParams } from "./hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import { GetAllPayoutsParams } from "./hooks/payouts/use-get-all-payouts/use-get-all-payouts.types";
 import { GetDashboardStatsParams } from "./hooks/stats/use-get-dashboard-stats/use-get-dashboard-stats.types";
@@ -174,6 +175,25 @@ export const ENDPOINTS = {
     return `admin/payouts?${searchParams.toString()}`;
   },
 
+  // Designer Requests Endpoints
+  GET_ALL_DESIGNER_REQUESTS: (params: GetAllDesignerRequestsParams) => {
+    const searchParams = new URLSearchParams();
+    if (params.cursor) {
+      searchParams.set("cursor", params.cursor);
+    }
+    if (params.limit) {
+      searchParams.set("limit", params.limit.toString());
+    }
+    if (params.status) {
+      searchParams.set("status", params.status);
+    }
+    return `admin/designer-requests?${searchParams.toString()}`;
+  },
+  UPDATE_DESIGNER_REQUEST: (requestId: string) =>
+    `admin/designer-requests/${requestId}`,
+  GET_DESIGNER_REQUEST_BY_ID: (requestId: string) =>
+    `admin/designer-requests/${requestId}`,
+
   // Audit Logs Endpoints
   GET_AUDIT_LOGS: (params: GetAuditLogsParams) => {
     const searchParams = new URLSearchParams();
@@ -285,6 +305,10 @@ export const QUERYKEYS = {
   GET_ALL_PAYOUTS: "GET_ALL_PAYOUTS",
 
   GET_AUDIT_LOGS: "GET_AUDIT_LOGS",
+
+  // Designer Requests Query Keys
+  GET_ALL_DESIGNER_REQUESTS: "GET_ALL_DESIGNER_REQUESTS",
+  GET_DESIGNER_REQUEST_BY_ID: "GET_DESIGNER_REQUEST_BY_ID",
 
   // Notification Query Keys
   GET_NOTIFICATIONS: "GET_NOTIFICATIONS",
