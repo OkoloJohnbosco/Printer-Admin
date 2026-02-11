@@ -55,6 +55,16 @@ export async function GET(request: Request) {
 
     const isAdmin = user?.role === "ADMIN";
 
+    if (!isAdmin) {
+      // Clear cookies if user is not an admin
+      cookieStore.delete(PRINTA_APP_KEY.TOKEN);
+      cookieStore.delete(PRINTA_APP_KEY.REFRESH);
+      // Redirect to login with error message
+      const loginUrl = new URL(routes.LOGIN, request.url);
+      loginUrl.searchParams.set("error", "unauthorized");
+      return NextResponse.redirect(loginUrl);
+    }
+
     cookieStore.set(PRINTA_APP_KEY.USER, JSON.stringify(user), {
       httpOnly: false,
       secure: true,
@@ -62,12 +72,25 @@ export async function GET(request: Request) {
       path: "/",
     });
 
-    // Decide redirect path
-    const redirectUrl = isAdmin ? routes.DASHBOARD : routes.LOGIN;
-
-    return NextResponse.redirect(new URL(redirectUrl, request.url));
+    return NextResponse.redirect(new URL(routes.DASHBOARD, request.url));
   } catch (error) {
     console.error("Error fetching user:", error);
-    return new NextResponse("Internal server error", { status: 500 });
+    console.log(`${process.env.NEXT_PUBLIC_CORE_BASE_URL}me/profile`);
+
+    // Handle 403 Forbidden - user not authorized for admin
+    if (axios.isAxiosError(error) && error.response?.status === 403) {
+      // Clear cookies
+      cookieStore.delete(PRINTA_APP_KEY.TOKEN);
+      cookieStore.delete(PRINTA_APP_KEY.REFRESH);
+      // Redirect to login with error message
+      const loginUrl = new URL(routes.LOGIN, request.url);
+      loginUrl.searchParams.set("error", "forbidden");
+      return NextResponse.redirect(loginUrl);
+    }
+
+    // For other errors, redirect to login
+    const loginUrl = new URL(routes.LOGIN, request.url);
+    loginUrl.searchParams.set("error", "auth_failed");
+    return NextResponse.redirect(loginUrl);
   }
 }

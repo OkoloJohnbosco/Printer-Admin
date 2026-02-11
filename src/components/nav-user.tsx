@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +30,7 @@ export function NavUser({ user }: { user?: User }) {
             className="page-fade-in border-0 px-4 shadow-none hover:bg-white"
           >
             <Avatar className="h-9 w-9 rounded-full">
-              {/* <AvatarImage src="/profile.png" alt={user?.firstName} /> */}
+              <AvatarImage src={user?.avatar || ""} alt={user?.firstName} />
               <AvatarFallback className="rounded-lg">
                 {getInitials(`${user?.firstName} ${user?.lastName}`)}
               </AvatarFallback>

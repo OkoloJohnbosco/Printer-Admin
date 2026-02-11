@@ -18,12 +18,14 @@ export const ENDPOINTS = {
   AUTH_GOOGLE: "auth/google",
   AUTH_RESEND_VERIFICATION: "auth/resend-verification",
   AUTH_FORGOT_PASSWORD: "auth/password/reset/initiate",
+  AUTH_CHANGE_PASSWORD: "auth/password/change",
   AUTH_REFRESH_TOKEN: "auth/refresh",
   AUTH_RESET_PASSWORD: "auth/password/reset/complete",
 
   AUTH_VALIDATE_RESET_TOKEN: "auth/validate-reset-token",
 
   GET_USER_DATA: "me/profile",
+  UPDATE_USER_PROFILE: "me/profile",
   GOOGLE_AUTH: (callBackURL: string) =>
     `auth/google${callBackURL ? `?callback=${callBackURL}` : ""}`,
 
@@ -272,11 +274,25 @@ export const ENDPOINTS = {
     const queryString = searchParams.toString();
     return `admin/stats/users${queryString ? `?${queryString}` : ""}`;
   },
+
+  // Files Endpoints
+  GET_PRESIGNED_URL: (params: {
+    context: string;
+    contentType: string;
+    fileSize: number;
+  }) => {
+    const searchParams = new URLSearchParams();
+    searchParams.append("context", params.context);
+    searchParams.append("contentType", params.contentType);
+    searchParams.append("fileSize", String(params.fileSize));
+    return `files/presigned-url?${searchParams.toString()}`;
+  },
 };
 
 //  for tracking react-query useQuery hooks and for revalidation
 export const QUERYKEYS = {
   GET_USER_DATA: "GET_USER_DATA",
+  UPDATE_USER_PROFILE: "UPDATE_USER_PROFILE",
   GOOGLE_AUTH: "GOOGLE_AUTH",
   GOOGLE_AUTH_USER_SESSION: "GOOGLE_AUTH_USER_SESSION",
 
@@ -319,4 +335,7 @@ export const QUERYKEYS = {
   GET_ORDER_STATS: "GET_ORDER_STATS",
   GET_HUB_STATS: "GET_HUB_STATS",
   GET_USER_STATS: "GET_USER_STATS",
+
+  // Files Query Keys
+  GET_PRESIGNED_URL: "GET_PRESIGNED_URL",
 };

@@ -99,7 +99,11 @@ export function StatusUpdateModal({
     if (status === DesignerRequestStatus.REJECTED) {
       return rejectionReason.trim().length > 0;
     }
-    if (status === DesignerRequestStatus.ACCEPTED) {
+    // Deliverables required when completing a PENDING request
+    if (
+      status === DesignerRequestStatus.COMPLETED &&
+      designerRequest.status === DesignerRequestStatus.PENDING
+    ) {
       return selectedDeliverables.length > 0;
     }
     return true;
@@ -116,7 +120,11 @@ export function StatusUpdateModal({
       payload.rejectionReason = rejectionReason;
     }
 
-    if (status === DesignerRequestStatus.ACCEPTED) {
+    // Include deliverables when completing a PENDING request
+    if (
+      status === DesignerRequestStatus.COMPLETED &&
+      designerRequest.status === DesignerRequestStatus.PENDING
+    ) {
       payload.deliverables = selectedDeliverables;
     }
 
@@ -200,70 +208,71 @@ export function StatusUpdateModal({
             </div>
           )}
 
-          {/* Deliverables Selection - shown when ACCEPTED is selected */}
-          {status === DesignerRequestStatus.ACCEPTED && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label>
-                  Select Deliverables{" "}
-                  <span className="text-destructive">*</span>
-                </Label>
-                {availableDeliverables.length > 0 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    type="button"
-                    onClick={handleSelectAllDeliverables}
-                    className="h-auto p-0 text-xs"
-                  >
-                    {selectedDeliverables.length ===
-                    availableDeliverables.length
-                      ? "Deselect All"
-                      : "Select All"}
-                  </Button>
-                )}
-              </div>
-
-              {availableDeliverables.length > 0 ? (
-                <div className="border-border space-y-2 rounded-md border p-3">
-                  {availableDeliverables.map((deliverable) => (
-                    <div
-                      key={deliverable}
-                      className="flex items-center space-x-2"
+          {/* Deliverables Selection - shown when COMPLETED is selected and current status is PENDING */}
+          {status === DesignerRequestStatus.COMPLETED &&
+            designerRequest.status === DesignerRequestStatus.ACCEPTED && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label>
+                    Select Deliverables{" "}
+                    <span className="text-destructive">*</span>
+                  </Label>
+                  {availableDeliverables.length > 0 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      type="button"
+                      onClick={handleSelectAllDeliverables}
+                      className="h-auto p-0 text-xs"
                     >
-                      <Checkbox
-                        id={deliverable}
-                        checked={selectedDeliverables.includes(deliverable)}
-                        onCheckedChange={() =>
-                          handleDeliverableToggle(deliverable)
-                        }
-                      />
-                      <Label
-                        htmlFor={deliverable}
-                        className="cursor-pointer text-sm font-normal capitalize"
-                      >
-                        {deliverable}
-                      </Label>
-                    </div>
-                  ))}
+                      {selectedDeliverables.length ===
+                      availableDeliverables.length
+                        ? "Deselect All"
+                        : "Select All"}
+                    </Button>
+                  )}
                 </div>
-              ) : (
-                <div className="bg-muted rounded-md p-3">
-                  <p className="text-muted-foreground text-sm">
-                    No deliverables specified in this request.
-                  </p>
-                </div>
-              )}
 
-              {selectedDeliverables.length === 0 &&
-                availableDeliverables.length > 0 && (
-                  <p className="text-destructive flex items-center gap-1 text-xs">
-                    <AlertCircle className="h-3 w-3" />
-                    Please select at least one deliverable
-                  </p>
+                {availableDeliverables.length > 0 ? (
+                  <div className="border-border space-y-2 rounded-md border p-3">
+                    {availableDeliverables.map((deliverable) => (
+                      <div
+                        key={deliverable}
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id={deliverable}
+                          checked={selectedDeliverables.includes(deliverable)}
+                          onCheckedChange={() =>
+                            handleDeliverableToggle(deliverable)
+                          }
+                        />
+                        <Label
+                          htmlFor={deliverable}
+                          className="cursor-pointer text-sm font-normal capitalize"
+                        >
+                          {deliverable}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="bg-muted rounded-md p-3">
+                    <p className="text-muted-foreground text-sm">
+                      No deliverables specified in this request.
+                    </p>
+                  </div>
                 )}
-            </div>
-          )}
+
+                {selectedDeliverables.length === 0 &&
+                  availableDeliverables.length > 0 && (
+                    <p className="text-destructive flex items-center gap-1 text-xs">
+                      <AlertCircle className="h-3 w-3" />
+                      Please select at least one deliverable
+                    </p>
+                  )}
+              </div>
+            )}
 
           {/* Summary of changes */}
           {status !== designerRequest.status && (

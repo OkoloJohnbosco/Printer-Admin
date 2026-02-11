@@ -23,6 +23,9 @@ export const PRINTA_APP_KEY = {
 export const baseURL =
   process.env.NEXT_PUBLIC_CORE_BASE_URL ?? "https://api.printa.africa/";
 
+export const PAYSTACK_BASE_URL = "https://api.paystack.co";
+export const S3_BASE_URL = "https://s3.printa.africa";
+
 // Mock users data
 export const users = [
   {
