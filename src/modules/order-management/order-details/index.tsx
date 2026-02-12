@@ -92,8 +92,10 @@ export default function OrderDetailPageTemplate({
               Back to Orders
             </Button>
           </Link>
-          <h1 className="mb-2 text-3xl font-bold">Order Details</h1>
-          <p className="text-muted-foreground">
+          <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl">
+            Order Details
+          </h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             View and manage order {orderDetails.reference}
           </p>
         </div>

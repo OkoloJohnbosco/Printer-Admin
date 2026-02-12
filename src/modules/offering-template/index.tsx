@@ -21,9 +21,9 @@ export default function OfferingTemplatePageTemplate() {
       <OfferingTemplateHeader />
 
       <Card className="@container/card shadow-none">
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <CardTitle className="shrink-0">All Offering Templates </CardTitle>
-          <div className="w-full max-w-[300px] space-y-1 text-right">
+          <div className="w-full space-y-1 sm:max-w-[300px] sm:text-right">
             <Select value={subCategoryId} onValueChange={setSubCategoryId}>
               <SelectTrigger>
                 <SelectValue />

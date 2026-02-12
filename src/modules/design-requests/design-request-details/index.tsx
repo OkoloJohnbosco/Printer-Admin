@@ -80,8 +80,10 @@ export default function DesignRequestDetailPageTemplate({
             Back to Design Requests
           </Button>
         </Link>
-        <h1 className="mb-2 text-3xl font-bold">Design Request Details</h1>
-        <p className="text-muted-foreground">
+        <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl">
+          Design Request Details
+        </h1>
+        <p className="text-muted-foreground text-sm sm:text-base">
           Review and manage design request {params.id.slice(0, 8)}...
         </p>
       </div>

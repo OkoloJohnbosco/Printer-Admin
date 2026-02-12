@@ -112,14 +112,16 @@ export default function PrintHubsPageTemplate() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Print Hubs</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            Print Hubs
+          </h1>
+          <p className="text-muted-foreground text-sm sm:text-base">
             Manage and monitor print hub operations
           </p>
         </div>
-        <Button>
+        <Button className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           Add Hub
         </Button>
@@ -134,8 +136,8 @@ export default function PrintHubsPageTemplate() {
           <CardTitle>Filter Hubs</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex items-center gap-4">
-            <div className="relative w-full">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+            <div className="relative w-full sm:min-w-[200px] sm:flex-1">
               <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
               <Input
                 placeholder="Search hubs..."
@@ -150,81 +152,83 @@ export default function PrintHubsPageTemplate() {
                 <Loader className="text-foundation-black-200 absolute top-1/2 right-2 h-4 w-4 -translate-y-1/2 animate-spin" />
               )}
             </div>
-            <Select
-              value={filters.statusFilter}
-              onValueChange={(value) =>
-                setFilters({ ...filters, statusFilter: value })
-              }
-            >
-              <SelectTrigger className="w-fit capitalize">
-                <SelectValue
-                  className="capitalize"
-                  placeholder="Filter by status"
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                {Object.values(HubStatus).map((status) => (
-                  <SelectItem
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+              <Select
+                value={filters.statusFilter}
+                onValueChange={(value) =>
+                  setFilters({ ...filters, statusFilter: value })
+                }
+              >
+                <SelectTrigger className="w-full capitalize sm:w-fit">
+                  <SelectValue
                     className="capitalize"
-                    key={status}
-                    value={status}
-                  >
-                    {formatStatusText(status?.toLowerCase())}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select
-              value={filters.locationFilter}
-              onValueChange={(value) =>
-                setFilters({ ...filters, locationFilter: value })
-              }
-            >
-              <SelectTrigger className="w-fit">
-                <SelectValue placeholder="Filter by location" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Locations</SelectItem>
-                {cities.map((city) => (
-                  <SelectItem key={city.value} value={city.value}>
-                    {city.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                    placeholder="Filter by status"
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  {Object.values(HubStatus).map((status) => (
+                    <SelectItem
+                      className="capitalize"
+                      key={status}
+                      value={status}
+                    >
+                      {formatStatusText(status?.toLowerCase())}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select
+                value={filters.locationFilter}
+                onValueChange={(value) =>
+                  setFilters({ ...filters, locationFilter: value })
+                }
+              >
+                <SelectTrigger className="w-full sm:w-fit">
+                  <SelectValue placeholder="Filter by location" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Locations</SelectItem>
+                  {cities.map((city) => (
+                    <SelectItem key={city.value} value={city.value}>
+                      {city.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-            <div className="bg-brand-gray-50 flex shrink-0 items-center gap-2 overflow-hidden rounded-full">
-              {tabs?.map((tab) => (
-                <Button
-                  key={tab.value}
-                  value={active}
-                  onClick={() => setActive(tab.value)}
-                  variant="ghost"
-                  className={cn(
-                    "text-foundation-black-300 items-center justify-center px-3 font-normal hover:bg-transparent sm:px-6",
-                    tab.value === active && "text-white",
-                  )}
-                >
-                  <span
+              <div className="bg-brand-gray-50 flex shrink-0 items-center gap-2 overflow-hidden rounded-full">
+                {tabs?.map((tab) => (
+                  <Button
+                    key={tab.value}
+                    value={active}
+                    onClick={() => setActive(tab.value)}
+                    variant="ghost"
                     className={cn(
-                      tab.value === active
-                        ? "text-white"
-                        : "text-foundation-black-300",
-                      "z-10 capitalize duration-200 ease-in-out",
+                      "text-foundation-black-300 items-center justify-center px-3 font-normal hover:bg-transparent sm:px-6",
+                      tab.value === active && "text-white",
                     )}
                   >
-                    {tab.title}
-                  </span>
+                    <span
+                      className={cn(
+                        tab.value === active
+                          ? "text-white"
+                          : "text-foundation-black-300",
+                        "z-10 capitalize duration-200 ease-in-out",
+                      )}
+                    >
+                      {tab.title}
+                    </span>
 
-                  {tab.value === active ? (
-                    <motion.span
-                      className="absolute top-0 left-0 h-full w-full rounded-full bg-black"
-                      layoutId="underline-notification"
-                    />
-                  ) : null}
-                </Button>
-              ))}
+                    {tab.value === active ? (
+                      <motion.span
+                        className="absolute top-0 left-0 h-full w-full rounded-full bg-black"
+                        layoutId="underline-notification"
+                      />
+                    ) : null}
+                  </Button>
+                ))}
+              </div>
             </div>
           </div>
 

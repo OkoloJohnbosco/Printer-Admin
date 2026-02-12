@@ -21,13 +21,13 @@ function StatsCardRow() {
   return (
     <div className="space-y-4">
       {/* Header with Date Toggle */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Heading size="h5">Overview</Heading>
         <DatePeriodFilter filter={dateFilter} />
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {/* Total Orders */}
         <div className="space-y-4 rounded-lg bg-white px-4 py-6">
           <div className="flex items-center gap-4">

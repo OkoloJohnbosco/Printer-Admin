@@ -224,8 +224,10 @@ export default function NewOfferingTemplateSection() {
             }
           />
           <div>
-            <h1 className="mb-2 text-3xl font-bold">Create New Template</h1>
-            <p className="text-muted-foreground">
+            <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl">
+              Create New Template
+            </h1>
+            <p className="text-muted-foreground text-sm sm:text-base">
               Define a template with specifications that print hubs can use when
               creating products
             </p>
@@ -530,9 +532,14 @@ export default function NewOfferingTemplateSection() {
           </Card>
 
           {/* Actions */}
-          <div className="flex justify-end gap-4">
-            <Link href="/categories">
-              <Button variant="outline" type="button" size="lg">
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end sm:gap-4">
+            <Link href="/categories" className="w-full sm:w-auto">
+              <Button
+                variant="outline"
+                type="button"
+                size="lg"
+                className="w-full sm:w-auto"
+              >
                 Cancel
               </Button>
             </Link>
@@ -541,6 +548,7 @@ export default function NewOfferingTemplateSection() {
               size="lg"
               disabled={isSubmitting}
               isLoading={createProductTemplate.isPending}
+              className="w-full sm:w-auto"
             >
               {isSubmitting ? "Creating..." : "Create Template"}
             </Button>

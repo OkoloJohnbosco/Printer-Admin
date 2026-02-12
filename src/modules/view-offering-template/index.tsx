@@ -63,14 +63,20 @@ export default function ViewOfferingTemplatePageTemplate({
               </span>
             }
           />
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold">{template.name}</h1>
-              <p className="text-muted-foreground">
+              <h1 className="text-2xl font-bold sm:text-3xl">
+                {template.name}
+              </h1>
+              <p className="text-muted-foreground text-sm sm:text-base">
                 View and manage template details
               </p>
             </div>
-            <Button onClick={handleEditTemplate} size="lg">
+            <Button
+              onClick={handleEditTemplate}
+              size="lg"
+              className="w-full sm:w-auto"
+            >
               <Edit className="mr-2 h-4 w-4" />
               Edit Template
             </Button>

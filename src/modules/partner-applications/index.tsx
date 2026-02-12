@@ -53,15 +53,21 @@ export default function PartnerApplicationsPageTemplate() {
   return (
     <div className="page-fade-in w-full space-y-6">
       <main>
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="mb-2 text-3xl font-bold">Partner Applications</h1>
-            <p className="text-muted-foreground">
+            <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl">
+              Partner Applications
+            </h1>
+            <p className="text-muted-foreground text-sm sm:text-base">
               View and manage partner applications
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={handleExportCSV}>
+            <Button
+              variant="outline"
+              onClick={handleExportCSV}
+              className="w-full sm:w-auto"
+            >
               <Download className="mr-2 h-4 w-4" />
               Export CSV
             </Button>

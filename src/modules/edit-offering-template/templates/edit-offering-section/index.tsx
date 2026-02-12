@@ -275,8 +275,10 @@ export default function EditOfferingTemplateSection({
             href={`${routes.TEMPLATES}/${templateId}`}
           />
           <div>
-            <h1 className="mb-2 text-3xl font-bold">Edit Template</h1>
-            <p className="text-muted-foreground">
+            <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl">
+              Edit Template
+            </h1>
+            <p className="text-muted-foreground text-sm sm:text-base">
               Update the template specifications and settings
             </p>
           </div>
@@ -578,9 +580,17 @@ export default function EditOfferingTemplateSection({
           </Card>
 
           {/* Actions */}
-          <div className="flex justify-end gap-4">
-            <Link href={`${routes.TEMPLATES}/${templateId}`}>
-              <Button variant="outline" type="button" size="lg">
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end sm:gap-4">
+            <Link
+              href={`${routes.TEMPLATES}/${templateId}`}
+              className="w-full sm:w-auto"
+            >
+              <Button
+                variant="outline"
+                type="button"
+                size="lg"
+                className="w-full sm:w-auto"
+              >
                 Cancel
               </Button>
             </Link>
@@ -589,6 +599,7 @@ export default function EditOfferingTemplateSection({
               size="lg"
               disabled={isSubmitting}
               isLoading={updateProductTemplate.isPending}
+              className="w-full sm:w-auto"
             >
               {isSubmitting ? "Updating..." : "Update Template"}
             </Button>

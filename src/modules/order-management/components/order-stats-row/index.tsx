@@ -21,13 +21,13 @@ function OrderStatsRow() {
   return (
     <div className="space-y-4 pb-8">
       {/* Header with Date Toggle */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Heading size="h5">Order Statistics</Heading>
         <DatePeriodFilter filter={dateFilter} />
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {/* Total Orders */}
         <Card className="@container/card border-0 shadow-none">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

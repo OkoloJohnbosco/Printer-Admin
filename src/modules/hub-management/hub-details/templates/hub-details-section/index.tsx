@@ -106,10 +106,14 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
       <main>
         <div className="mb-6 space-y-4">
           <BackButton text="Back to Print Hubs" />
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h1 className="mb-2 text-3xl font-bold">{hub.businessName}</h1>
-              <p className="text-muted-foreground">{hub.businessAddress}</p>
+              <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl">
+                {hub.businessName}
+              </h1>
+              <p className="text-muted-foreground text-sm sm:text-base">
+                {hub.businessAddress}
+              </p>
             </div>
           </div>
         </div>

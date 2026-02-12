@@ -5,7 +5,7 @@ function WelcomeHeader() {
     <div className="flex items-center justify-between">
       <div>
         <Heading size={"h4"}>Welcome back, Admin!</Heading>
-        <p className="text-xs">
+        <p className="text-muted-foreground text-xs sm:text-sm">
           Here&apos;s what&apos;s happening on the platform today.
         </p>
       </div>
