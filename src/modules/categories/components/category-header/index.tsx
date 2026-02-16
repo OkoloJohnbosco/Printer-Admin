@@ -9,10 +9,9 @@ function CategoryHeader() {
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="space-y-1 sm:space-y-2">
-        <Heading size="h4">Categories & Sub-Categories</Heading>
+        <Heading size="h4">Categories</Heading>
         <p className="text-muted-foreground text-sm sm:text-base">
-          Manage product categories and sub-categories for your print hub
-          catalog
+          Manage product categories for your print hub catalog
         </p>
       </div>
       <Button onClick={onOpen} className="w-full sm:w-auto">

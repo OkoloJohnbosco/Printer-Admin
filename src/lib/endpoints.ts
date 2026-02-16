@@ -66,29 +66,12 @@ export const ENDPOINTS = {
     return `admin/partner-applications?${searchParams.toString()}`;
   },
 
-  CREATE_PRODUCT_SUB_CATEGORY: `admin/products/sub-categories`,
-  GET_ALL_PRODUCT_SUB_CATEGORIES: (categoryId: string) =>
-    `admin/products/sub-categories${categoryId ? `?categoryId=${categoryId}` : ""}`,
-  GET_PRODUCT_SUB_CATEGORY_BY_ID: (subCategoryId: string) =>
-    `admin/products/sub-categories/${subCategoryId}`,
-  UPDATE_PRODUCT_SUB_CATEGORY_BY_ID: (subCategoryId: string) =>
-    `admin/products/sub-categories/${subCategoryId}`,
-  DELETE_PRODUCT_SUB_CATEGORY_BY_ID: (subCategoryId: string) =>
-    `admin/products/sub-categories/${subCategoryId}`,
-
-  CREATE_PRODUCT_TEMPLATE: `admin/products/templates`,
-  GET_ALL_PRODUCT_TEMPLATES: (subCategoryId?: string) =>
-    `admin/products/templates${subCategoryId ? `?subCategoryId=${subCategoryId}` : ""}`,
-  GET_PRODUCT_TEMPLATE_BY_ID: (templateId: string) =>
-    `admin/products/templates/${templateId}`,
-  UPDATE_PRODUCT_TEMPLATE_BY_ID: (templateId: string) =>
-    `admin/products/templates/${templateId}`,
-  DELETE_PRODUCT_TEMPLATE_BY_ID: (templateId: string) =>
-    `admin/products/templates/${templateId}`,
-
-  GET_PRODUCT_BY_ID: (productId: string) => `admin/product/${productId}`,
-  GET_ALL_PRODUCTS: (page: number, limit: number) =>
-    `admin/products${page ? `?cursor=${page}` : ""}${limit ? `&limit=${limit}` : ""}`,
+  CREATE_PRODUCT: `admin/products`,
+  GET_ALL_PRODUCTS: (categoryId?: string) =>
+    `admin/products${categoryId ? `?categoryId=${categoryId}` : ""}`,
+  GET_PRODUCT_BY_ID: (productId: string) => `admin/products/${productId}`,
+  UPDATE_PRODUCT_BY_ID: (productId: string) => `admin/products/${productId}`,
+  DELETE_PRODUCT_BY_ID: (productId: string) => `admin/products/${productId}`,
   GET_ALL_USERS: (params: GetAllUsersParams) => {
     const searchParams = new URLSearchParams();
     if (params.cursor) {
@@ -305,11 +288,6 @@ export const QUERYKEYS = {
   GET_PRODUCT_BY_ID: "GET_PRODUCT_BY_ID",
   GET_PRODUCT_CATEGORY_BY_ID: "GET_PRODUCT_CATEGORY_BY_ID",
   GET_ALL_PRODUCT_CATEGORIES: "GET_ALL_PRODUCT_CATEGORIES",
-
-  GET_ALL_PRODUCT_SUB_CATEGORIES: "GET_ALL_PRODUCT_SUB_CATEGORIES",
-  GET_PRODUCT_SUB_CATEGORY_BY_ID: "GET_PRODUCT_SUB_CATEGORY_BY_ID",
-  GET_ALL_PRODUCT_TEMPLATES: "GET_ALL_PRODUCT_TEMPLATES",
-  GET_PRODUCT_TEMPLATE_BY_ID: "GET_PRODUCT_TEMPLATE_BY_ID",
 
   GET_ALL_ORDERS: "GET_ALL_ORDERS",
   GET_ORDER_BY_ID: "GET_ORDER_BY_ID",

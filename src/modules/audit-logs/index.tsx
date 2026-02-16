@@ -98,14 +98,11 @@ export default function AuditLogsPageTemplate() {
       AuditLogAction.CATEGORY_CREATED,
       AuditLogAction.CATEGORY_UPDATED,
       AuditLogAction.CATEGORY_DELETED,
-      AuditLogAction.SUBCATEGORY_CREATED,
-      AuditLogAction.SUBCATEGORY_UPDATED,
-      AuditLogAction.SUBCATEGORY_DELETED,
     ],
-    Templates: [
-      AuditLogAction.TEMPLATE_CREATED,
-      AuditLogAction.TEMPLATE_UPDATED,
-      AuditLogAction.TEMPLATE_DELETED,
+    Products: [
+      AuditLogAction.PRODUCT_CREATED,
+      AuditLogAction.PRODUCT_UPDATED,
+      AuditLogAction.PRODUCT_DELETED,
     ],
     Config: [AuditLogAction.CONFIG_UPDATED, AuditLogAction.CONFIG_DELETED],
   };

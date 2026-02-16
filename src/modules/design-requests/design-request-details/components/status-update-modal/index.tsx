@@ -210,7 +210,7 @@ export function StatusUpdateModal({
 
           {/* Deliverables Selection - shown when COMPLETED is selected and current status is PENDING */}
           {status === DesignerRequestStatus.COMPLETED &&
-            designerRequest.status === DesignerRequestStatus.ACCEPTED && (
+            designerRequest.status === DesignerRequestStatus.IN_PROGRESS && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <Label>

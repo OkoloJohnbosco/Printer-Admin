@@ -1,4 +1,4 @@
-import { Addon } from "../../admin/use-get-product-template-by-id";
+import { Addon } from "../../admin/use-get-all-products";
 import { OrderStatus } from "../use-get-all-orders/use-get-all-orders.types";
 
 export interface GetOrderDetailsResponse {

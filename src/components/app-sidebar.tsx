@@ -75,8 +75,8 @@ const data = {
       icon: FolderTree,
     },
     {
-      title: "Templates",
-      url: routes.TEMPLATES,
+      title: "Products",
+      url: routes.PRODUCTS,
       icon: Palette,
     },
   ],
