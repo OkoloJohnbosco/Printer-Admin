@@ -11,6 +11,7 @@ import {
   formatToFullYMD,
   getOrderStatusBadgeVariant,
   getOrderStatusIconKey,
+  type OrderStatusIconKey,
 } from "@/lib/utils";
 import {
   AlertCircle,
@@ -19,17 +20,19 @@ import {
   Eye,
   ListTodo,
   Loader,
+  PackageCheck,
   X,
 } from "lucide-react";
 import Link from "next/link";
 
-const orderStatusIcons = {
+const orderStatusIcons: Record<OrderStatusIconKey, React.ReactElement> = {
   pending: <Clock className="size-3" />,
   queued: <ListTodo className="size-3" />,
   processing: <Loader className="size-3" />,
   completed: <Check className="size-3" />,
   rejected: <X className="size-3" />,
   failed: <AlertCircle className="size-3" />,
+  delivered: <PackageCheck className="size-3" />,
 };
 
 function OrderTableRow({ order }: { order: Order }) {

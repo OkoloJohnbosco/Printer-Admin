@@ -3,32 +3,23 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { DesignerRequestStatus } from "@/lib/hooks/design-requests/use-get-all-designer-requests/use-get-all-designer-requests.types";
 import useGetDesignerRequestById from "@/lib/hooks/design-requests/use-get-designer-request-by-id";
 import {
   formatStatusText,
-  formatToFullYMD,
   getDesignerRequestStatusBadgeVariant,
 } from "@/lib/utils";
 import { AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { DesignRequestDetailsError } from "./components/design-request-details-error";
 import { DesignRequestDetailsSkeleton } from "./components/design-request-details-skeleton";
 import ReferenceFilesCard from "./components/reference-files-card";
 import RequestInfoCard from "./components/request-info-card";
 import SpecificationCard from "./components/specification-card";
-import { StatusUpdateModal } from "./components/status-update-modal";
-
-const STATUS_LABELS: Record<DesignerRequestStatus, string> = {
-  [DesignerRequestStatus.PENDING]: "Pending",
-  [DesignerRequestStatus.EXPIRED]: "Expired",
-  [DesignerRequestStatus.REJECTED]: "Rejected",
-  [DesignerRequestStatus.ACCEPTED]: "Accepted",
-  [DesignerRequestStatus.COMPLETED]: "Completed",
-  [DesignerRequestStatus.IN_PROGRESS]: "In Progress",
-};
+import {
+  canUpdateStatus,
+  StatusUpdateModal,
+} from "./components/status-update-modal";
 
 export default function DesignRequestDetailPageTemplate({
   params,
@@ -38,8 +29,6 @@ export default function DesignRequestDetailPageTemplate({
   const { isLoading, isError, error, refetch, value } =
     useGetDesignerRequestById(params.id);
   const designerRequest = value?.data;
-
-  const [notes, setNotes] = useState("");
 
   if (isLoading) {
     return <DesignRequestDetailsSkeleton />;
@@ -55,21 +44,6 @@ export default function DesignRequestDetailPageTemplate({
   }
 
   const customerName = `${designerRequest.user.firstName} ${designerRequest.user.lastName}`;
-
-  // Generate timeline based on request status
-  const statusOrder = Object.values(DesignerRequestStatus);
-  const currentStatusIndex = statusOrder.findIndex(
-    (s) => s === designerRequest.status,
-  );
-
-  const timeline = statusOrder.map((statusValue, index) => ({
-    stage: STATUS_LABELS[statusValue],
-    date:
-      index <= currentStatusIndex
-        ? formatToFullYMD(designerRequest.createdAt)
-        : "Pending",
-    completed: index <= currentStatusIndex,
-  }));
 
   return (
     <main className="page-fade-in w-full">
@@ -133,34 +107,10 @@ export default function DesignRequestDetailPageTemplate({
 
           <ReferenceFilesCard references={designerRequest.references} />
 
-          <Card className="@container/card shadow-none">
-            <CardHeader>
-              <CardTitle>Timeline</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {timeline.map((item, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <div
-                      className={`mt-2 h-2 w-2 rounded-full ${item.completed ? "bg-primary" : "bg-muted"}`}
-                    />
-                    <div className="border-border flex-1 border-b pb-4 last:border-0 last:pb-0">
-                      <div className="flex items-center justify-between">
-                        <p
-                          className={`font-medium ${item.completed ? "text-foreground" : "text-muted-foreground"}`}
-                        >
-                          {item.stage}
-                        </p>
-                        <p className="text-muted-foreground text-sm">
-                          {item.date}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <ReferenceFilesCard
+            references={designerRequest.deliverables}
+            title="Deliverable Files"
+          />
         </div>
 
         <div className="space-y-6">
@@ -198,27 +148,18 @@ export default function DesignRequestDetailPageTemplate({
                   {formatStatusText(designerRequest.status)}
                 </Badge>
               </div>
-              <StatusUpdateModal
-                designerRequest={designerRequest}
-                onSuccess={() => refetch()}
-              />
-            </CardContent>
-          </Card>
-
-          <Card className="@container/card shadow-none">
-            <CardHeader>
-              <CardTitle>Admin Notes</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Textarea
-                placeholder="Add internal notes about this request..."
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                rows={4}
-              />
-              <Button variant="outline" className="w-full bg-transparent">
-                Save Notes
-              </Button>
+              {canUpdateStatus(designerRequest.status) ? (
+                <StatusUpdateModal
+                  designerRequest={designerRequest}
+                  onSuccess={() => refetch()}
+                />
+              ) : (
+                <p className="text-muted-foreground text-xs">
+                  This request has been{" "}
+                  {designerRequest.status.toLowerCase().replace("_", " ")} and
+                  can no longer be updated.
+                </p>
+              )}
             </CardContent>
           </Card>
 

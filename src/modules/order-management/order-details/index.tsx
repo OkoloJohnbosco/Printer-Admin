@@ -1,5 +1,14 @@
 "use client";
 
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -9,10 +18,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { QUERYKEYS } from "@/lib/endpoints";
+import useDeliverOrder from "@/lib/hooks/orders/use-deliver-order";
 import { OrderStatus } from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import useGetOrderDetails from "@/lib/hooks/orders/use-get-order-details";
 import { formatCurrency, formatStatusText, formatToMDY } from "@/lib/utils";
-import { ArrowLeft, Calendar, Hash, MapPin, Package, User } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  ArrowLeft,
+  Building2,
+  Calendar,
+  Hash,
+  Mail,
+  MapPin,
+  Package,
+  PackageCheck,
+  User,
+} from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AssignedHubCard } from "./components/assigned-hub-card";
@@ -25,13 +47,19 @@ export default function OrderDetailPageTemplate({
 }: {
   params: { id: string };
 }) {
+  const queryClient = useQueryClient();
   const { isLoading, isError, error, refetch, value } = useGetOrderDetails(
     params.id,
   );
   const orderDetails = value?.data;
+  const deliverOrder = useDeliverOrder(params.id);
   const [selectedHub, setSelectedHub] = useState("");
+  const [isDeliverDialogOpen, setIsDeliverDialogOpen] = useState(false);
   // Initialize status from API data
   const [status, setStatus] = useState("");
+  const isCompleted = status === OrderStatus.COMPLETED;
+  const isDelivered = status === OrderStatus.DELIVERED;
+  const isCompletedOrDelivered = isCompleted || isDelivered;
 
   // Update status when orderDetails loads
   useMemo(() => {
@@ -65,20 +93,7 @@ export default function OrderDetailPageTemplate({
 
   const orderDate = formatToMDY(orderDetails.createdAt);
 
-  // Generate timeline based on order status using OrderStatus enum
-  const statusOrder = Object.values(OrderStatus);
-  const currentStatusIndex = statusOrder.findIndex(
-    (s) => s.toLowerCase() === orderDetails.status.toLowerCase(),
-  );
-
-  const timeline = statusOrder.map((statusValue, index) => ({
-    status: formatStatusText(statusValue.toLowerCase()),
-    date: index <= currentStatusIndex ? orderDate : "Pending",
-    completed: index <= currentStatusIndex,
-  }));
-
-  const handleStatusUpdate = (newStatus: string, notes?: string) => {
-    console.log("Updating status to:", newStatus, "Notes:", notes);
+  const handleStatusUpdate = (newStatus: string) => {
     setStatus(newStatus);
   };
 
@@ -240,29 +255,34 @@ export default function OrderDetailPageTemplate({
 
             <Card className="@container/card shadow-none">
               <CardHeader>
-                <CardTitle>Order Timeline</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Building2 className="h-5 w-5" />
+                  Print Hub
+                </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {timeline.map((item, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <div
-                        className={`mt-2 h-2 w-2 rounded-full ${item.completed ? "bg-primary" : "bg-muted"}`}
-                      />
-                      <div className="border-border last flex-1 border-b pb-4 last:pb-0">
-                        <div className="flex items-center justify-between">
-                          <p
-                            className={`font-medium capitalize ${item.completed ? "text-foreground" : "text-muted-foreground"}`}
-                          >
-                            {item.status}
-                          </p>
-                          <p className="text-muted-foreground text-sm">
-                            {item.date}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+              <CardContent className="space-y-3">
+                <div>
+                  <p className="font-medium">{orderDetails.hub.businessName}</p>
+                  <p className="text-muted-foreground text-sm capitalize">
+                    {orderDetails.hub.status}
+                  </p>
+                </div>
+                <div className="border-border space-y-2 border-t pt-3">
+                  <div className="flex items-start gap-2">
+                    <MapPin className="text-muted-foreground mt-0.5 h-4 w-4 shrink-0" />
+                    <p className="text-muted-foreground text-sm">
+                      {orderDetails.hub.businessAddress}
+                      {orderDetails.hub.city || orderDetails.hub.state
+                        ? `, ${[orderDetails.hub.city, orderDetails.hub.state].filter(Boolean).join(", ")}`
+                        : ""}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Mail className="text-muted-foreground h-4 w-4 shrink-0" />
+                    <p className="text-muted-foreground truncate text-sm">
+                      {orderDetails.hub.businessEmail}
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -299,16 +319,97 @@ export default function OrderDetailPageTemplate({
                   currentStatus={status}
                   onStatusUpdate={handleStatusUpdate}
                   trigger={
-                    <Button className="w-full" size="lg">
+                    <Button
+                      className="w-full"
+                      size="lg"
+                      disabled={isCompletedOrDelivered}
+                    >
                       Update Status
                     </Button>
                   }
                 />
                 <p className="text-muted-foreground text-xs">
-                  Customer will receive an email notification
+                  {isCompletedOrDelivered
+                    ? `This order has been ${orderDetails?.status?.toLowerCase()}`
+                    : "Customer will receive an email notification"}
                 </p>
               </CardContent>
             </Card>
+
+            {isCompletedOrDelivered && (
+              <Card className="@container/card border-green-200 bg-green-50/50 shadow-none">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <PackageCheck className="h-5 w-5 text-green-600" />
+                    Delivery
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {isDelivered ? (
+                    <p className="text-sm text-green-700">
+                      This order has been delivered to the customer
+                      successfully.
+                    </p>
+                  ) : (
+                    <>
+                      <p className="text-muted-foreground text-sm">
+                        This order has been completed and is ready for delivery.
+                        Mark it as delivered once the customer has received
+                        their order.
+                      </p>
+                      <AlertDialog
+                        open={isDeliverDialogOpen}
+                        onOpenChange={setIsDeliverDialogOpen}
+                      >
+                        <AlertDialogTrigger asChild>
+                          <Button className="w-full" size="lg">
+                            <PackageCheck className="mr-2 h-4 w-4" />
+                            Mark as Delivered
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Confirm Delivery
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to mark order{" "}
+                              <strong>{orderDetails.reference}</strong> as
+                              delivered? This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <Button
+                              variant="outline"
+                              onClick={() => setIsDeliverDialogOpen(false)}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                deliverOrder.mutateAsync({}).then(() => {
+                                  queryClient.invalidateQueries({
+                                    queryKey: [
+                                      QUERYKEYS.GET_ORDER_BY_ID,
+                                      params.id,
+                                    ],
+                                  });
+                                  refetch();
+                                  setIsDeliverDialogOpen(false);
+                                });
+                              }}
+                              isLoading={deliverOrder.isPending}
+                            >
+                              Confirm Delivery
+                            </Button>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
             <AssignedHubCard
               orderStatus={orderDetails.status}

@@ -8,6 +8,7 @@ import { useState } from "react";
 
 interface ReferenceFilesCardProps {
   references: string[];
+  title?: string;
 }
 
 type FileType = "image" | "pdf" | "psd" | "cdr" | "unknown";
@@ -205,6 +206,7 @@ function FilePreview({ file }: { file: FileInfo }) {
 
 export default function ReferenceFilesCard({
   references,
+  title = "Reference Files",
 }: ReferenceFilesCardProps) {
   if (!references || references.length === 0) {
     return null;
@@ -237,7 +239,7 @@ export default function ReferenceFilesCard({
     <Card className="@container/card shadow-none">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Reference Files</CardTitle>
+          <CardTitle>{title}</CardTitle>
           {files.length > 1 && (
             <Button
               variant="outline"

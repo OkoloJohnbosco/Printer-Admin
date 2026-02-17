@@ -15,6 +15,7 @@ export enum OrderStatus {
   COMPLETED = "COMPLETED",
   REJECTED = "REJECTED",
   FAILED = "FAILED",
+  DELIVERED = "DELIVERED",
 }
 
 export interface GetAllOrdersResponse {

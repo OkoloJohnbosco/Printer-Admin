@@ -345,6 +345,7 @@ export const getOrderStatusBadgeVariant = (status: OrderStatus) => {
     [OrderStatus.COMPLETED]: "success",
     [OrderStatus.REJECTED]: "rejected",
     [OrderStatus.FAILED]: "destructive",
+    [OrderStatus.DELIVERED]: "success",
   };
   return variantMap[status] || "pending";
 };
@@ -355,7 +356,8 @@ export type OrderStatusIconKey =
   | "processing"
   | "completed"
   | "rejected"
-  | "failed";
+  | "failed"
+  | "delivered";
 
 export const getOrderStatusIconKey = (
   status: OrderStatus,
@@ -367,6 +369,7 @@ export const getOrderStatusIconKey = (
     [OrderStatus.COMPLETED]: "completed",
     [OrderStatus.REJECTED]: "rejected",
     [OrderStatus.FAILED]: "failed",
+    [OrderStatus.DELIVERED]: "delivered",
   };
   return iconKeyMap[status] || "pending";
 };

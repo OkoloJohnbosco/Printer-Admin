@@ -126,6 +126,7 @@ export const ENDPOINTS = {
   GET_ELIGIBLE_HUBS: (orderId: string) =>
     `admin/orders/${orderId}/eligible-hubs`,
   REASSIGN_ORDER: (orderId: string) => `admin/orders/${orderId}/reassign`,
+  DELIVER_ORDER: (orderId: string) => `admin/orders/${orderId}/deliver`,
 
   // System Config Endpoints
   CREATE_SYSTEM_CONFIG: "admin/configs",

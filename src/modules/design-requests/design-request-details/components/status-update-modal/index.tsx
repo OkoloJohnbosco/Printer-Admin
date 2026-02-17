@@ -10,7 +10,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -25,16 +24,35 @@ import {
   DesignerRequestStatus,
 } from "@/lib/hooks/design-requests/use-get-all-designer-requests/use-get-all-designer-requests.types";
 import useUpdateDesignerRequest from "@/lib/hooks/design-requests/use-update-designer-request";
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
-import { type ReactNode, useEffect, useState } from "react";
+import useUploadToS3 from "@/lib/hooks/files/use-upload-to-s3";
+import {
+  AlertCircle,
+  CheckCircle2,
+  FileUp,
+  Loader2,
+  Trash2,
+  Upload,
+} from "lucide-react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 
-// Statuses that admin can update to (excluding PENDING and EXPIRED)
-const ALLOWED_STATUSES = [
-  DesignerRequestStatus.IN_PROGRESS,
-  DesignerRequestStatus.COMPLETED,
-  DesignerRequestStatus.ACCEPTED,
+// Valid status transitions based on current status
+const STATUS_TRANSITIONS: Partial<
+  Record<DesignerRequestStatus, DesignerRequestStatus[]>
+> = {
+  [DesignerRequestStatus.PENDING]: [
+    DesignerRequestStatus.ACCEPTED,
+    DesignerRequestStatus.REJECTED,
+  ],
+  [DesignerRequestStatus.IN_PROGRESS]: [DesignerRequestStatus.COMPLETED],
+};
+
+// Terminal statuses that cannot be updated
+const TERMINAL_STATUSES = [
   DesignerRequestStatus.REJECTED,
-] as const;
+  DesignerRequestStatus.ACCEPTED,
+  DesignerRequestStatus.COMPLETED,
+  DesignerRequestStatus.EXPIRED,
+];
 
 const STATUS_LABELS: Record<DesignerRequestStatus, string> = {
   [DesignerRequestStatus.PENDING]: "Pending",
@@ -51,60 +69,78 @@ interface StatusUpdateModalProps {
   trigger?: ReactNode;
 }
 
+export function canUpdateStatus(status: DesignerRequestStatus): boolean {
+  return !TERMINAL_STATUSES.includes(status);
+}
+
 export function StatusUpdateModal({
   designerRequest,
   onSuccess,
   trigger,
 }: StatusUpdateModalProps) {
   const [open, setOpen] = useState(false);
+  const allowedStatuses = STATUS_TRANSITIONS[designerRequest.status] || [];
   const [status, setStatus] = useState<DesignerRequestStatus>(
-    designerRequest.status,
+    allowedStatuses[0] || designerRequest.status,
   );
   const [rejectionReason, setRejectionReason] = useState("");
-  const [selectedDeliverables, setSelectedDeliverables] = useState<string[]>(
-    [],
-  );
+  const [uploadedFiles, setUploadedFiles] = useState<
+    { key: string; name: string }[]
+  >([]);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const updateDesignerRequest = useUpdateDesignerRequest(designerRequest.id);
 
-  // Get available deliverables from preferences
-  const availableDeliverables = designerRequest.preferences?.deliverables || [];
+  const { upload, isUploading } = useUploadToS3({
+    context: "DELIVERABLE",
+    onSuccess: () => {},
+  });
 
   // Reset form when modal opens
   useEffect(() => {
     if (open) {
-      setStatus(designerRequest.status);
+      setStatus(allowedStatuses[0] || designerRequest.status);
       setRejectionReason("");
-      setSelectedDeliverables([]);
+      setUploadedFiles([]);
     }
-  }, [open, designerRequest.status]);
+  }, [open, designerRequest.status, allowedStatuses]);
 
-  const handleDeliverableToggle = (deliverable: string) => {
-    setSelectedDeliverables((prev) =>
-      prev.includes(deliverable)
-        ? prev.filter((d) => d !== deliverable)
-        : [...prev, deliverable],
-    );
+  const handleFileSelect = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    for (const file of Array.from(files)) {
+      const fileKey = await upload(file);
+      if (fileKey) {
+        setUploadedFiles((prev) => [
+          ...prev,
+          { key: fileKey, name: file.name },
+        ]);
+      }
+    }
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
-  const handleSelectAllDeliverables = () => {
-    if (selectedDeliverables.length === availableDeliverables.length) {
-      setSelectedDeliverables([]);
-    } else {
-      setSelectedDeliverables([...availableDeliverables]);
-    }
+  const handleRemoveFile = (key: string) => {
+    setUploadedFiles((prev) => prev.filter((f) => f.key !== key));
   };
 
   const isValid = () => {
     if (status === DesignerRequestStatus.REJECTED) {
       return rejectionReason.trim().length > 0;
     }
-    // Deliverables required when completing a PENDING request
+    // Deliverable files required when completing an IN_PROGRESS request
     if (
       status === DesignerRequestStatus.COMPLETED &&
-      designerRequest.status === DesignerRequestStatus.PENDING
+      designerRequest.status === DesignerRequestStatus.IN_PROGRESS
     ) {
-      return selectedDeliverables.length > 0;
+      return uploadedFiles.length > 0;
     }
     return true;
   };
@@ -120,12 +156,12 @@ export function StatusUpdateModal({
       payload.rejectionReason = rejectionReason;
     }
 
-    // Include deliverables when completing a PENDING request
+    // Include uploaded deliverable file keys when completing an IN_PROGRESS request
     if (
       status === DesignerRequestStatus.COMPLETED &&
-      designerRequest.status === DesignerRequestStatus.PENDING
+      designerRequest.status === DesignerRequestStatus.IN_PROGRESS
     ) {
-      payload.deliverables = selectedDeliverables;
+      payload.deliverables = uploadedFiles.map((f) => f.key);
     }
 
     updateDesignerRequest.mutate(
@@ -134,7 +170,7 @@ export function StatusUpdateModal({
         onSuccess: () => {
           setOpen(false);
           setRejectionReason("");
-          setSelectedDeliverables([]);
+          setUploadedFiles([]);
           onSuccess?.();
         },
       },
@@ -172,7 +208,7 @@ export function StatusUpdateModal({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {ALLOWED_STATUSES.map((statusValue) => (
+                {allowedStatuses.map((statusValue) => (
                   <SelectItem key={statusValue} value={statusValue}>
                     {STATUS_LABELS[statusValue]}
                   </SelectItem>
@@ -208,69 +244,79 @@ export function StatusUpdateModal({
             </div>
           )}
 
-          {/* Deliverables Selection - shown when COMPLETED is selected and current status is PENDING */}
+          {/* Deliverable File Uploads - shown when COMPLETED is selected and current status is IN_PROGRESS */}
           {status === DesignerRequestStatus.COMPLETED &&
             designerRequest.status === DesignerRequestStatus.IN_PROGRESS && (
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label>
-                    Select Deliverables{" "}
-                    <span className="text-destructive">*</span>
-                  </Label>
-                  {availableDeliverables.length > 0 && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      type="button"
-                      onClick={handleSelectAllDeliverables}
-                      className="h-auto p-0 text-xs"
-                    >
-                      {selectedDeliverables.length ===
-                      availableDeliverables.length
-                        ? "Deselect All"
-                        : "Select All"}
-                    </Button>
-                  )}
-                </div>
+                <Label>
+                  Upload Deliverables{" "}
+                  <span className="text-destructive">*</span>
+                </Label>
+                <p className="text-muted-foreground text-xs">
+                  Upload the completed design files. Supported formats: JPEG,
+                  PNG, PDF, PSD, CorelDRAW, ZIP, RAR (max 1GB per file).
+                </p>
 
-                {availableDeliverables.length > 0 ? (
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileSelect}
+                  accept=".jpeg,.jpg,.png,.pdf,.psd,.cdr,.zip,.rar"
+                  className="hidden"
+                  multiple
+                />
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploading}
+                >
+                  {isUploading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="mr-2 h-4 w-4" />
+                      Select Files
+                    </>
+                  )}
+                </Button>
+
+                {uploadedFiles.length > 0 && (
                   <div className="border-border space-y-2 rounded-md border p-3">
-                    {availableDeliverables.map((deliverable) => (
+                    {uploadedFiles.map((file) => (
                       <div
-                        key={deliverable}
-                        className="flex items-center space-x-2"
+                        key={file.key}
+                        className="flex items-center justify-between gap-2"
                       >
-                        <Checkbox
-                          id={deliverable}
-                          checked={selectedDeliverables.includes(deliverable)}
-                          onCheckedChange={() =>
-                            handleDeliverableToggle(deliverable)
-                          }
-                        />
-                        <Label
-                          htmlFor={deliverable}
-                          className="cursor-pointer text-sm font-normal capitalize"
+                        <div className="flex items-center gap-2 overflow-hidden">
+                          <FileUp className="text-muted-foreground h-4 w-4 shrink-0" />
+                          <span className="truncate text-sm">{file.name}</span>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive h-7 w-7 shrink-0"
+                          onClick={() => handleRemoveFile(file.key)}
                         >
-                          {deliverable}
-                        </Label>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <div className="bg-muted rounded-md p-3">
-                    <p className="text-muted-foreground text-sm">
-                      No deliverables specified in this request.
-                    </p>
-                  </div>
                 )}
 
-                {selectedDeliverables.length === 0 &&
-                  availableDeliverables.length > 0 && (
-                    <p className="text-destructive flex items-center gap-1 text-xs">
-                      <AlertCircle className="h-3 w-3" />
-                      Please select at least one deliverable
-                    </p>
-                  )}
+                {uploadedFiles.length === 0 && (
+                  <p className="text-destructive flex items-center gap-1 text-xs">
+                    <AlertCircle className="h-3 w-3" />
+                    Please upload at least one deliverable file
+                  </p>
+                )}
               </div>
             )}
 
@@ -302,6 +348,7 @@ export function StatusUpdateModal({
             disabled={
               !isValid() ||
               updateDesignerRequest.isPending ||
+              isUploading ||
               status === designerRequest.status
             }
           >
