@@ -20,13 +20,13 @@ function OrderTable({
   const isLoading = getAllOrders.isLoading && !getAllOrders?.value;
 
   const renderTableBody = () => {
-    if (isLoading) return <TableSkeletonRowLoader length={8} noOfRows={8} />;
+    if (isLoading) return <TableSkeletonRowLoader length={6} noOfRows={8} />;
 
     if (orders?.length === 0) {
       return (
         <TableBody>
           <TableRow>
-            <td colSpan={8}>
+            <td colSpan={6}>
               <EmptyState
                 icon={Package}
                 title="No Orders Found"
@@ -59,7 +59,6 @@ function OrderTable({
             <TableHead className="px-6">Item Count</TableHead>
             <TableHead className="px-6">Hub</TableHead>
             <TableHead className="px-6">Status</TableHead>
-            <TableHead className="px-6 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <>{renderTableBody()}</>

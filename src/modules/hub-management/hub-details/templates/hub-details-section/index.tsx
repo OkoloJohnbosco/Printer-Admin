@@ -120,8 +120,8 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
 
         <HubDetailsStats />
 
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="space-y-6 md:col-span-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="space-y-6 lg:col-span-2">
             {/* Document Verification Section */}
             <Card className="@container/card shadow-none">
               <CardHeader>
@@ -200,26 +200,6 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
                   >
                     {hub.status}
                   </Badge>
-                </div>
-
-                <div className="border-border border-t pt-4">
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-muted-foreground text-sm">
-                      Capacity
-                    </span>
-                    <span className="text-sm font-medium">12%</span>
-                  </div>
-                  <div className="bg-muted h-2 overflow-hidden rounded-full">
-                    <div
-                      className={`h-full ${12 > 80 ? "bg-destructive" : "bg-green-700"}`}
-                      style={{ width: `${12}%` }}
-                    />
-                  </div>
-                  {12 > 80 && (
-                    <p className="text-destructive mt-2 text-xs">
-                      High capacity - consider load balancing
-                    </p>
-                  )}
                 </div>
               </CardContent>
             </Card>
@@ -319,19 +299,6 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-
-            <Card className="@container/card shadow-none">
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button className="w-full">Assign New Order</Button>
-
-                <Button variant="outline" className="w-full bg-transparent">
-                  Performance Report
-                </Button>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </main>

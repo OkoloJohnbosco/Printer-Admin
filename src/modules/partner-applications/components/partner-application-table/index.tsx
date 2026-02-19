@@ -31,10 +31,9 @@ export default function PartnerApplicationTable({
             <TableHead>Email</TableHead>
             <TableHead>Business Type</TableHead>
             <TableHead>Applied Date</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
-        <TableSkeletonRowLoader length={5} noOfRows={10} />
+        <TableSkeletonRowLoader length={4} noOfRows={10} />
       </Table>
     );
   }
@@ -57,7 +56,6 @@ export default function PartnerApplicationTable({
           <TableHead>Email</TableHead>
           <TableHead>Business Type</TableHead>
           <TableHead>Applied Date</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

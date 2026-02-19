@@ -1,3 +1,6 @@
+"use client";
+
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -5,65 +8,91 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
+import useGetAllHubs, {
+  HubStatus,
+  PrintHub,
+} from "@/lib/hooks/admin/use-get-all-hubs";
+import { getHubStatusBadgeVariant } from "@/lib/utils";
+import Link from "next/link";
+
+const HUB_STATUS_LABELS: Record<HubStatus, string> = {
+  [HubStatus.APPROVED]: "Operational",
+  [HubStatus.PENDING]: "Pending verification",
+  [HubStatus.REJECTED]: "Rejected",
+  [HubStatus.ACTION_REQUIRED]: "Action required",
+};
+
+function getHubStatusLabel(status: string): string {
+  return HUB_STATUS_LABELS[status as HubStatus] ?? status;
+}
+
+function HubRow({ hub }: { hub: PrintHub }) {
+  const status = (hub.status ?? HubStatus.PENDING) as HubStatus;
+  const location = [hub.city, hub.state].filter(Boolean).join(", ") || "—";
+
+  return (
+    <Link href={`/print-hubs/${hub.id}`} className="block">
+      <div className="border-border hover:border-primary/30 hover:bg-muted/30 bg-card flex cursor-pointer items-center justify-between gap-4 rounded-lg border px-4 py-3 transition-colors">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-medium">{hub.businessName}</p>
+          <p className="text-muted-foreground mt-0.5 truncate text-xs">
+            {location}
+          </p>
+        </div>
+        <Badge
+          variant={getHubStatusBadgeVariant(status)}
+          className="shrink-0 font-normal"
+        >
+          {getHubStatusLabel(status)}
+        </Badge>
+      </div>
+    </Link>
+  );
+}
 
 function HubPerformanceCard() {
+  const { value, isLoading } = useGetAllHubs({ limit: 6 });
+  const hubs = value?.data?.hubs ?? [];
+
   return (
     <Card className="@container/card border-0 shadow-none">
       <CardHeader>
-        <CardTitle>Print Hub Status</CardTitle>
-        <CardDescription>Current operational status</CardDescription>
+        <CardTitle>Print hub status</CardTitle>
+        <CardDescription>
+          Verification and operational status of your print hubs
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {[
-            {
-              name: "NYC Hub",
-              status: "Operational",
-              orders: 12,
-              capacity: 85,
-            },
-            { name: "LA Hub", status: "Operational", orders: 8, capacity: 45 },
-            {
-              name: "Chicago Hub",
-              status: "Operational",
-              orders: 15,
-              capacity: 65,
-            },
-            {
-              name: "Miami Hub",
-              status: "Maintenance",
-              orders: 0,
-              capacity: 25,
-            },
-          ].map((hub, i) => (
-            <div
-              key={i}
-              className="border-border space-y-2 border-b pb-3 last:border-0 last:pb-0"
+        {isLoading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="border-border bg-card flex items-center gap-4 rounded-lg border px-4 py-3"
+              >
+                <Skeleton className="h-4 flex-1" />
+                <Skeleton className="h-6 w-28 rounded-full" />
+              </div>
+            ))}
+          </div>
+        ) : hubs.length === 0 ? (
+          <p className="text-muted-foreground py-4 text-sm">
+            No print hubs yet. Approved hubs will appear here.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {hubs.map((hub) => (
+              <HubRow key={hub.id} hub={hub} />
+            ))}
+            <Link
+              href="/print-hubs"
+              className="text-muted-foreground hover:text-foreground mt-4 block text-center text-sm"
             >
-              <div className="flex w-full items-center justify-between gap-2">
-                <p className="text-sm font-medium">{hub.name}</p>
-                <p className="text-muted-foreground text-xs">
-                  {hub.orders} active orders
-                </p>
-              </div>
-              <Progress value={hub.capacity} className="h-2" />
-              <div className="flex w-full items-center justify-between gap-2">
-                <p className="text-sm font-normal">{hub.capacity}% capacity</p>
-
-                <span
-                  className={`rounded px-2 py-1 text-xs ${
-                    hub.status === "Operational"
-                      ? "bg-green-100 text-green-900"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {hub.status}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+              View all hubs →
+            </Link>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

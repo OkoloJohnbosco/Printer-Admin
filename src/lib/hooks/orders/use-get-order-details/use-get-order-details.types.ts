@@ -65,15 +65,21 @@ export interface Item {
 }
 
 export interface Specifications {
-  sizeOptions: string;
-  orientationOptions?: string;
+  size?: string;
+  cover?: string;
+  finish?: string;
+  sheets?: string;
+  binding?: string;
+  corners?: string;
+  printing?: string;
+  fillerpaper?: string;
 }
 
 export interface Offering {
-  template: Template;
+  product: Product;
 }
 
-export interface Template {
+export interface Product {
   id: string;
   name: string;
 }

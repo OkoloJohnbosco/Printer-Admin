@@ -14,7 +14,7 @@ import useGetAllHubs, { HubStatus } from "@/lib/hooks/admin/use-get-all-hubs";
 import { useCursorPagination } from "@/lib/hooks/common/use-cursor-pagination";
 import useDebounce from "@/lib/hooks/common/use-debounce";
 import { cn, formatStatusText } from "@/lib/utils";
-import { Loader, Plus, Search } from "lucide-react";
+import { Loader, Search } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import ActiveFiltersBar from "./components/active-filters-bar";
@@ -121,10 +121,6 @@ export default function PrintHubsPageTemplate() {
             Manage and monitor print hub operations
           </p>
         </div>
-        <Button className="w-full sm:w-auto">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Hub
-        </Button>
       </div>
 
       {/* Stats Cards */}

@@ -23,13 +23,13 @@ function DesignRequestsTable({
     getAllDesignerRequests.isLoading && !getAllDesignerRequests?.value;
 
   const renderTableBody = () => {
-    if (isLoading) return <TableSkeletonRowLoader length={8} noOfRows={8} />;
+    if (isLoading) return <TableSkeletonRowLoader length={7} noOfRows={8} />;
 
     if (designerRequests?.length === 0) {
       return (
         <TableBody>
           <TableRow>
-            <td colSpan={8}>
+            <td colSpan={7}>
               <EmptyState
                 icon={PenTool}
                 title="No Design Requests Found"
@@ -63,7 +63,6 @@ function DesignRequestsTable({
             <TableHead className="px-6">Price</TableHead>
             <TableHead className="px-6">Status</TableHead>
             <TableHead className="px-6">Date</TableHead>
-            <TableHead className="px-6 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <>{renderTableBody()}</>

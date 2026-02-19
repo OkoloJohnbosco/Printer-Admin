@@ -1,11 +1,9 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { User } from "@/lib/hooks/users/use-get-all-users/use-get-all-users.types";
 import { formatStatusText } from "@/lib/utils";
-import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface UserTableRowProps {
@@ -28,29 +26,36 @@ const getRoleBadgeVariant = (role: string) => {
 export default function UserTableRow({ user }: UserTableRowProps) {
   const router = useRouter();
 
+  const handleClick = () => router.push(`/users/${user.id}`);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
-    <TableRow key={user.id}>
-      <TableCell>
+    <TableRow
+      key={user.id}
+      className="hover:bg-muted/50 cursor-pointer"
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+    >
+      <TableCell className="py-4">
         <div className="font-medium">
           {user.firstName} {user.lastName}
         </div>
       </TableCell>
-      <TableCell>{user.email}</TableCell>
-      <TableCell>
+      <TableCell className="py-4">{user.email}</TableCell>
+      <TableCell className="py-4">
         <Badge variant={getRoleBadgeVariant(user.role)}>
           {formatStatusText(user.role)}
         </Badge>
       </TableCell>
-      <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
-      <TableCell className="text-right">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push(`/users/${user.id}`)}
-        >
-          <Eye className="mr-2 h-4 w-4" />
-          View
-        </Button>
+      <TableCell className="py-4">
+        {new Date(user.createdAt).toLocaleDateString()}
       </TableCell>
     </TableRow>
   );

@@ -19,13 +19,13 @@ function PrintHubTable({
   const isLoading = getAllHubs.isLoading && !getAllHubs?.value;
 
   const renderTableBody = () => {
-    if (isLoading) return <TableSkeletonRowLoader length={5} noOfRows={12} />;
+    if (isLoading) return <TableSkeletonRowLoader length={4} noOfRows={12} />;
 
     if (getAllHubs?.value?.data?.hubs?.length === 0) {
       return (
         <TableBody>
           <TableRow>
-            <td colSpan={5}>
+            <td colSpan={4}>
               <EmptyState
                 icon={Printer}
                 title="No Print Hubs Found"
@@ -56,7 +56,6 @@ function PrintHubTable({
             <TableHead className="px-5">Address</TableHead>
             <TableHead className="px-5">Email</TableHead>
             <TableHead className="px-5">Status</TableHead>
-            <TableHead className="px-5"></TableHead>
           </TableRow>
         </TableHeader>
         <>{renderTableBody()}</>

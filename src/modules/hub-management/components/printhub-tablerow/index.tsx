@@ -1,11 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { HubStatus, PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
 import {
@@ -13,15 +6,8 @@ import {
   getHubStatusBadgeVariant,
   getHubStatusIconKey,
 } from "@/lib/utils";
-import {
-  AlertCircle,
-  Check,
-  Clock,
-  Eye,
-  MoreHorizontal,
-  X,
-} from "lucide-react";
-import Link from "next/link";
+import { AlertCircle, Check, Clock, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const hubStatusIcons = {
   pending: <Clock className="size-3" />,
@@ -31,40 +17,37 @@ const hubStatusIcons = {
 };
 
 function PrintHubTableRow({ printHub }: { printHub: PrintHub }) {
+  const router = useRouter();
+
+  const handleClick = () => router.push(`/print-hubs/${printHub.id}`);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
-    <TableRow key={printHub.userId}>
-      <TableCell className="px-5 font-mono text-sm">
+    <TableRow
+      key={printHub.userId}
+      className="hover:bg-muted/50 cursor-pointer"
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+    >
+      <TableCell className="px-5 py-4 font-mono text-sm">
         {printHub.businessName}
       </TableCell>
-      <TableCell className="text-muted-foreground">
+      <TableCell className="text-muted-foreground py-4">
         {printHub.businessAddress}
       </TableCell>
-      <TableCell className="px-5">{printHub.businessEmail}</TableCell>
-      <TableCell className="px-5">
+      <TableCell className="px-5 py-4">{printHub.businessEmail}</TableCell>
+      <TableCell className="px-5 py-4">
         <Badge variant={getHubStatusBadgeVariant(printHub.status as HubStatus)}>
           {hubStatusIcons[getHubStatusIconKey(printHub.status as HubStatus)]}
           {formatStatusText(printHub.status)}
         </Badge>
-      </TableCell>
-      <TableCell className="px-5">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <Link
-                href={`/print-hubs/${printHub.id}`}
-                className="flex items-center gap-2"
-              >
-                <Eye className="h-4 w-4" />
-                View Details
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </TableCell>
     </TableRow>
   );

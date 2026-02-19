@@ -28,10 +28,9 @@ export default function UserTable({ users, isLoading }: UserTableProps) {
             <TableHead>Email</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Join Date</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
-        <TableSkeletonRowLoader length={5} noOfRows={10} />;
+        <TableSkeletonRowLoader length={4} noOfRows={10} />
       </Table>
     );
   }
@@ -54,7 +53,6 @@ export default function UserTable({ users, isLoading }: UserTableProps) {
           <TableHead>Email</TableHead>
           <TableHead>Role</TableHead>
           <TableHead>Join Date</TableHead>
-          <TableHead className="text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

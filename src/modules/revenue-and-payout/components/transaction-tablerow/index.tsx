@@ -1,8 +1,7 @@
 "use client";
+
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
-import useDisclosure from "@/lib/hooks/common/use-disclosure";
 import {
   Payout,
   PayoutStatus,
@@ -16,8 +15,9 @@ import {
   getPayoutStatusBadgeVariant,
   getPayoutStatusIconKey,
 } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import { AlertCircle, Check, Clock, X } from "lucide-react";
-import ReviewPayoutFormModal from "../review-payout-form-modal";
+import routes from "@/routes";
 
 const payoutStatusIcons = {
   pending: <Clock className="size-3" />,
@@ -28,12 +28,18 @@ const payoutStatusIcons = {
 };
 
 export default function TransactionTableRow({ payout }: { payout: Payout }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const router = useRouter();
 
-  const isPayoutApproved = payout.status === PayoutStatus.APPROVED;
+  const handleRowClick = () => {
+    router.push(`${routes.REVENUE_AND_PAYOUT}/${payout.id}`);
+  };
 
   return (
-    <TableRow key={payout.id} className="cursor-pointer">
+    <TableRow
+      key={payout.id}
+      className="hover:bg-muted/50 cursor-pointer transition-colors"
+      onClick={handleRowClick}
+    >
       <TableCell className="px-7">
         <p className="text-brand-gray-200">
           {formatToFullYMD(payout.createdAt)} - {formatTime(payout.createdAt)}
@@ -63,25 +69,6 @@ export default function TransactionTableRow({ payout }: { payout: Payout }) {
           {formatStatusText(payout.status)}
         </Badge>
       </TableCell>
-
-      <TableCell className="space-x-2 px-7 text-center">
-        <div className="flex items-center justify-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-foundation-black-400"
-            onClick={onOpen}
-            disabled={isPayoutApproved}
-          >
-            Review Payout
-          </Button>
-        </div>
-      </TableCell>
-      <ReviewPayoutFormModal
-        isOpen={isOpen}
-        onClose={onClose}
-        payout={payout}
-      />
     </TableRow>
   );
 }

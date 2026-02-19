@@ -22,13 +22,7 @@ import useDebounce from "@/lib/hooks/common/use-debounce";
 import useGetAllUsers from "@/lib/hooks/users/use-get-all-users";
 import { UserRole } from "@/lib/hooks/users/use-get-all-users/use-get-all-users.types";
 import { exportToCSV, formatStatusText } from "@/lib/utils";
-import {
-  Calendar1Icon,
-  Download,
-  Loader,
-  Search,
-  UserPlus,
-} from "lucide-react";
+import { Calendar1Icon, Download, Loader, Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import ActiveFiltersBar from "./components/active-filters-bar";
@@ -115,10 +109,6 @@ export default function UserManagementPageTemplate() {
             >
               <Download className="mr-2 h-4 w-4" />
               Export CSV
-            </Button>
-            <Button variant="default_blue" className="flex-1 sm:flex-none">
-              <UserPlus className="mr-2 h-4 w-4" />
-              Add User
             </Button>
           </div>
         </div>

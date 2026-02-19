@@ -1,11 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { DesignerRequest } from "@/lib/hooks/design-requests/use-get-all-designer-requests/use-get-all-designer-requests.types";
 import {
@@ -15,16 +8,8 @@ import {
   getDesignerRequestStatusBadgeVariant,
   getDesignerRequestStatusIconKey,
 } from "@/lib/utils";
-import {
-  Check,
-  Clock,
-  Eye,
-  Hourglass,
-  MoreHorizontal,
-  Play,
-  X,
-} from "lucide-react";
-import Link from "next/link";
+import { Check, Clock, Hourglass, Play, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const designerRequestStatusIcons = {
   pending: <Clock className="size-3" />,
@@ -36,10 +21,26 @@ const designerRequestStatusIcons = {
 };
 
 function DesignRequestsTableRow({ request }: { request: DesignerRequest }) {
+  const router = useRouter();
   const customerName = `${request.user.firstName} ${request.user.lastName}`;
 
+  const handleClick = () => router.push(`/design-requests/${request.id}`);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
-    <TableRow key={request.id}>
+    <TableRow
+      key={request.id}
+      className="hover:bg-muted/50 cursor-pointer"
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+    >
       <TableCell className="px-6 font-mono text-sm">
         {request.id.slice(0, 8)}...
       </TableCell>
@@ -72,26 +73,6 @@ function DesignRequestsTableRow({ request }: { request: DesignerRequest }) {
       </TableCell>
       <TableCell className="text-muted-foreground px-6">
         {formatToFullYMD(request.createdAt)}
-      </TableCell>
-      <TableCell className="px-6 text-right">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link
-                href={`/design-requests/${request.id}`}
-                className="flex items-center gap-2"
-              >
-                <Eye className="h-4 w-4" />
-                View Details
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </TableCell>
     </TableRow>
   );

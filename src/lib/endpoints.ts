@@ -5,6 +5,7 @@ import { GetAllDesignerRequestsParams } from "./hooks/design-requests/use-get-al
 import { GetAllOrdersParams } from "./hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import { GetAllPayoutsParams } from "./hooks/payouts/use-get-all-payouts/use-get-all-payouts.types";
 import { GetDashboardStatsParams } from "./hooks/stats/use-get-dashboard-stats/use-get-dashboard-stats.types";
+import { GetDesignerRequestStatsParams } from "./hooks/stats/use-get-designer-request-stats/use-get-designer-request-stats.types";
 import { GetHubStatsParams } from "./hooks/stats/use-get-hub-stats/use-get-hub-stats.types";
 import { GetOrderStatsParams } from "./hooks/stats/use-get-order-stats/use-get-order-stats.types";
 import { GetUserStatsParams } from "./hooks/stats/use-get-user-stats/use-get-user-stats.types";
@@ -160,6 +161,7 @@ export const ENDPOINTS = {
     }
     return `admin/payouts?${searchParams.toString()}`;
   },
+  GET_PAYOUT_BY_ID: (id: string) => `admin/payouts/${id}`,
 
   // Designer Requests Endpoints
   GET_ALL_DESIGNER_REQUESTS: (params: GetAllDesignerRequestsParams) => {
@@ -258,6 +260,17 @@ export const ENDPOINTS = {
     const queryString = searchParams.toString();
     return `admin/stats/users${queryString ? `?${queryString}` : ""}`;
   },
+  GET_DESIGNER_REQUEST_STATS: (params: GetDesignerRequestStatsParams) => {
+    const searchParams = new URLSearchParams();
+    if (params.startDate) {
+      searchParams.set("startDate", params.startDate);
+    }
+    if (params.endDate) {
+      searchParams.set("endDate", params.endDate);
+    }
+    const queryString = searchParams.toString();
+    return `admin/stats/design-requests${queryString ? `?${queryString}` : ""}`;
+  },
 
   // Files Endpoints
   GET_PRESIGNED_URL: (params: {
@@ -298,6 +311,7 @@ export const QUERYKEYS = {
   GET_DELIVERY_PRICE_CONFIG: "GET_DELIVERY_PRICE_CONFIG",
 
   GET_ALL_PAYOUTS: "GET_ALL_PAYOUTS",
+  GET_PAYOUT_BY_ID: "GET_PAYOUT_BY_ID",
 
   GET_AUDIT_LOGS: "GET_AUDIT_LOGS",
 
@@ -314,6 +328,7 @@ export const QUERYKEYS = {
   GET_ORDER_STATS: "GET_ORDER_STATS",
   GET_HUB_STATS: "GET_HUB_STATS",
   GET_USER_STATS: "GET_USER_STATS",
+  GET_DESIGNER_REQUEST_STATS: "GET_DESIGNER_REQUEST_STATS",
 
   // Files Query Keys
   GET_PRESIGNED_URL: "GET_PRESIGNED_URL",

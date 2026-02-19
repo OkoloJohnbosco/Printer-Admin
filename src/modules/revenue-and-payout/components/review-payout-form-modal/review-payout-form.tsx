@@ -22,9 +22,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { QUERYKEYS } from "@/lib/endpoints";
 import { Payout } from "@/lib/hooks/payouts/use-get-all-payouts/use-get-all-payouts.types";
 import useReviewPayoutRequest from "@/lib/hooks/payouts/use-review-payout-request";
 import { formatCurrency } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 
 const reviewPayoutSchema = z
   .object({
@@ -64,6 +66,7 @@ export default function ReviewPayoutForm({
       rejectionReason: "",
     },
   });
+  const queryClient = useQueryClient();
 
   const selectedStatus = form.watch("status");
 
@@ -73,6 +76,14 @@ export default function ReviewPayoutForm({
         status: values.status,
         rejectionReason:
           values.status === "REJECTED" ? values.rejectionReason : undefined,
+      })
+      .then(() => {
+        queryClient.invalidateQueries({
+          queryKey: [QUERYKEYS.GET_PAYOUT_BY_ID, payout.id],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [QUERYKEYS.GET_ALL_PAYOUTS],
+        });
       })
       .catch((error) => {
         console.log(error);

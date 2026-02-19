@@ -24,16 +24,10 @@ export interface ILoginResponse {
 const publicRoutes = [
   "/auth/login",
   "/auth/sign-up",
+  "/auth/sign-up/verify-email",
   "/auth/forgot-password",
+  "/auth/forgot-password/verify-email",
   "/auth/reset-password",
-  "/", // Home page
-  "/products", // Public products listing
-  "/discover-print-hubs",
-  "/hubs",
-  "/why-printa",
-  "/become-a-partner",
-  "/recycle-program",
-  "/auth/password/change",
 ];
 
 // Check if current page is a protected route

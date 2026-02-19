@@ -104,24 +104,26 @@ export default function DesignRequestsPageTemplate() {
               </SelectContent>
             </Select>
           </div>
-          <div className="col-span-12 grid">
-            <DesignRequestsTable
-              getAllDesignerRequests={getAllDesignerRequests}
-            />
-            <div className="rounded-2xl bg-white p-4">
-              <CursorPaginationDetailed
-                hasNextPage={pagination.hasNextPage}
-                hasPreviousPage={pagination.hasPreviousPage}
-                onNextPage={pagination.handleNextPage}
-                onPreviousPage={pagination.handlePreviousPage}
-                isLoading={getAllDesignerRequests.isLoading}
-                currentPage={pagination.currentPage}
-                itemsPerPage={pagination.itemsPerPage}
-                totalItemsOnCurrentPage={
-                  getAllDesignerRequests.value?.data?.designerRequests
-                    ?.length || 0
-                }
+          <div className="grid grid-cols-1 gap-6">
+            <div className="">
+              <DesignRequestsTable
+                getAllDesignerRequests={getAllDesignerRequests}
               />
+              <div className="rounded-2xl bg-white p-4">
+                <CursorPaginationDetailed
+                  hasNextPage={pagination.hasNextPage}
+                  hasPreviousPage={pagination.hasPreviousPage}
+                  onNextPage={pagination.handleNextPage}
+                  onPreviousPage={pagination.handlePreviousPage}
+                  isLoading={getAllDesignerRequests.isLoading}
+                  currentPage={pagination.currentPage}
+                  itemsPerPage={pagination.itemsPerPage}
+                  totalItemsOnCurrentPage={
+                    getAllDesignerRequests.value?.data?.designerRequests
+                      ?.length || 0
+                  }
+                />
+              </div>
             </div>
           </div>
         </CardContent>

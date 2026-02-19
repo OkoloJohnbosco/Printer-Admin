@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import {
   Order,
@@ -17,13 +16,12 @@ import {
   AlertCircle,
   Check,
   Clock,
-  Eye,
   ListTodo,
   Loader,
   PackageCheck,
   X,
 } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const orderStatusIcons: Record<OrderStatusIconKey, React.ReactElement> = {
   pending: <Clock className="size-3" />,
@@ -36,31 +34,41 @@ const orderStatusIcons: Record<OrderStatusIconKey, React.ReactElement> = {
 };
 
 function OrderTableRow({ order }: { order: Order }) {
+  const router = useRouter();
+
+  const handleClick = () => router.push(`/orders/${order.id}`);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
-    <TableRow key={order.id}>
-      <TableCell className="px-6 font-mono text-sm">
+    <TableRow
+      key={order.id}
+      className="hover:bg-muted/50 cursor-pointer"
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+    >
+      <TableCell className="px-6 py-4 font-mono text-sm">
         {formatCurrency(Number(order.total))}
       </TableCell>
-      <TableCell className="text-muted-foreground px-6">
+      <TableCell className="text-muted-foreground px-6 py-4">
         {formatToFullYMD(order.createdAt)}
       </TableCell>
-      <TableCell className="px-6">{order.customerName}</TableCell>
-      <TableCell className="px-6">{order.itemCount}</TableCell>
-      <TableCell className="px-6">{order.hubName}</TableCell>
-      <TableCell className="px-6">
+      <TableCell className="px-6 py-4">{order.customerName}</TableCell>
+      <TableCell className="px-6 py-4">{order.itemCount}</TableCell>
+      <TableCell className="px-6 py-4">{order.hubName}</TableCell>
+      <TableCell className="px-6 py-4">
         <Badge
           variant={getOrderStatusBadgeVariant(order.status as OrderStatus)}
         >
           {orderStatusIcons[getOrderStatusIconKey(order.status as OrderStatus)]}
           {formatStatusText(order.status)}
         </Badge>
-      </TableCell>
-      <TableCell className="px-6 text-right">
-        <Link href={`/orders/${order.id}`}>
-          <Button variant="ghost" size="sm">
-            <Eye className="h-4 w-4" />
-          </Button>
-        </Link>
       </TableCell>
     </TableRow>
   );

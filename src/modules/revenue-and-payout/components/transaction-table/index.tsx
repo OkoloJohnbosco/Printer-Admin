@@ -19,13 +19,13 @@ export default function TransactionTable({
   const isLoading = getAllPayouts.isLoading && !getAllPayouts?.value;
 
   const renderTableBody = () => {
-    if (isLoading) return <TableSkeletonRowLoader length={6} noOfRows={8} />;
+    if (isLoading) return <TableSkeletonRowLoader length={5} noOfRows={8} />;
 
     if (payouts?.length === 0) {
       return (
         <TableBody className="page-fade-in">
           <TableRow className="hover:bg-transparent">
-            <td colSpan={6} className="py-10">
+            <td colSpan={5} className="py-10">
               <NoRevenueCard />
             </td>
           </TableRow>
@@ -51,7 +51,6 @@ export default function TransactionTable({
           <TableHead className="px-7">Type</TableHead>
           <TableHead className="px-7">Amount</TableHead>
           <TableHead className="px-7">Status</TableHead>
-          <TableHead className="px-7 text-center">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <>{renderTableBody()}</>
