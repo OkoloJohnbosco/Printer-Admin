@@ -18,11 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { QUERYKEYS } from "@/lib/endpoints";
 import useDeliverOrder from "@/lib/hooks/orders/use-deliver-order";
 import { OrderStatus } from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import useGetOrderDetails from "@/lib/hooks/orders/use-get-order-details";
 import { formatCurrency, formatStatusText, formatToMDY } from "@/lib/utils";
+import ReferenceFilesCard from "@/modules/design-requests/design-request-details/components/reference-files-card";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
@@ -115,8 +117,8 @@ export default function OrderDetailPageTemplate({
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="space-y-6 md:col-span-2">
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="space-y-6 lg:col-span-2">
             <Card className="@container/card shadow-none">
               <CardHeader>
                 <CardTitle>Order Information</CardTitle>
@@ -151,7 +153,7 @@ export default function OrderDetailPageTemplate({
                         {firstItem?.productName || "N/A"}
                       </p>
                       <p className="text-muted-foreground text-sm">
-                        {firstItem?.offering?.template?.name || ""}
+                        {firstItem?.offering?.product?.name || ""}
                       </p>
                     </div>
                   </div>
@@ -191,27 +193,71 @@ export default function OrderDetailPageTemplate({
                   <p className="text-muted-foreground mb-3 text-sm font-medium">
                     Order Items
                   </p>
-                  <div className="space-y-2">
-                    {orderDetails.items.map((item) => (
-                      <div
-                        key={item.id}
-                        className="border-border flex items-center justify-between rounded-md border p-3"
-                      >
-                        <div className="flex-1">
-                          <p className="font-medium">{item.productName}</p>
-                          <p className="text-muted-foreground text-xs">
-                            Quantity: {item.quantity} •{" "}
-                            {formatCurrency(
-                              parseFloat(item.price) / item.quantity,
-                            )}{" "}
-                            each
-                          </p>
+                  <div className="space-y-4">
+                    {orderDetails.items.map((item) => {
+                      const specEntries = item.specifications
+                        ? Object.entries(item.specifications).filter(
+                            ([, value]) => value != null && value !== "",
+                          )
+                        : [];
+                      return (
+                        <div
+                          key={item.id}
+                          className="border-border flex flex-col gap-4 rounded-md border p-3"
+                        >
+                          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-wrap items-start justify-between gap-2">
+                                <div>
+                                  <p className="font-medium">
+                                    {item.productName}
+                                  </p>
+                                  <p className="text-muted-foreground text-xs">
+                                    Quantity: {item.quantity} •{" "}
+                                    {formatCurrency(
+                                      parseFloat(item.price) / item.quantity,
+                                    )}{" "}
+                                    each
+                                  </p>
+                                </div>
+                                <p className="shrink-0 font-semibold">
+                                  {formatCurrency(parseFloat(item.price))}
+                                </p>
+                              </div>
+                              {specEntries.length > 0 && (
+                                <>
+                                  <Separator className="my-3" />
+                                  <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                                    {specEntries.map(([key, value]) => (
+                                      <div
+                                        key={key}
+                                        className="flex w-fit gap-2 rounded-full border bg-gray-50 px-2 py-1"
+                                      >
+                                        <dt className="text-muted-foreground shrink-0 font-medium capitalize">
+                                          {key
+                                            .replace(/([A-Z])/g, " $1")
+                                            .trim()}
+                                          :
+                                        </dt>
+                                        <dd className="min-w-0 truncate font-medium">
+                                          {String(value)}
+                                        </dd>
+                                      </div>
+                                    ))}
+                                  </dl>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                          {item.designFileUrl && (
+                            <ReferenceFilesCard
+                              references={[item.designFileUrl]}
+                              title="Design file"
+                            />
+                          )}
                         </div>
-                        <p className="font-semibold">
-                          {formatCurrency(parseFloat(item.price))}
-                        </p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               </CardContent>

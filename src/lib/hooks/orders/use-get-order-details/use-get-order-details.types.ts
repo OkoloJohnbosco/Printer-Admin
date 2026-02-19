@@ -61,7 +61,7 @@ export interface Item {
   addons: Addon;
   createdAt: string;
   offering: Offering;
-  designFileUrl: string;
+  designFileUrl: string | null;
 }
 
 export interface Specifications {

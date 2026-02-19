@@ -95,8 +95,6 @@
   --color-brand-red-100: var(--brand-red-100);
   --color-brand-red-200: var(--brand-red-200);
 
-
-
   --color-brand-purple-100: var(--brand-purple-100);
   --color-brand-purple-200: var(--brand-purple-200);
   --color-brand-purple-300: var(--brand-purple-300);
@@ -112,7 +110,6 @@
   --color-brand-teal-200: var(--brand-teal-200);
 
   --color-brand-black-500: var(--brand-black-500);
-
 }
 
 :root {
@@ -150,68 +147,68 @@
   --sidebar-ring: oklch(0.704 0.04 256.788);
   --text-nm: 13px;
 
-  --brand-foreground: #C7D9E1;
+  --brand-foreground: #c7d9e1;
   --brand-primary: #021525;
-  --brand-secondary: #0A0D13;
+  --brand-secondary: #0a0d13;
   --brand-neutral: #666666;
 
-  --brand-gray-30: #8B8D97;
-  --brand-gray-40: #F9FAFB;
-  --brand-gray-45: #BEC0CA;
-  --brand-gray-50: #F3F4F6;
-  --brand-gray-60: #83858B;
-  --brand-gray-70: #ACACAC;
+  --brand-gray-30: #8b8d97;
+  --brand-gray-40: #f9fafb;
+  --brand-gray-45: #bec0ca;
+  --brand-gray-50: #f3f4f6;
+  --brand-gray-60: #83858b;
+  --brand-gray-70: #acacac;
   --brand-gray-80: #686868;
   --brand-gray-100: #374151;
-  --brand-gray-200: #6B7280;
-  --brand-gray-300: #4B5563;
-  --brand-gray-400: #1F2937;
-  --brand-gray-500: #FAFAFA;
-  --brand-gray-600: #9CA3AF;
+  --brand-gray-200: #6b7280;
+  --brand-gray-300: #4b5563;
+  --brand-gray-400: #1f2937;
+  --brand-gray-500: #fafafa;
+  --brand-gray-600: #9ca3af;
   --brand-gray-700: #727376;
-  --brand-gray-800: #56585C;
-  --brand-gray-900: #E5E7EB;
-  --brand-gray-950: #D8D8D8;
-  --brand-gray-960: #DFDFE6;
-  --brand-gray-970: #E6E6E6;
-  --brand-yellow-100: #FEF9C3;
-  --brand-yellow-200: #CA8A04;
-  --brand-yellow-300: #FBBF24;
-  --brand-yellow-400: #FFCB45;
-  --brand-yellow-500: #F3EB0A;
-  --brand-yellow-600: #EAB308;
+  --brand-gray-800: #56585c;
+  --brand-gray-900: #e5e7eb;
+  --brand-gray-950: #d8d8d8;
+  --brand-gray-960: #dfdfe6;
+  --brand-gray-970: #e6e6e6;
+  --brand-yellow-100: #fef9c3;
+  --brand-yellow-200: #ca8a04;
+  --brand-yellow-300: #fbbf24;
+  --brand-yellow-400: #ffcb45;
+  --brand-yellow-500: #f3eb0a;
+  --brand-yellow-600: #eab308;
 
-  --brand-green-100: #22C55E;
-  --brand-green-150: #D1FAE5;
-  --brand-green-200: #DCFCE7;
-  --brand-green-300: #16A34A;
-  --brand-green-400: #BBF7D0;
-  --brand-green-500: #F0FDF4;
-  --brand-green-600: #15803D;
-  --brand-green-700: #065F46;
-  --brand-green-800: #10B981;
+  --brand-green-100: #22c55e;
+  --brand-green-150: #d1fae5;
+  --brand-green-200: #dcfce7;
+  --brand-green-300: #16a34a;
+  --brand-green-400: #bbf7d0;
+  --brand-green-500: #f0fdf4;
+  --brand-green-600: #15803d;
+  --brand-green-700: #065f46;
+  --brand-green-800: #10b981;
 
-  --brand-blue-100: #DBEAFE;
-  --brand-blue-200: #2563EB;
-  --brand-blue-300: #1FA7E0;
-  --brand-blue-400: #3B82F6;
+  --brand-blue-100: #dbeafe;
+  --brand-blue-200: #2563eb;
+  --brand-blue-300: #1fa7e0;
+  --brand-blue-400: #3b82f6;
 
-  --brand-red-100: #FEE2E2;
-  --brand-red-200: #EF4444;
+  --brand-red-100: #fee2e2;
+  --brand-red-200: #ef4444;
 
-  --brand-purple-100: #EEF2FF;
-  --brand-purple-200: #C7D2FE;
-  --brand-purple-300: #4338CA;
-  --brand-purple-400: #3730A3;
-  --brand-purple-500: #E0E7FF;
+  --brand-purple-100: #eef2ff;
+  --brand-purple-200: #c7d2fe;
+  --brand-purple-300: #4338ca;
+  --brand-purple-400: #3730a3;
+  --brand-purple-500: #e0e7ff;
 
-  --brand-error-100: #FF4623;
+  --brand-error-100: #ff4623;
 
-  --brand-placeholder: #D3D7E0;
-  --brand-alternative: #53BBE7;
+  --brand-placeholder: #d3d7e0;
+  --brand-alternative: #53bbe7;
 
-  --brand-teal-100: #40D2A11A;
-  --brand-teal-200: #3CB5B5;
+  --brand-teal-100: #40d2a11a;
+  --brand-teal-200: #3cb5b5;
 
   --brand-black-500: #151515;
 }
@@ -251,67 +248,67 @@
 
   --text-nm: 13px;
 
-  --brand-foreground: #C7D9E1;
+  --brand-foreground: #c7d9e1;
   --brand-primary: #021525;
-  --brand-secondary: #0A0D13;
+  --brand-secondary: #0a0d13;
   --brand-neutral: #666666;
 
-  --brand-gray-30: #8B8D97;
-  --brand-gray-40: #F9FAFB;
-  --brand-gray-45: #BEC0CA;
-  --brand-gray-50: #F3F4F6;
-  --brand-gray-60: #83858B;
-  --brand-gray-70: #ACACAC;
+  --brand-gray-30: #8b8d97;
+  --brand-gray-40: #f9fafb;
+  --brand-gray-45: #bec0ca;
+  --brand-gray-50: #f3f4f6;
+  --brand-gray-60: #83858b;
+  --brand-gray-70: #acacac;
   --brand-gray-80: #686868;
   --brand-gray-100: #374151;
-  --brand-gray-200: #6B7280;
-  --brand-gray-300: #4B5563;
-  --brand-gray-400: #1F2937;
-  --brand-gray-500: #FAFAFA;
-  --brand-gray-600: #9CA3AF;
+  --brand-gray-200: #6b7280;
+  --brand-gray-300: #4b5563;
+  --brand-gray-400: #1f2937;
+  --brand-gray-500: #fafafa;
+  --brand-gray-600: #9ca3af;
   --brand-gray-700: #727376;
-  --brand-gray-800: #56585C;
-  --brand-gray-900: #E5E7EB;
-  --brand-gray-950: #D8D8D8;
-  --brand-gray-960: #DFDFE6;
-  --brand-gray-970: #E6E6E6;
-  --brand-yellow-100: #FEF9C3;
-  --brand-yellow-200: #CA8A04;
-  --brand-yellow-300: #FBBF24;
-  --brand-yellow-400: #FFCB45;
-  --brand-yellow-500: #F3EB0A;
-  --brand-yellow-600: #EAB308;
+  --brand-gray-800: #56585c;
+  --brand-gray-900: #e5e7eb;
+  --brand-gray-950: #d8d8d8;
+  --brand-gray-960: #dfdfe6;
+  --brand-gray-970: #e6e6e6;
+  --brand-yellow-100: #fef9c3;
+  --brand-yellow-200: #ca8a04;
+  --brand-yellow-300: #fbbf24;
+  --brand-yellow-400: #ffcb45;
+  --brand-yellow-500: #f3eb0a;
+  --brand-yellow-600: #eab308;
 
-  --brand-green-100: #22C55E;
-  --brand-green-150: #D1FAE5;
-  --brand-green-200: #DCFCE7;
-  --brand-green-300: #16A34A;
-  --brand-green-400: #BBF7D0;
-  --brand-green-500: #F0FDF4;
-  --brand-green-600: #15803D;
-  --brand-green-700: #065F46;
-  --brand-green-800: #10B981;
-  --brand-blue-100: #DBEAFE;
-  --brand-blue-200: #2563EB;
-  --brand-blue-300: #1FA7E0;
-  --brand-blue-400: #3B82F6;
+  --brand-green-100: #22c55e;
+  --brand-green-150: #d1fae5;
+  --brand-green-200: #dcfce7;
+  --brand-green-300: #16a34a;
+  --brand-green-400: #bbf7d0;
+  --brand-green-500: #f0fdf4;
+  --brand-green-600: #15803d;
+  --brand-green-700: #065f46;
+  --brand-green-800: #10b981;
+  --brand-blue-100: #dbeafe;
+  --brand-blue-200: #2563eb;
+  --brand-blue-300: #1fa7e0;
+  --brand-blue-400: #3b82f6;
 
-  --brand-red-100: #FEE2E2;
-  --brand-red-200: #EF4444;
+  --brand-red-100: #fee2e2;
+  --brand-red-200: #ef4444;
 
-  --brand-purple-100: #EEF2FF;
-  --brand-purple-200: #C7D2FE;
-  --brand-purple-300: #4338CA;
-  --brand-purple-400: #3730A3;
-  --brand-purple-500: #E0E7FF;
+  --brand-purple-100: #eef2ff;
+  --brand-purple-200: #c7d2fe;
+  --brand-purple-300: #4338ca;
+  --brand-purple-400: #3730a3;
+  --brand-purple-500: #e0e7ff;
 
-  --brand-error-100: #FF4623;
+  --brand-error-100: #ff4623;
 
-  --brand-placeholder: #D3D7E0;
-  --brand-alternative: #53BBE7;
+  --brand-placeholder: #d3d7e0;
+  --brand-alternative: #53bbe7;
 
-  --brand-teal-100: #40D2A11A;
-  --brand-teal-200: #3CB5B5;
+  --brand-teal-100: #40d2a11a;
+  --brand-teal-200: #3cb5b5;
 
   --brand-black-500: #151515;
 }
@@ -322,7 +319,7 @@
   }
 
   body {
-    @apply bg-background font-[family-name:var(--font-work-sans)] text-brand-gray-300 font-normal scroll-smooth;
+    @apply bg-background text-brand-gray-300 scroll-smooth font-[family-name:var(--font-work-sans)] font-normal;
   }
 
   h1,
@@ -331,13 +328,12 @@
   h4,
   h5,
   h6 {
-    @apply font-[family-name:var(--font-manrope-heading)] text-brand-gray-400 font-bold;
+    @apply text-brand-gray-400 font-[family-name:var(--font-manrope-heading)] font-bold;
   }
 }
 
 .auth-hero {
-  background:
-    url("/shade.svg")no-repeat;
+  background: url("/shade.svg") no-repeat;
   background-blend-mode: plus-darker, normal;
   background-size: cover;
   background-position: center;
@@ -347,7 +343,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 .page-fade-in {
@@ -358,7 +353,13 @@
   @apply mx-auto w-full max-w-[calc(1560px+80px)] px-3 sm:px-4 md:px-6;
 }
 
-
+.file-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  row-gap: 16px;
+  column-gap: 16px;
+}
 
 .notification-grid {
   width: 100%;
@@ -388,11 +389,14 @@
   .notification-grid {
     grid-template-columns: 1fr;
   }
+
+  .file-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .profile-hero {
-  background:
-    url("/profile-bg.webp") repeat;
+  background: url("/profile-bg.webp") repeat;
   background-blend-mode: plus-darker, normal;
   background-size: cover;
   background-position: center;
@@ -405,19 +409,14 @@
   /* Optional: makes the asterisk red */
 }
 
-
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
-
   }
 
   body {
     @apply bg-background text-foreground scroll-smooth;
-
   }
-
 }
 
 .custom-footer::before {
@@ -441,10 +440,19 @@
   aspect-ratio: 1;
   border-radius: 50%;
   background:
-    radial-gradient(farthest-side, var(--brand-primary) 94%, #0000) top/8px 8px no-repeat,
+    radial-gradient(farthest-side, var(--brand-primary) 94%, #0000) top/8px 8px
+      no-repeat,
     conic-gradient(var(--brand-foreground) 30%, #0000);
-  mask: radial-gradient(farthest-side, var(--brand-foreground) calc(100% - 8px), var(--brand-primary) 0);
-  -webkit-mask: radial-gradient(farthest-side, var(--brand-foreground) calc(100% - 8px), var(--brand-primary) 0);
+  mask: radial-gradient(
+    farthest-side,
+    var(--brand-foreground) calc(100% - 8px),
+    var(--brand-primary) 0
+  );
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    var(--brand-foreground) calc(100% - 8px),
+    var(--brand-primary) 0
+  );
   animation: l13 1s infinite linear;
 }
 

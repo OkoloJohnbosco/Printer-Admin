@@ -8,15 +8,7 @@ import {
   getHubStatusBadgeVariant,
   getHubStatusIconKey,
 } from "@/lib/utils";
-import {
-  AlertCircle,
-  Check,
-  Clock,
-  MapPin,
-  Package,
-  TrendingUp,
-  X,
-} from "lucide-react";
+import { AlertCircle, Check, Clock, MapPin, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -61,44 +53,7 @@ function PrintHubGridCard({ hub }: { hub: PrintHub }) {
           <span>{hub.businessAddress}</span>
         </div>
 
-        <div className="border-border grid grid-cols-3 gap-4 border-t pt-4">
-          <div>
-            <div className="mb-1 flex items-center gap-2">
-              <Package className="text-muted-foreground h-4 w-4" />
-              <p className="text-muted-foreground text-xs">Active Orders</p>
-            </div>
-            <p className="text-2xl font-bold">12</p>
-          </div>
-          <div>
-            <div className="mb-1 flex items-center gap-2">
-              <TrendingUp className="text-muted-foreground h-4 w-4" />
-              <p className="text-muted-foreground text-xs">Completed</p>
-            </div>
-            <p className="text-2xl font-bold">12</p>
-          </div>
-          <div>
-            <div className="mb-1 flex items-center gap-2">
-              <Clock className="text-muted-foreground h-4 w-4" />
-              <p className="text-muted-foreground text-xs">Avg Time</p>
-            </div>
-            <p className="text-lg font-bold">12</p>
-          </div>
-        </div>
-
-        <div className="border-border border-t pt-4">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-muted-foreground text-sm">Capacity</span>
-            <span className="text-sm font-medium">12%</span>
-          </div>
-          <div className="bg-muted h-2 overflow-hidden rounded-full">
-            <div
-              className={`h-full ${12 > 80 ? "bg-destructive" : "bg-green-700"}`}
-              style={{ width: `${12}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="flex gap-2 pt-2">
+        <div className="border-border flex gap-2 border-t pt-4">
           <Link href={`/print-hubs/${hub.id}`} className="flex-1">
             <Button
               variant="outline"

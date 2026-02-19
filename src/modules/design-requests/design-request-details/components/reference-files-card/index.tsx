@@ -119,7 +119,7 @@ function FilePreview({ file }: { file: FileInfo }) {
   if (file.type === "image" && !imageError) {
     return (
       <div
-        className="group relative aspect-square overflow-hidden rounded-lg border"
+        className="group relative aspect-auto w-full min-w-0 overflow-hidden rounded-lg border"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -134,17 +134,19 @@ function FilePreview({ file }: { file: FileInfo }) {
         <div
           className={cn(
             "absolute inset-0 flex items-center justify-center bg-black/50 transition-opacity duration-200",
-            isHovered ? "opacity-100" : "opacity-0",
+            "min-h-[44px] min-w-[44px] touch-manipulation",
+            "opacity-100",
+            isHovered ? "sm:opacity-100" : "sm:opacity-0",
           )}
         >
           <Button
             variant="secondary"
             size="sm"
             onClick={handleDownload}
-            className="gap-2"
+            className="min-h-[44px] min-w-[44px] shrink-0 touch-manipulation gap-2 sm:min-h-0 sm:min-w-0"
           >
-            <Download className="h-4 w-4" />
-            Download
+            <Download className="h-4 w-4 shrink-0" />
+            <span className="hidden sm:inline">Download</span>
           </Button>
         </div>
         <div className="absolute right-0 bottom-0 left-0 bg-linear-to-t from-black/60 to-transparent p-2">
@@ -159,7 +161,7 @@ function FilePreview({ file }: { file: FileInfo }) {
   // Non-image files or image load error
   return (
     <div
-      className="border-border group hover:bg-muted/50 relative flex aspect-square flex-col items-center justify-center gap-2 rounded-lg border p-4 transition-colors"
+      className="border-border group hover:bg-muted/50 relative flex aspect-auto w-full min-w-0 flex-col items-center justify-center gap-2 rounded-lg border p-3 transition-colors sm:p-4"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -187,17 +189,18 @@ function FilePreview({ file }: { file: FileInfo }) {
       <div
         className={cn(
           "absolute inset-0 flex items-center justify-center rounded-lg bg-black/50 transition-opacity duration-200",
-          isHovered ? "opacity-100" : "opacity-0",
+          "opacity-100",
+          isHovered ? "sm:opacity-100" : "sm:opacity-0",
         )}
       >
         <Button
           variant="secondary"
           size="sm"
           onClick={handleDownload}
-          className="gap-2"
+          className="min-h-[44px] min-w-[44px] shrink-0 touch-manipulation gap-2 sm:min-h-0 sm:min-w-0"
         >
-          <Download className="h-4 w-4" />
-          Download
+          <Download className="h-4 w-4 shrink-0" />
+          <span className="hidden sm:inline">Download</span>
         </Button>
       </div>
     </div>
@@ -236,27 +239,32 @@ export default function ReferenceFilesCard({
   };
 
   return (
-    <Card className="@container/card shadow-none">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>{title}</CardTitle>
+    <Card className="@container/card w-full min-w-0 overflow-hidden shadow-none">
+      <CardHeader className="space-y-2 px-4 py-0!">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <CardTitle className="py-0! text-base sm:text-lg">{title}</CardTitle>
           {files.length > 1 && (
             <Button
               variant="outline"
               size="sm"
               onClick={handleDownloadAll}
-              className="gap-2"
+              className="h-9 shrink-0 touch-manipulation gap-2 sm:self-center"
             >
-              <Download className="h-4 w-4" />
-              Download All
+              <Download className="h-4 w-4 shrink-0" />
+              <span className="truncate">Download All</span>
             </Button>
           )}
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+      <CardContent className="px-4 py-0! sm:px-6">
+        <div className="notification-grid grid gap-3">
           {files.map((file, index) => (
-            <FilePreview key={index} file={file} />
+            <div
+              key={index}
+              className="mx-auto w-full max-w-[200px] min-w-0 sm:mx-0 sm:max-w-none"
+            >
+              <FilePreview file={file} />
+            </div>
           ))}
         </div>
         <p className="text-muted-foreground mt-4 text-xs">

@@ -3,6 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import useGetHubById from "@/lib/hooks/admin/use-get-hub-by-id";
 import useDisclosure from "@/lib/hooks/common/use-disclosure";
@@ -222,40 +223,59 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
                             return (
                               <div
                                 key={item.id}
-                                className="border-border flex items-center justify-between rounded-md border p-3"
+                                className="border-border flex flex-col gap-4 rounded-md border p-3"
                               >
-                                <div className="min-w-0 flex-1">
-                                  <p className="font-medium">
-                                    {item.productName}
-                                  </p>
-                                  <p className="text-muted-foreground text-xs">
-                                    Quantity: {item.quantity} •{" "}
-                                    {formatCurrency(
-                                      parseFloat(item.price) / item.quantity,
-                                    )}{" "}
-                                    each
-                                  </p>
-                                  {specEntries.length > 0 && (
-                                    <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-                                      {specEntries.map(([key, value]) => (
-                                        <div key={key} className="flex gap-2">
-                                          <dt className="text-muted-foreground shrink-0 font-medium capitalize">
-                                            {key
-                                              .replace(/([A-Z])/g, " $1")
-                                              .trim()}
-                                            :
-                                          </dt>
-                                          <dd className="min-w-0 truncate font-medium">
-                                            {String(value)}
-                                          </dd>
-                                        </div>
-                                      ))}
-                                    </dl>
-                                  )}
+                                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                  <div className="min-w-0 flex-1">
+                                    <div className="flex flex-wrap items-start justify-between gap-2">
+                                      <div>
+                                        <p className="font-medium">
+                                          {item.productName}
+                                        </p>
+                                        <p className="text-muted-foreground text-xs">
+                                          Quantity: {item.quantity} •{" "}
+                                          {formatCurrency(
+                                            parseFloat(item.price) /
+                                              item.quantity,
+                                          )}{" "}
+                                          each
+                                        </p>
+                                      </div>
+                                      <p className="shrink-0 font-semibold">
+                                        {formatCurrency(parseFloat(item.price))}
+                                      </p>
+                                    </div>
+                                    {specEntries.length > 0 && (
+                                      <>
+                                        <Separator className="my-3" />
+                                        <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                                          {specEntries.map(([key, value]) => (
+                                            <div
+                                              key={key}
+                                              className="flex w-fit gap-2 rounded-full border bg-gray-50 px-2 py-1"
+                                            >
+                                              <dt className="text-muted-foreground shrink-0 font-medium capitalize">
+                                                {key
+                                                  .replace(/([A-Z])/g, " $1")
+                                                  .trim()}
+                                                :
+                                              </dt>
+                                              <dd className="min-w-0 truncate font-medium">
+                                                {String(value)}
+                                              </dd>
+                                            </div>
+                                          ))}
+                                        </dl>
+                                      </>
+                                    )}
+                                  </div>
                                 </div>
-                                <p className="shrink-0 pl-2 font-semibold">
-                                  {formatCurrency(parseFloat(item.price))}
-                                </p>
+                                {item.designFileUrl && (
+                                  <ReferenceFilesCard
+                                    references={[item.designFileUrl]}
+                                    title="Design file"
+                                  />
+                                )}
                               </div>
                             );
                           })}
@@ -266,23 +286,6 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
                 )}
               </CardContent>
             </Card>
-
-            {/* Design files from order items */}
-            {order &&
-              !orderLoading &&
-              (() => {
-                const designFileUrls = (order.items || [])
-                  .map((item) => item.designFileUrl)
-                  .filter((url): url is string => Boolean(url));
-                return (
-                  designFileUrls.length > 0 && (
-                    <ReferenceFilesCard
-                      references={designFileUrls}
-                      title="Design files"
-                    />
-                  )
-                );
-              })()}
           </div>
 
           {/* Hub details */}
