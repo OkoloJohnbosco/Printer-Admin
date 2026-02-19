@@ -40,7 +40,7 @@ export default function OrderFiltersCard() {
   }, []);
 
   const pagination = useCursorPagination({
-    initialItemsPerPage: 20,
+    initialItemsPerPage: 12,
     scrollOnPageChange: true,
   });
 
