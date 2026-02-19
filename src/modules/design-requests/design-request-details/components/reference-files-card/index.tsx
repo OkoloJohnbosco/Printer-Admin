@@ -119,7 +119,7 @@ function FilePreview({ file }: { file: FileInfo }) {
   if (file.type === "image" && !imageError) {
     return (
       <div
-        className="group relative aspect-auto w-full min-w-0 overflow-hidden rounded-lg border"
+        className="group relative aspect-video w-full min-w-0 overflow-hidden rounded-lg border"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -161,7 +161,7 @@ function FilePreview({ file }: { file: FileInfo }) {
   // Non-image files or image load error
   return (
     <div
-      className="border-border group hover:bg-muted/50 relative flex aspect-auto w-full min-w-0 flex-col items-center justify-center gap-2 rounded-lg border p-3 transition-colors sm:p-4"
+      className="border-border group hover:bg-muted/50 relative flex aspect-video w-full min-w-0 flex-col items-center justify-center gap-2 rounded-lg border p-3 transition-colors sm:p-4"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
