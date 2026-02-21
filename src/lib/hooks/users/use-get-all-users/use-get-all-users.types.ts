@@ -21,7 +21,7 @@ export interface GetAllUsersResponse {
 
 export interface UsersData {
   nextCursor: string | null;
-  data: User[];
+  users: User[];
 }
 
 export interface User {

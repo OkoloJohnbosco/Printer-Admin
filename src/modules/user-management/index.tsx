@@ -67,7 +67,7 @@ export default function UserManagementPageTemplate() {
     pagination.setNextCursor(nextCursor);
   }, [nextCursor, pagination]);
 
-  const users = getAllUsers.value?.data?.data || [];
+  const users = getAllUsers.value?.data?.users || [];
   const isDateSelected = dateRange?.from && dateRange?.to;
 
   const clearAllFilters = () => {

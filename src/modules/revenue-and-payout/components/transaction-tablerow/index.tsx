@@ -15,9 +15,9 @@ import {
   getPayoutStatusBadgeVariant,
   getPayoutStatusIconKey,
 } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { AlertCircle, Check, Clock, X } from "lucide-react";
 import routes from "@/routes";
+import { AlertCircle, Check, Clock, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const payoutStatusIcons = {
   pending: <Clock className="size-3" />,
