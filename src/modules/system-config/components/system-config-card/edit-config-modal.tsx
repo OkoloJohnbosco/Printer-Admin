@@ -33,7 +33,7 @@ export function EditConfigModal({
   onSuccess,
 }: EditConfigModalProps) {
   const queryClient = useQueryClient();
-  const updateConfig = useUpdateSystemConfig(config.id);
+  const updateConfig = useUpdateSystemConfig(config.key);
   useGetDeliveryPriceConfig();
   const updateDeliveryPriceConfig = useUpdateDeliveryPriceConfig();
 
