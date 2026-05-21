@@ -17,17 +17,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import toast from "@/components/ui/toast";
 import { useCursorPagination } from "@/lib/hooks/common/use-cursor-pagination";
 import useDebounce from "@/lib/hooks/common/use-debounce";
 import useGetAllUsers from "@/lib/hooks/users/use-get-all-users";
 import { UserRole } from "@/lib/hooks/users/use-get-all-users/use-get-all-users.types";
-import { exportToCSV, formatStatusText } from "@/lib/utils";
+import { formatStatusText } from "@/lib/utils";
 import { Calendar1Icon, Download, Loader, Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import ActiveFiltersBar from "./components/active-filters-bar";
 import UserStatsRow from "./components/user-stats-row";
 import UserTable from "./components/user-table";
+import {
+  downloadUsersCsv,
+  fetchAllUsersForExport,
+} from "./utils/export-users-csv";
 
 export default function UserManagementPageTemplate() {
   const pagination = useCursorPagination({
@@ -46,6 +51,7 @@ export default function UserManagementPageTemplate() {
     searchTerm: "",
     roleFilter: "all",
   });
+  const [isExporting, setIsExporting] = useState(false);
   const debouncedSearchTerm = useDebounce(filters.searchTerm, 500);
 
   const getAllUsers = useGetAllUsers({
@@ -77,16 +83,38 @@ export default function UserManagementPageTemplate() {
       roleFilter: "all",
     });
   };
-  const handleExportCSV = () => {
-    const exportData = users.map((user) => ({
-      "User ID": user.id,
-      Name: `${user.firstName} ${user.lastName}`,
-      Email: user.email,
-      Role: user.role,
-      "Join Date": new Date(user.createdAt).toLocaleDateString(),
-    }));
+  const handleExportCSV = async () => {
+    setIsExporting(true);
 
-    exportToCSV(exportData, "users-export");
+    try {
+      const usersToExport = await fetchAllUsersForExport({
+        role:
+          filters.roleFilter === "all"
+            ? undefined
+            : (filters.roleFilter as UserRole),
+        startDate: dateRange?.from?.toISOString(),
+        endDate: dateRange?.to?.toISOString(),
+        search: debouncedSearchTerm || undefined,
+      });
+
+      if (usersToExport.length === 0) {
+        toast.error({
+          description: "No users to export for the current filters.",
+        });
+        return;
+      }
+
+      downloadUsersCsv(usersToExport);
+      toast.success({
+        description: `Exported ${usersToExport.length} user${usersToExport.length === 1 ? "" : "s"} to CSV.`,
+      });
+    } catch {
+      toast.error({
+        description: "Failed to export users. Please try again.",
+      });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -106,9 +134,10 @@ export default function UserManagementPageTemplate() {
               variant="outline"
               onClick={handleExportCSV}
               className="flex-1 sm:flex-none"
+              disabled={isExporting || getAllUsers.isLoading}
             >
               <Download className="mr-2 h-4 w-4" />
-              Export CSV
+              {isExporting ? "Exporting..." : "Export CSV"}
             </Button>
           </div>
         </div>

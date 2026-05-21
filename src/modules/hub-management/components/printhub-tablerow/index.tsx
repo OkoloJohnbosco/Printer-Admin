@@ -3,6 +3,7 @@ import { TableCell, TableRow } from "@/components/ui/table";
 import { HubStatus, PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
 import {
   formatStatusText,
+  formatToMDY,
   getHubStatusBadgeVariant,
   getHubStatusIconKey,
 } from "@/lib/utils";
@@ -41,6 +42,9 @@ function PrintHubTableRow({ printHub }: { printHub: PrintHub }) {
       </TableCell>
       <TableCell className="text-muted-foreground py-4">
         {printHub.businessAddress}
+      </TableCell>
+      <TableCell className="px-5 py-4">
+        {formatToMDY(printHub.createdAt)}
       </TableCell>
       <TableCell className="px-5 py-4">{printHub.businessEmail}</TableCell>
       <TableCell className="px-5 py-4">

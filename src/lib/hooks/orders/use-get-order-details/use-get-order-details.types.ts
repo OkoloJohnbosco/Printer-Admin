@@ -26,17 +26,13 @@ export interface IOrderDetails {
 
 export interface Hub {
   id: string;
-  userId: string;
-  status: string;
   businessName: string;
   businessEmail: string;
   businessAddress: string;
   city: string;
   state: string;
-  locationLatitude: string;
-  locationLongitude: string;
-  createdAt: string;
-  updatedAt: string;
+  status: string;
+  logoUrl?: string;
 }
 
 export interface User {
@@ -44,10 +40,7 @@ export interface User {
   email: string;
   firstName: string;
   lastName: string;
-  passwordHash: string;
-  role: string;
-  createdAt: string;
-  updatedAt: string;
+  avatarUrl?: string;
 }
 
 export interface Item {

@@ -1,25 +1,10 @@
-export type NotificationType =
-  | "HUB_VERIFIED"
-  | "ORDER_ACCEPTED"
-  | "ORDER_REJECTED"
-  | "ORDER_COMPLETED"
-  | "PAYMENT_COMPLETED"
-  | "HUB_DOCUMENT_REJECTED"
-  | "PAYOUT_APPROVED"
-  | "PAYOUT_INITIATED"
-  | "PAYOUT_COMPLETED";
+import {
+  Notification,
+  NotificationPayload,
+} from "../use-get-notifications/use-get-notifications.types";
 
-export interface Notification {
-  id: string;
-  userId: string;
-  type: NotificationType;
-  title: string;
-  message: string;
-  payload?: Record<string, unknown>;
-  isRead: boolean;
-  createdAt: string;
-  updatedAt?: string;
-}
+export type { Notification, NotificationPayload };
+export { ENotificationType as NotificationType } from "../use-get-notifications/use-get-notifications.types";
 
 export interface NotificationStreamEvent {
   success: boolean;

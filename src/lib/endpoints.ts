@@ -124,6 +124,8 @@ export const ENDPOINTS = {
     return `admin/orders?${searchParams.toString()}`;
   },
   GET_ORDER_BY_ID: (orderId: string) => `admin/orders/${orderId}`,
+  GET_ORDER_BY_REFERENCE: (reference: string) =>
+    `admin/orders/ref/${reference}`,
   GET_ELIGIBLE_HUBS: (orderId: string) =>
     `admin/orders/${orderId}/eligible-hubs`,
   REASSIGN_ORDER: (orderId: string) => `admin/orders/${orderId}/reassign`,
@@ -162,6 +164,8 @@ export const ENDPOINTS = {
     return `admin/payouts?${searchParams.toString()}`;
   },
   GET_PAYOUT_BY_ID: (id: string) => `admin/payouts/${id}`,
+  GET_PAYOUT_BY_REFERENCE: (reference: string) =>
+    `admin/payouts/ref/${reference}`,
 
   // Designer Requests Endpoints
   GET_ALL_DESIGNER_REQUESTS: (params: GetAllDesignerRequestsParams) => {
@@ -181,6 +185,8 @@ export const ENDPOINTS = {
     `admin/designer-requests/${requestId}`,
   GET_DESIGNER_REQUEST_BY_ID: (requestId: string) =>
     `admin/designer-requests/${requestId}`,
+  GET_DESIGNER_REQUEST_BY_REFERENCE: (reference: string) =>
+    `admin/designer-requests/ref/${reference}`,
 
   // Audit Logs Endpoints
   GET_AUDIT_LOGS: (params: GetAuditLogsParams) => {

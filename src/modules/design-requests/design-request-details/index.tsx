@@ -58,7 +58,8 @@ export default function DesignRequestDetailPageTemplate({
           Design Request Details
         </h1>
         <p className="text-muted-foreground text-sm sm:text-base">
-          Review and manage design request {params.id.slice(0, 8)}...
+          Review and manage design request{" "}
+          {(designerRequest.reference ?? designerRequest.id).slice(0, 12)}...
         </p>
       </div>
 

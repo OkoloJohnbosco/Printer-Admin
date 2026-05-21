@@ -8,8 +8,10 @@ import {
   Notification,
 } from "@/lib/hooks/notification/use-get-notifications/use-get-notifications.types";
 import useMarkNotificationRead from "@/lib/hooks/notification/use-mark-notification-read";
+import { getNotificationRoute } from "@/lib/notification-routing";
 import { formatDistanceToNow } from "date-fns";
 import { BellOff, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 // Map notification types to badge variants and styles
 const getNotificationBadge = (type: ENotificationType) => {
@@ -24,6 +26,18 @@ const getNotificationBadge = (type: ENotificationType) => {
       return { variant: "success" as const, label: "Payout Approved" };
     case ENotificationType.PAYOUT_REJECTED:
       return { variant: "destructive" as const, label: "Payout Rejected" };
+    case ENotificationType.PAYOUT_REQUESTED:
+      return { variant: "warning" as const, label: "Payout Request" };
+    case ENotificationType.HUB_VERIFICATION_REQUESTED:
+      return { variant: "warning" as const, label: "Hub Verification" };
+    case ENotificationType.HUB_VERIFIED:
+      return { variant: "success" as const, label: "Hub Verified" };
+    case ENotificationType.HUB_DOCUMENT_REJECTED:
+      return { variant: "destructive" as const, label: "Document Rejected" };
+    case ENotificationType.DESIGN_REQUEST_ACCEPTED:
+    case ENotificationType.DESIGN_REQUEST_COMPLETED:
+    case ENotificationType.DESIGN_APPROVED:
+      return { variant: "info" as const, label: "Design Request" };
     default:
       return { variant: "secondary" as const, label: "Info" };
   }
@@ -44,12 +58,21 @@ interface NotificationCardProps {
 }
 
 function NotificationCard({ notification, onDelete }: NotificationCardProps) {
+  const router = useRouter();
   const badge = getNotificationBadge(notification.type);
+  const actionRoute = getNotificationRoute(notification);
 
   const markNotificationRead = useMarkNotificationRead(notification.id);
 
   const handleMarkAsRead = () => {
     markNotificationRead.mutate({});
+  };
+
+  const handleViewDetails = () => {
+    if (!notification.isRead) {
+      markNotificationRead.mutate({});
+    }
+    router.push(actionRoute);
   };
 
   return (
@@ -95,7 +118,12 @@ function NotificationCard({ notification, onDelete }: NotificationCardProps) {
                 Mark as Read
               </Button>
             )}
-            <Button variant="outline_gray" size="sm" className="h-7 px-2">
+            <Button
+              variant="outline_gray"
+              size="sm"
+              className="h-7 px-2"
+              onClick={handleViewDetails}
+            >
               View Details
             </Button>
           </div>

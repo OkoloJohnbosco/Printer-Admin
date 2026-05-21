@@ -2,7 +2,17 @@ import { Button } from "@/components/ui/button";
 import Heading from "@/components/ui/heading";
 import { Download } from "lucide-react";
 
-function RevenueHeader() {
+interface RevenueHeaderProps {
+  onDownloadReport: () => void;
+  isExporting?: boolean;
+  isExportDisabled?: boolean;
+}
+
+function RevenueHeader({
+  onDownloadReport,
+  isExporting = false,
+  isExportDisabled = false,
+}: RevenueHeaderProps) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
       <div>
@@ -12,8 +22,14 @@ function RevenueHeader() {
         </p>
       </div>
       <div className="flex items-center gap-4">
-        <Button variant="outline" className="w-full bg-white sm:w-auto">
-          <Download /> Download Report
+        <Button
+          variant="outline"
+          className="w-full bg-white sm:w-auto"
+          onClick={onDownloadReport}
+          disabled={isExporting || isExportDisabled}
+        >
+          <Download className="mr-2 h-4 w-4" />
+          {isExporting ? "Downloading..." : "Download Report"}
         </Button>
       </div>
     </div>

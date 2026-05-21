@@ -27,6 +27,9 @@ const routes = {
   SYSTEM_CONFIG: "/system-config",
   AUDIT_LOGS: "/audit-logs",
   REVENUE_AND_PAYOUT: "/revenue-and-payout",
+  PAYOUT_DETAILS: (payoutIdOrReference: string) =>
+    `/revenue-and-payout/${payoutIdOrReference}`,
+  HUB_DETAILS: (hubId: string) => `/print-hubs/${hubId}`,
   PARTNER_APPLICATIONS: "/partner-applications",
 
   NOTIFICATIONS: "/notifications",

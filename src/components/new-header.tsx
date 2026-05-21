@@ -3,7 +3,10 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import useGetUserData from "@/lib/hooks/auth/use-get-user-data";
 import useGetUnreadNotificationCount from "@/lib/hooks/notification/use-get-unread-count";
 import useNotificationStream from "@/lib/hooks/notification/use-notification-stream";
+import { Notification } from "@/lib/hooks/notification/use-get-notifications/use-get-notifications.types";
+import { getNotificationRoute } from "@/lib/notification-routing";
 import routes from "@/routes";
+import { useRouter } from "next/navigation";
 import { Bell } from "lucide-react";
 import Link from "next/link";
 import { NavUser } from "./nav-user";
@@ -13,6 +16,7 @@ import { Skeleton } from "./ui/skeleton";
 import toast from "./ui/toast";
 
 function NavHeader() {
+  const router = useRouter();
   const getUserData = useGetUserData();
   const isLoading = getUserData.isLoading && !getUserData?.value;
   const unreadCount = useGetUnreadNotificationCount();
@@ -22,14 +26,15 @@ function NavHeader() {
   // Connect to notification stream for real-time updates
   useNotificationStream({
     enabled: isLoggedIn,
-    onNotification: (notification) => {
-      // Show toast for new notifications
+    onNotification: (notification: Notification) => {
+      const actionRoute = getNotificationRoute(notification);
+
       toast.success({
         description: `${notification.title}: ${notification.message}`,
         button: {
           label: "View",
           onClick: () => {
-            window.location.href = routes.NOTIFICATIONS;
+            router.push(actionRoute);
           },
         },
       });

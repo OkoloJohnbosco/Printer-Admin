@@ -1,5 +1,6 @@
 "use client";
 
+import toast from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CursorPaginationDetailed } from "@/components/ui/cursor-pagination";
@@ -7,10 +8,13 @@ import { Input } from "@/components/ui/input";
 import useGetAllPartnerApplications from "@/lib/hooks/admin/use-get-all-partner-applications";
 import { useCursorPagination } from "@/lib/hooks/common/use-cursor-pagination";
 import useDebounce from "@/lib/hooks/common/use-debounce";
-import { exportToCSV } from "@/lib/utils";
 import { Download, Loader, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import PartnerApplicationTable from "./components/partner-application-table";
+import {
+  downloadPartnerApplicationsCsv,
+  fetchAllPartnerApplicationsForExport,
+} from "./utils/export-partner-applications-csv";
 
 export default function PartnerApplicationsPageTemplate() {
   const pagination = useCursorPagination({
@@ -19,6 +23,7 @@ export default function PartnerApplicationsPageTemplate() {
   });
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const getAllPartnerApplications = useGetAllPartnerApplications({
@@ -37,17 +42,33 @@ export default function PartnerApplicationsPageTemplate() {
   const applications =
     getAllPartnerApplications.value?.data?.applications || [];
 
-  const handleExportCSV = () => {
-    const exportData = applications.map((application) => ({
-      "Application ID": application.id,
-      "Full Name": application.fullName,
-      Email: application.email,
-      "Company Name": application.companyName,
-      "Business Type": application.businessType,
-      "Applied Date": new Date(application.createdAt).toLocaleDateString(),
-    }));
+  const handleExportCSV = async () => {
+    setIsExporting(true);
 
-    exportToCSV(exportData, "partner-applications-export");
+    try {
+      const applicationsToExport = await fetchAllPartnerApplicationsForExport({
+        search: debouncedSearchTerm || undefined,
+      });
+
+      if (applicationsToExport.length === 0) {
+        toast.error({
+          description:
+            "No partner applications to export for the current filters.",
+        });
+        return;
+      }
+
+      downloadPartnerApplicationsCsv(applicationsToExport);
+      toast.success({
+        description: `Exported ${applicationsToExport.length} application${applicationsToExport.length === 1 ? "" : "s"} to CSV.`,
+      });
+    } catch {
+      toast.error({
+        description: "Failed to export partner applications. Please try again.",
+      });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   return (
@@ -67,6 +88,8 @@ export default function PartnerApplicationsPageTemplate() {
               variant="outline"
               onClick={handleExportCSV}
               className="w-full sm:w-auto"
+              disabled={isExporting || getAllPartnerApplications.isLoading}
+              isLoading={isExporting}
             >
               <Download className="mr-2 h-4 w-4" />
               Export CSV

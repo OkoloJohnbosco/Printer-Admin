@@ -9,6 +9,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -23,7 +24,11 @@ import { QUERYKEYS } from "@/lib/endpoints";
 import useDeliverOrder from "@/lib/hooks/orders/use-deliver-order";
 import { OrderStatus } from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import useGetOrderDetails from "@/lib/hooks/orders/use-get-order-details";
-import { formatCurrency, formatStatusText, formatToMDY } from "@/lib/utils";
+import getInitials, {
+  formatCurrency,
+  formatStatusText,
+  formatToMDY,
+} from "@/lib/utils";
 import ReferenceFilesCard from "@/modules/design-requests/design-request-details/components/reference-files-card";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -35,7 +40,6 @@ import {
   MapPin,
   Package,
   PackageCheck,
-  User,
 } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -54,7 +58,8 @@ export default function OrderDetailPageTemplate({
     params.id,
   );
   const orderDetails = value?.data;
-  const deliverOrder = useDeliverOrder(params.id);
+  const orderId = orderDetails?.id ?? "";
+  const deliverOrder = useDeliverOrder(orderId);
   const [selectedHub, setSelectedHub] = useState("");
   const [isDeliverDialogOpen, setIsDeliverDialogOpen] = useState(false);
   // Initialize status from API data
@@ -269,16 +274,25 @@ export default function OrderDetailPageTemplate({
               </CardHeader>
               <CardContent>
                 <div className="mb-4 flex items-start gap-3">
-                  <User className="text-muted-foreground mt-0.5 h-5 w-5" />
+                  <Avatar className="h-10 w-10 shrink-0">
+                    {orderDetails.user.avatarUrl && (
+                      <AvatarImage
+                        src={orderDetails.user.avatarUrl}
+                        alt={`${orderDetails.user.firstName} ${orderDetails.user.lastName}`}
+                      />
+                    )}
+                    <AvatarFallback>
+                      {getInitials(
+                        `${orderDetails.user.firstName} ${orderDetails.user.lastName}`,
+                      )}
+                    </AvatarFallback>
+                  </Avatar>
                   <div className="flex-1">
                     <p className="font-medium">
                       {orderDetails.user.firstName} {orderDetails.user.lastName}
                     </p>
                     <p className="text-muted-foreground text-sm">
                       {orderDetails.user.email}
-                    </p>
-                    <p className="text-muted-foreground mt-1 text-xs">
-                      Customer ID: {orderDetails.user.id}
                     </p>
                   </div>
                 </div>
@@ -307,11 +321,24 @@ export default function OrderDetailPageTemplate({
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div>
-                  <p className="font-medium">{orderDetails.hub.businessName}</p>
-                  <p className="text-muted-foreground text-sm capitalize">
-                    {orderDetails.hub.status}
-                  </p>
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-10 w-10 shrink-0 rounded-lg">
+                    {orderDetails.hub.logoUrl && (
+                      <AvatarImage
+                        src={orderDetails.hub.logoUrl}
+                        alt={orderDetails.hub.businessName}
+                        className="object-cover"
+                      />
+                    )}
+                    <AvatarFallback className="rounded-lg">
+                      <Building2 className="text-muted-foreground h-5 w-5" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-medium">
+                      {orderDetails.hub.businessName}
+                    </p>
+                  </div>
                 </div>
                 <div className="border-border space-y-2 border-t pt-3">
                   <div className="flex items-start gap-2">

@@ -11,17 +11,8 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { OrderStatus } from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import useGetEligibleHubs from "@/lib/hooks/orders/use-get-eligible-hubs";
+import { Hub } from "@/lib/hooks/orders/use-get-order-details/use-get-order-details.types";
 import { ReassignHubModal } from "../reassign-hub-modal";
-
-interface Hub {
-  id: string;
-  businessName: string;
-  businessEmail: string;
-  businessAddress: string;
-  city: string;
-  state: string;
-  status: string;
-}
 
 interface AssignedHubCardProps {
   orderStatus: string;

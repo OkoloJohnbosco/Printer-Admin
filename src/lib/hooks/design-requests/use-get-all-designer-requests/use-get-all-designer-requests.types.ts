@@ -25,6 +25,7 @@ export interface Data {
 
 export interface DesignerRequest {
   id: string;
+  reference?: string;
   userId: string;
   status: DesignerRequestStatus;
   type: string;
