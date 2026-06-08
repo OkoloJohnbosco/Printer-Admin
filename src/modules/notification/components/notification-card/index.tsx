@@ -23,11 +23,11 @@ const getNotificationBadge = (type: ENotificationType) => {
     case ENotificationType.PAYMENT_COMPLETED:
       return { variant: "success" as const, label: "Payment" };
     case ENotificationType.PAYOUT_APPROVED:
-      return { variant: "success" as const, label: "Payout Approved" };
+      return { variant: "warning" as const, label: "Payout Approved" };
     case ENotificationType.PAYOUT_REJECTED:
       return { variant: "destructive" as const, label: "Payout Rejected" };
     case ENotificationType.PAYOUT_REQUESTED:
-      return { variant: "warning" as const, label: "Payout Request" };
+      return { variant: "success" as const, label: "Payout Request" };
     case ENotificationType.HUB_VERIFICATION_REQUESTED:
       return { variant: "warning" as const, label: "Hub Verification" };
     case ENotificationType.HUB_VERIFIED:

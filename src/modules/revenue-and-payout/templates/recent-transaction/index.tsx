@@ -1,4 +1,3 @@
-import toast from "@/components/ui/toast";
 import { CursorPaginationDetailed } from "@/components/ui/cursor-pagination";
 import Heading from "@/components/ui/heading";
 import {
@@ -8,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import toast from "@/components/ui/toast";
 import useGetAllHubs from "@/lib/hooks/admin/use-get-all-hubs";
 import { useCursorPagination } from "@/lib/hooks/common/use-cursor-pagination";
 import useGetAllPayouts from "@/lib/hooks/payouts/use-get-all-payouts";
@@ -57,7 +57,10 @@ function RecentTransactions() {
         ? undefined
         : (filters.statusFilter as PayoutStatus),
     hubId: filters.hubFilter === "all" ? undefined : filters.hubFilter,
-    type: PayoutType.FINAL,
+    type:
+      filters.typeFilter === "all"
+        ? undefined
+        : (filters.typeFilter as PayoutType),
     orderId: filters.orderId === "all" ? undefined : filters.orderId,
   });
   const nextCursor = getAllPayouts.value?.data?.nextCursor;
@@ -180,27 +183,31 @@ function RecentTransactions() {
                 ))}
               </SelectContent>
             </Select>
-            {/* <Select
-            value={filters.typeFilter}
-            onValueChange={(value) =>
-              setFilters({
-                ...filters,
-                typeFilter: value as PayoutType | "all",
-              })
-            }
-          >
-            <SelectTrigger className="w-full capitalize md:w-[180px]">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              {Object.values(PayoutType).map((status) => (
-                <SelectItem className="capitalize" key={status} value={status}>
-                  {formatStatusText(status?.toLowerCase())}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select> */}
+            <Select
+              value={filters.typeFilter}
+              onValueChange={(value) =>
+                setFilters({
+                  ...filters,
+                  typeFilter: value as PayoutType | "all",
+                })
+              }
+            >
+              <SelectTrigger className="w-full capitalize md:w-[180px]">
+                <SelectValue placeholder="Filter by type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                {Object.values(PayoutType).map((status) => (
+                  <SelectItem
+                    className="capitalize"
+                    key={status}
+                    value={status}
+                  >
+                    {formatStatusText(status?.toLowerCase())}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <div className="col-span-12 px-4">
