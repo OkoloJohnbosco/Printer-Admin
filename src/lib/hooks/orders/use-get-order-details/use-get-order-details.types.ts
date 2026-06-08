@@ -17,11 +17,28 @@ export interface IOrderDetails {
   deliveryType: string;
   deliveryFee: string;
   deliveryAddressId: string;
+  deliveryAddress?: DeliveryAddress | null;
   createdAt: string;
   updatedAt: string;
   hub: Hub;
   user: User;
   items: Item[];
+}
+
+export interface DeliveryAddress {
+  id: string;
+  userId: string;
+  recipientName: string;
+  recipientPhone: string;
+  locationName: string;
+  locationAddress: string;
+  city: string;
+  state: string;
+  locationLatitude: string;
+  locationLongitude: string;
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Hub {

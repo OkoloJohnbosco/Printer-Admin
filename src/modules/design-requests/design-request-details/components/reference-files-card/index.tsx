@@ -240,7 +240,7 @@ export default function ReferenceFilesCard({
 
   return (
     <Card className="@container/card w-full min-w-0 overflow-hidden shadow-none">
-      <CardHeader className="space-y-2 px-4 py-0!">
+      <CardHeader className="space-y-2 px-2 py-0!">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <CardTitle className="py-0! text-base sm:text-lg">{title}</CardTitle>
           {files.length > 1 && (

@@ -40,6 +40,7 @@ import {
   MapPin,
   Package,
   PackageCheck,
+  Phone,
 } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -97,6 +98,13 @@ export default function OrderDetailPageTemplate({
     0,
   );
   const firstItem = orderDetails.items[0];
+  const deliveryFee = parseFloat(orderDetails.deliveryFee) || 0;
+  const orderTotal = parseFloat(orderDetails.total) || 0;
+  const itemsSubtotal = orderDetails.items.reduce(
+    (sum, item) => sum + (parseFloat(item.price) || 0),
+    0,
+  );
+  const serviceCharge = Math.max(0, orderTotal - itemsSubtotal - deliveryFee);
 
   const orderDate = formatToMDY(orderDetails.createdAt);
 
@@ -296,18 +304,58 @@ export default function OrderDetailPageTemplate({
                     </p>
                   </div>
                 </div>
-                <div className="border-border border-t pt-4">
-                  <p className="text-muted-foreground mb-1 text-sm">
-                    Delivery Type
-                  </p>
-                  <p className="font-medium capitalize">
-                    {orderDetails.deliveryType}
-                  </p>
-                  {orderDetails.deliveryFee && (
-                    <p className="text-muted-foreground text-sm">
-                      Delivery Fee:{" "}
-                      {formatCurrency(parseFloat(orderDetails.deliveryFee))}
+                <div className="border-border space-y-4 border-t pt-4">
+                  <div>
+                    <p className="text-muted-foreground mb-1 flex items-center gap-2 text-sm">
+                      Delivery Type:{" "}
+                      <p className="font-medium text-black capitalize">
+                        {orderDetails.deliveryType}
+                      </p>
                     </p>
+
+                    {orderDetails.deliveryFee && (
+                      <p className="text-muted-foreground text-sm">
+                        Delivery Fee:{" "}
+                        <span className="font-medium text-black">
+                          {formatCurrency(parseFloat(orderDetails.deliveryFee))}
+                        </span>
+                      </p>
+                    )}
+                  </div>
+
+                  {orderDetails.deliveryAddress && (
+                    <div className="space-y-2">
+                      {orderDetails.deliveryAddress.recipientPhone && (
+                        <div className="flex items-center gap-2">
+                          <Phone className="text-muted-foreground h-4 w-4 shrink-0" />
+                          <p className="text-muted-foreground text-sm">
+                            {orderDetails.deliveryAddress.recipientPhone}
+                          </p>
+                        </div>
+                      )}
+                      <div className="flex items-start gap-2">
+                        <MapPin className="text-muted-foreground mt-0.5 h-4 w-4 shrink-0" />
+                        <div className="text-sm">
+                          {orderDetails.deliveryAddress.locationName && (
+                            <p className="font-medium">
+                              {orderDetails.deliveryAddress.locationName}
+                            </p>
+                          )}
+                          <p className="text-muted-foreground">
+                            {orderDetails.deliveryAddress.locationAddress}
+                            {orderDetails.deliveryAddress.city ||
+                            orderDetails.deliveryAddress.state
+                              ? `, ${[
+                                  orderDetails.deliveryAddress.city,
+                                  orderDetails.deliveryAddress.state,
+                                ]
+                                  .filter(Boolean)
+                                  .join(", ")}`
+                              : ""}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   )}
                 </div>
               </CardContent>
@@ -362,6 +410,60 @@ export default function OrderDetailPageTemplate({
           </div>
 
           <div className="space-y-6">
+            <Card className="@container/card shadow-none">
+              <CardHeader>
+                <CardTitle>Price Breakdown</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {orderDetails.items.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-start justify-between gap-3 text-sm"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-medium">{item.productName}</p>
+                      <p className="text-muted-foreground text-xs">
+                        Qty: {item.quantity}
+                      </p>
+                    </div>
+                    <span className="shrink-0 font-medium">
+                      {formatCurrency(parseFloat(item.price))}
+                    </span>
+                  </div>
+                ))}
+                {deliveryFee > 0 && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground capitalize">
+                      Delivery fee
+                      {orderDetails.deliveryType
+                        ? ` (${orderDetails.deliveryType})`
+                        : ""}
+                    </span>
+                    <span className="font-medium">
+                      {formatCurrency(deliveryFee)}
+                    </span>
+                  </div>
+                )}
+                {serviceCharge > 0.01 && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      Service charge
+                    </span>
+                    <span className="font-medium">
+                      {formatCurrency(serviceCharge)}
+                    </span>
+                  </div>
+                )}
+                <Separator />
+                <div className="flex items-center justify-between pt-1">
+                  <span className="font-medium">Total</span>
+                  <span className="text-2xl font-bold">
+                    {formatCurrency(orderTotal)}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="@container/card shadow-none">
               <CardHeader>
                 <CardTitle>Update Status</CardTitle>
