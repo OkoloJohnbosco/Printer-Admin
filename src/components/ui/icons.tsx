@@ -1,3 +1,5 @@
+import type React from "react";
+
 export type IconProps = React.HTMLAttributes<SVGElement>;
 
 export const Icons = {
@@ -51,4 +53,50 @@ export const Icons = {
       />
     </svg>
   ),
+  naira: (props: IconProps) => (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M6 3V21"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M6 3L18 21"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M18 3V21"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3 9.5H21"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M3 14.5H21"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  ),
 };
+
+export const NairaIcon = Icons.naira;

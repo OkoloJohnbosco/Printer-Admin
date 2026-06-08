@@ -1,9 +1,9 @@
 "use client";
 
+import { NairaIcon } from "@/components/ui/icons";
 import {
   BellIcon,
   Building2,
-  CircleDollarSign,
   FolderTree,
   LayoutDashboard,
   Logs,
@@ -60,7 +60,7 @@ const data = {
     {
       title: "Revenue & Payout",
       url: routes.REVENUE_AND_PAYOUT,
-      icon: CircleDollarSign,
+      icon: NairaIcon,
     },
   ],
   navProducts: [

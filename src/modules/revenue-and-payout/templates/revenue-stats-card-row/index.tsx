@@ -1,5 +1,6 @@
+import { NairaIcon } from "@/components/ui/icons";
 import Heading from "@/components/ui/heading";
-import { Calendar, CircleDollarSign, Clock, Wallet } from "lucide-react";
+import { Calendar, Clock, Wallet } from "lucide-react";
 
 function RevenueStatsCardRow() {
   return (
@@ -8,7 +9,7 @@ function RevenueStatsCardRow() {
         <div className="flex items-center justify-between gap-4">
           <p className="text-brand-gray-200 font-bold">Total Earnings</p>
           <div className="bg-brand-purple-500 grid h-8 w-8 place-items-center rounded-full">
-            <CircleDollarSign className="text-brand-gray-400 h-4 w-4" />
+            <NairaIcon className="text-brand-gray-400 h-4 w-4" />
           </div>
         </div>
         <div className="space-y-1 text-sm">

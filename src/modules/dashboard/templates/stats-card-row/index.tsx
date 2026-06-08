@@ -1,12 +1,13 @@
 "use client";
 
 import DatePeriodFilter from "@/components/common/date-period-filter";
+import { NairaIcon } from "@/components/ui/icons";
 import Heading from "@/components/ui/heading";
 import { Skeleton } from "@/components/ui/skeleton";
 import useDatePeriodFilter from "@/lib/hooks/common/use-date-period-filter";
 import useGetDashboardStats from "@/lib/hooks/stats/use-get-dashboard-stats";
 import { formatCurrency } from "@/lib/utils";
-import { CircleDollarSign, ShoppingCart, Users, XCircle } from "lucide-react";
+import { ShoppingCart, Users, XCircle } from "lucide-react";
 
 function StatsCardRow() {
   const dateFilter = useDatePeriodFilter();
@@ -76,7 +77,7 @@ function StatsCardRow() {
         <div className="space-y-4 rounded-lg bg-white px-4 py-6">
           <div className="flex items-center gap-4">
             <div className="bg-brand-blue-100 grid h-12 w-12 place-items-center rounded-full">
-              <CircleDollarSign className="text-brand-blue-200 h-4 w-4" />
+              <NairaIcon className="text-brand-blue-200 h-4 w-4" />
             </div>
             <div>
               <p className="text-nm">Total Revenue</p>

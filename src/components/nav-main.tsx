@@ -1,6 +1,8 @@
 "use client";
 
+import { type IconProps } from "@/components/ui/icons";
 import { type LucideIcon } from "lucide-react";
+import type { ComponentType } from "react";
 
 import {
   SidebarGroup,
@@ -19,7 +21,7 @@ export function NavMain({
   items: {
     title: string;
     url: string;
-    icon?: LucideIcon;
+    icon?: LucideIcon | ComponentType<IconProps>;
     items?: {
       title: string;
       url: string;

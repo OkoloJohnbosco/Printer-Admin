@@ -1,5 +1,6 @@
 "use client";
 
+import { NairaIcon } from "@/components/ui/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -14,7 +15,6 @@ import { AuditLog } from "@/lib/hooks/audit-logs/use-get-audit-logs/use-get-audi
 import { formatStatusText } from "@/lib/utils";
 import {
   Calendar,
-  CircleDollarSign,
   Copy,
   ExternalLink,
   Hash,
@@ -253,7 +253,7 @@ export default function AuditLogDetailsSheet({
                     log.metadata.amount !== null && (
                       <div className="bg-muted/50 flex items-center gap-3 rounded-lg p-3">
                         <div className="rounded-full bg-green-500/10 p-2 text-green-500">
-                          <CircleDollarSign className="h-4 w-4" />
+                          <NairaIcon className="h-4 w-4" />
                         </div>
                         <div>
                           <p className="text-muted-foreground text-xs">

@@ -1,5 +1,6 @@
 "use client";
 
+import { NairaIcon } from "@/components/ui/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,7 +26,6 @@ import {
   ArrowLeft,
   Building2,
   Calendar,
-  DollarSign,
   FileCheck,
   FileText,
   Hash,
@@ -119,7 +119,7 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <DollarSign className="text-muted-foreground mt-1 h-5 w-5" />
+                    <NairaIcon className="text-muted-foreground mt-1 h-5 w-5" />
                     <div>
                       <p className="text-muted-foreground text-sm">Amount</p>
                       <p className="font-medium">
@@ -198,7 +198,7 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <DollarSign className="text-muted-foreground mt-1 h-5 w-5" />
+                      <NairaIcon className="text-muted-foreground mt-1 h-5 w-5" />
                       <div>
                         <p className="text-muted-foreground text-sm">Total</p>
                         <p className="font-medium">
