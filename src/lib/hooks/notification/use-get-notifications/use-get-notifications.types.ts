@@ -9,6 +9,7 @@ export enum ENotificationType {
   DESIGN_APPROVED = "DESIGN_APPROVED",
   DESIGN_REQUEST_ACCEPTED = "DESIGN_REQUEST_ACCEPTED",
   DESIGN_REQUEST_COMPLETED = "DESIGN_REQUEST_COMPLETED",
+  DESIGNER_REQUEST_SUBMITTED = "DESIGNER_REQUEST_SUBMITTED",
   PAYOUT_COMPLETED = "PAYOUT_COMPLETED",
   PAYOUT_INITIATED = "PAYOUT_INITIATED",
   HUB_VERIFICATION_REQUESTED = "HUB_VERIFICATION_REQUESTED",
@@ -19,10 +20,10 @@ export enum ENotificationType {
 export interface Notification {
   id: string;
   userId: string;
-  type: ENotificationType;
+  type: ENotificationType | string;
   title: string;
   message: string;
-  payload: Payload;
+  payload?: NotificationPayload | null;
   isRead: boolean;
   createdAt: string;
   updatedAt: string;

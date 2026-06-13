@@ -10,16 +10,16 @@ import {
 import useMarkNotificationRead from "@/lib/hooks/notification/use-mark-notification-read";
 import { getNotificationRoute } from "@/lib/notification-routing";
 import { formatDistanceToNow } from "date-fns";
-import { BellOff, Trash } from "lucide-react";
+import { BellOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 // Map notification types to badge variants and styles
-const getNotificationBadge = (type: ENotificationType) => {
+const getNotificationBadge = (type: ENotificationType | string) => {
   switch (type) {
     case ENotificationType.ORDER_COMPLETED:
       return { variant: "success" as const, label: "Completed" };
     case ENotificationType.ORDER_ACCEPTED:
-      return { variant: "info" as const, label: "Order Update" };
+      return { variant: "action_required" as const, label: "Order Update" };
     case ENotificationType.PAYMENT_COMPLETED:
       return { variant: "success" as const, label: "Payment" };
     case ENotificationType.PAYOUT_APPROVED:
@@ -29,7 +29,10 @@ const getNotificationBadge = (type: ENotificationType) => {
     case ENotificationType.PAYOUT_REQUESTED:
       return { variant: "success" as const, label: "Payout Request" };
     case ENotificationType.HUB_VERIFICATION_REQUESTED:
-      return { variant: "warning" as const, label: "Hub Verification" };
+      return {
+        variant: "action_required" as const,
+        label: "Verification Request",
+      };
     case ENotificationType.HUB_VERIFIED:
       return { variant: "success" as const, label: "Hub Verified" };
     case ENotificationType.HUB_DOCUMENT_REJECTED:
@@ -37,7 +40,8 @@ const getNotificationBadge = (type: ENotificationType) => {
     case ENotificationType.DESIGN_REQUEST_ACCEPTED:
     case ENotificationType.DESIGN_REQUEST_COMPLETED:
     case ENotificationType.DESIGN_APPROVED:
-      return { variant: "info" as const, label: "Design Request" };
+    case ENotificationType.DESIGNER_REQUEST_SUBMITTED:
+      return { variant: "purple" as const, label: "Design Request" };
     default:
       return { variant: "secondary" as const, label: "Info" };
   }
@@ -57,7 +61,7 @@ interface NotificationCardProps {
   onDelete?: (id: string) => void;
 }
 
-function NotificationCard({ notification, onDelete }: NotificationCardProps) {
+function NotificationCard({ notification }: NotificationCardProps) {
   const router = useRouter();
   const badge = getNotificationBadge(notification.type);
   const actionRoute = getNotificationRoute(notification);
@@ -127,14 +131,6 @@ function NotificationCard({ notification, onDelete }: NotificationCardProps) {
               View Details
             </Button>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 px-2"
-            onClick={() => onDelete?.(notification.id)}
-          >
-            <Trash className="size-3" />
-          </Button>
         </div>
       </div>
     </div>
