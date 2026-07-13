@@ -13,6 +13,11 @@ import {
   UseNotificationStreamReturn,
 } from "./use-notification-stream.types";
 
+// Delay before reconnecting after a previously-healthy stream drops.
+const RECONNECT_DELAY = 2000;
+// How often we check the auth cookie so we can react to token refresh/logout.
+const TOKEN_POLL_INTERVAL = 10000;
+
 const useNotificationStream = (
   options: UseNotificationStreamOptions = {},
 ): UseNotificationStreamReturn => {
@@ -34,6 +39,11 @@ const useNotificationStream = (
   const receivedNotificationIdsRef = useRef<Set<string>>(new Set());
   const historicalNotificationsRef = useRef<Notification[]>([]);
   const isReceivingHistoryRef = useRef(true);
+  // The token the current/last connection was opened with.
+  const currentTokenRef = useRef<string | null>(null);
+  // True when a connection failed before ever opening (likely invalid/expired
+  // token). We stop retrying until a fresh token becomes available.
+  const authFailedRef = useRef(false);
   const queryClient = useQueryClient();
 
   // Store callbacks in refs to prevent reconnections on parent re-renders
@@ -50,18 +60,48 @@ const useNotificationStream = (
     onConnectedRef.current = onConnected;
   }, [onNotification, onHistoricalNotifications, onError, onConnected]);
 
+  const clearReconnectTimeout = useCallback(() => {
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
+  }, []);
+
+  // Tear down the active EventSource and reset per-connection state, without
+  // clearing the "known token"/"auth failed" bookkeeping the poller relies on.
+  const closeStream = useCallback(() => {
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+      eventSourceRef.current = null;
+    }
+
+    isConnectingRef.current = false;
+    hasConnectedRef.current = false;
+    isReceivingHistoryRef.current = true;
+    receivedNotificationIdsRef.current.clear();
+    historicalNotificationsRef.current = [];
+    setIsConnected(false);
+    setIsConnecting(false);
+  }, []);
+
   const connect = useCallback(async () => {
-    // Don't connect if already connected or connecting
+    if (!enabled) return;
+
+    // Prevent React rerenders from opening multiple concurrent connections.
     if (eventSourceRef.current || isConnectingRef.current) return;
 
-    // Get auth token
+    // Only open the stream once a valid access token exists.
     const token = await getCookie(PRINTA_APP_KEY.TOKEN);
     if (!token) {
-      console.warn("No auth token available for notification stream");
+      // Auth state isn't ready yet; wait for a token instead of erroring.
       return;
     }
 
+    const tokenStr = String(token);
+
     isConnectingRef.current = true;
+    currentTokenRef.current = tokenStr;
+    authFailedRef.current = false;
     setIsConnecting(true);
     setError(null);
 
@@ -71,17 +111,17 @@ const useNotificationStream = (
     isReceivingHistoryRef.current = true;
 
     try {
-      // Use EventSourcePolyfill to support Bearer token in headers
-      const streamUrl = `${baseURL}${ENDPOINTS.GET_NOTIFICATIONS_STREAM}`;
-      const eventSource = new EventSourcePolyfill(streamUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      // SSE cannot set Authorization headers reliably, so pass the access
+      // token as a query param per the backend contract.
+      const streamUrl = `${baseURL}${ENDPOINTS.GET_NOTIFICATIONS_STREAM}?token=${encodeURIComponent(
+        tokenStr,
+      )}`;
+      const eventSource = new EventSourcePolyfill(streamUrl);
 
       eventSource.onopen = () => {
         isConnectingRef.current = false;
         hasConnectedRef.current = true;
+        authFailedRef.current = false;
         setIsConnected(true);
         setIsConnecting(false);
         setError(null);
@@ -155,20 +195,24 @@ const useNotificationStream = (
         eventSource.close();
         eventSourceRef.current = null;
 
-        // Only treat as error if we never successfully connected
-        // ERR_INCOMPLETE_CHUNKED_ENCODING after a successful connection is normal SSE behavior
+        // Never successfully connected: most likely an invalid/expired token.
+        // Do NOT keep retrying with the same token every few seconds; surface
+        // the error and wait for a fresh token (see the token poller below).
         if (!hasConnectedRef.current) {
+          authFailedRef.current = true;
           setError(errorEvent as Event);
           onErrorRef.current?.(errorEvent as Event);
+          return;
         }
 
-        // Attempt to reconnect after 5 seconds (shorter if it was a normal disconnection)
-        const reconnectDelay = hasConnectedRef.current ? 2000 : 5000;
+        // Previously healthy stream dropped (e.g. ERR_INCOMPLETE_CHUNKED_ENCODING
+        // is normal SSE behavior) - reconnect after a short delay.
+        clearReconnectTimeout();
         reconnectTimeoutRef.current = setTimeout(() => {
           if (enabled) {
             connect();
           }
-        }, reconnectDelay);
+        }, RECONNECT_DELAY);
       };
 
       eventSourceRef.current = eventSource;
@@ -177,26 +221,14 @@ const useNotificationStream = (
       setIsConnecting(false);
       console.error("Failed to create EventSource:", err);
     }
-  }, [enabled, queryClient]);
+  }, [enabled, queryClient, clearReconnectTimeout]);
 
   const disconnect = useCallback(() => {
-    if (reconnectTimeoutRef.current) {
-      clearTimeout(reconnectTimeoutRef.current);
-      reconnectTimeoutRef.current = null;
-    }
-
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-      eventSourceRef.current = null;
-    }
-
-    hasConnectedRef.current = false;
-    isReceivingHistoryRef.current = true;
-    receivedNotificationIdsRef.current.clear();
-    historicalNotificationsRef.current = [];
-    setIsConnected(false);
-    setIsConnecting(false);
-  }, []);
+    clearReconnectTimeout();
+    closeStream();
+    currentTokenRef.current = null;
+    authFailedRef.current = false;
+  }, [clearReconnectTimeout, closeStream]);
 
   const reconnect = useCallback(() => {
     disconnect();
@@ -213,6 +245,50 @@ const useNotificationStream = (
       disconnect();
     };
   }, [enabled, connect, disconnect]);
+
+  // React to auth-cookie changes: reconnect with a fresh token after refresh,
+  // close on logout, and resume once a valid token is available again.
+  useEffect(() => {
+    if (!enabled) return;
+
+    const interval = setInterval(async () => {
+      const token = await getCookie(PRINTA_APP_KEY.TOKEN);
+      const tokenStr = token ? String(token) : null;
+
+      // Logged out / token removed -> close the stream.
+      if (!tokenStr) {
+        if (eventSourceRef.current || isConnectingRef.current) {
+          closeStream();
+        }
+        clearReconnectTimeout();
+        currentTokenRef.current = null;
+        authFailedRef.current = false;
+        return;
+      }
+
+      // Access token changed (refresh) -> close and recreate with the new one.
+      if (currentTokenRef.current && tokenStr !== currentTokenRef.current) {
+        closeStream();
+        clearReconnectTimeout();
+        currentTokenRef.current = null;
+        authFailedRef.current = false;
+        connect();
+        return;
+      }
+
+      // No active connection and none in progress.
+      if (!eventSourceRef.current && !isConnectingRef.current) {
+        // A prior attempt auth-failed with this exact token: keep waiting for a
+        // fresh token instead of hammering the backend.
+        if (authFailedRef.current && tokenStr === currentTokenRef.current) {
+          return;
+        }
+        connect();
+      }
+    }, TOKEN_POLL_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, [enabled, connect, closeStream, clearReconnectTimeout]);
 
   // Refetch notifications on window focus
   useEffect(() => {

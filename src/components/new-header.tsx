@@ -1,14 +1,14 @@
 "use client";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import useGetUserData from "@/lib/hooks/auth/use-get-user-data";
+import { Notification } from "@/lib/hooks/notification/use-get-notifications/use-get-notifications.types";
 import useGetUnreadNotificationCount from "@/lib/hooks/notification/use-get-unread-count";
 import useNotificationStream from "@/lib/hooks/notification/use-notification-stream";
-import { Notification } from "@/lib/hooks/notification/use-get-notifications/use-get-notifications.types";
 import { getNotificationRoute } from "@/lib/notification-routing";
 import routes from "@/routes";
-import { useRouter } from "next/navigation";
 import { Bell } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { NavUser } from "./nav-user";
 import { Button } from "./ui/button";
 import Heading from "./ui/heading";
