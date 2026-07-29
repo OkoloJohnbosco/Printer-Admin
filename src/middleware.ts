@@ -45,6 +45,10 @@ export default async function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.includes(path);
   const isProtectedRoute = !isPublicRoute;
 
+  // Relative target so the callback never leaks the internal origin the app is
+  // proxied on, and can only ever point back into this app.
+  const callbackUrl = `${path}${req.nextUrl.search}`;
+
   // 3. Decrypt the session from the cookie
   const userData = await getUserFromCookie();
   const cookieStore = await cookies();
@@ -56,7 +60,7 @@ export default async function middleware(req: NextRequest) {
     if (!token) {
       const loginUrl = new URL("/auth/login", req.nextUrl);
       // Append the 'callback' query parameter
-      loginUrl.searchParams.append("callback", req.nextUrl.toString());
+      loginUrl.searchParams.set("callback", callbackUrl);
       return NextResponse.redirect(loginUrl);
     }
 
@@ -66,7 +70,7 @@ export default async function middleware(req: NextRequest) {
     // If user is not ADMIN, redirect to login
     if (userRole !== "ADMIN") {
       const loginUrl = new URL("/auth/login", req.nextUrl);
-      loginUrl.searchParams.append("callback", req.nextUrl.toString());
+      loginUrl.searchParams.set("callback", callbackUrl);
       return NextResponse.redirect(loginUrl);
     }
   }

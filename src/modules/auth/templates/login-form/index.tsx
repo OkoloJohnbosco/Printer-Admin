@@ -21,7 +21,7 @@ import useAuthLogin from "@/lib/hooks/auth/use-auth-login";
 import routes from "@/routes";
 import { setUserSession } from "@/services/api/api.service";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const FormSchema = z.object({
   email: z.string().email("Must be a valid email"),
@@ -43,6 +43,8 @@ const FormSchema = z.object({
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callback");
   const authLogin = useAuthLogin();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -58,9 +60,22 @@ export default function LoginForm() {
       .mutateAsync(data)
       .then((res) => {
         setUserSession(res?.data?.data);
-        router.replace(
-          `/api/auth/store-tokens?accessToken=${res?.data?.data?.accessToken}&refreshToken=${res?.data?.data?.refreshToken}`,
+        const storeTokensUrl = new URL(
+          "/api/auth/store-tokens",
+          window.location.origin,
         );
+        storeTokensUrl.searchParams.set(
+          "accessToken",
+          res?.data?.data?.accessToken,
+        );
+        storeTokensUrl.searchParams.set(
+          "refreshToken",
+          res?.data?.data?.refreshToken,
+        );
+        if (callbackUrl) {
+          storeTokensUrl.searchParams.set("callback", callbackUrl);
+        }
+        router.replace(`${storeTokensUrl.pathname}${storeTokensUrl.search}`);
       })
       .catch((err) => {
         console.log(err);

@@ -15,10 +15,25 @@ interface User {
   updatedAt: string;
 }
 
+function getSafeRedirectPath(callback: string | null): string {
+  // Only allow same-app relative paths to avoid open redirects.
+  if (
+    callback &&
+    callback.startsWith("/") &&
+    !callback.startsWith("//") &&
+    !callback.startsWith("/auth")
+  ) {
+    return callback;
+  }
+
+  return routes.DASHBOARD;
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const accessToken = searchParams.get("accessToken");
   const refreshToken = searchParams.get("refreshToken");
+  const callback = searchParams.get("callback");
 
   if (!accessToken || !refreshToken) {
     return new NextResponse("Missing tokens", { status: 400 });
@@ -72,7 +87,9 @@ export async function GET(request: Request) {
       path: "/",
     });
 
-    return NextResponse.redirect(new URL(routes.DASHBOARD, request.url));
+    return NextResponse.redirect(
+      new URL(getSafeRedirectPath(callback), request.url),
+    );
   } catch (error) {
     console.error("Error fetching user:", error);
     console.log(`${process.env.NEXT_PUBLIC_CORE_BASE_URL}me/profile`);
