@@ -5,10 +5,10 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Reset Password · Evoolv",
-  description: "Evoolv reset password - Regain access to your account",
+  title: "Reset Password · Printa",
+  description: "Printa reset password - Regain access to your account",
   keywords:
-    "Evoolv, reset password, electric vehicles, EV marketplace, Nigeria",
+    "Printa, reset password, electric vehicles, EV marketplace, Nigeria",
 };
 
 function ResetPasswordPage() {

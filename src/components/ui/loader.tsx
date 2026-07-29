@@ -9,7 +9,7 @@ function Loader({ className }: { className?: string }) {
       <div className="relative w-fit">
         <div className="loader w-[130px]"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <Image src="/logo.svg" alt="Evoolv logo" width={120} height={120} />
+          <Image src="/logo.svg" alt="Printa logo" width={120} height={120} />
         </div>
       </div>
     </div>

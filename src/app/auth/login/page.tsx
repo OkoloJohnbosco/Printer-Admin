@@ -5,10 +5,10 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Login · Evoolv",
+  title: "Login · Printa",
   description:
-    "Evoolv Login - Access your account to explore electric vehicles",
-  keywords: "Evoolv, sign up, electric vehicles, EV marketplace, Nigeria",
+    "Printa Login - Access your account to explore electric vehicles",
+  keywords: "Printa, sign up, electric vehicles, EV marketplace, Nigeria",
 };
 
 function LoginPage() {

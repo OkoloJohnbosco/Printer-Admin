@@ -5,11 +5,11 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Verfiy Forgot Password Email · Evoolv",
+  title: "Verfiy Forgot Password Email · Printa",
   description:
-    "Evoolv verify forgot password email - Confirm your email to recovery your password",
+    "Printa verify forgot password email - Confirm your email to recovery your password",
   keywords:
-    "Evoolv, verify forgot password email, electric vehicles, EV marketplace, Nigeria",
+    "Printa, verify forgot password email, electric vehicles, EV marketplace, Nigeria",
 };
 
 function VerifyForgottenPasswordEmail() {
