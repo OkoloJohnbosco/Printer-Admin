@@ -11,7 +11,9 @@ import { MutationBody, MutationConfig } from "./use-mutationaction.types";
 const formatError = (data: { status: boolean; error: string }): string => {
   if (!data) return "Server error";
 
-  return data?.error;
+  const error = data?.error;
+  if (typeof error === "string") return error;
+  return "Server error";
 };
 
 function createMutation<
