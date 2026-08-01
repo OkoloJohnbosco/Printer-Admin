@@ -29,6 +29,20 @@ function getSafeRedirectPath(callback: string | null): string {
   return routes.DASHBOARD;
 }
 
+// `request.url` resolves to the internal origin this app is proxied on
+// (localhost:8080), so absolute redirects send the browser off the public
+// domain. A relative Location keeps the user on whichever host they came from.
+function redirectTo(path: string) {
+  return new NextResponse(null, {
+    status: 307,
+    headers: { Location: path },
+  });
+}
+
+function redirectToLoginWithError(error: string) {
+  return redirectTo(`${routes.LOGIN}?error=${encodeURIComponent(error)}`);
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const accessToken = searchParams.get("accessToken");
@@ -75,9 +89,7 @@ export async function GET(request: Request) {
       cookieStore.delete(PRINTA_APP_KEY.TOKEN);
       cookieStore.delete(PRINTA_APP_KEY.REFRESH);
       // Redirect to login with error message
-      const loginUrl = new URL(routes.LOGIN, request.url);
-      loginUrl.searchParams.set("error", "unauthorized");
-      return NextResponse.redirect(loginUrl);
+      return redirectToLoginWithError("unauthorized");
     }
 
     cookieStore.set(PRINTA_APP_KEY.USER, JSON.stringify(user), {
@@ -87,9 +99,7 @@ export async function GET(request: Request) {
       path: "/",
     });
 
-    return NextResponse.redirect(
-      new URL(getSafeRedirectPath(callback), request.url),
-    );
+    return redirectTo(getSafeRedirectPath(callback));
   } catch (error) {
     console.error("Error fetching user:", error);
     console.log(`${process.env.NEXT_PUBLIC_CORE_BASE_URL}me/profile`);
@@ -100,14 +110,10 @@ export async function GET(request: Request) {
       cookieStore.delete(PRINTA_APP_KEY.TOKEN);
       cookieStore.delete(PRINTA_APP_KEY.REFRESH);
       // Redirect to login with error message
-      const loginUrl = new URL(routes.LOGIN, request.url);
-      loginUrl.searchParams.set("error", "forbidden");
-      return NextResponse.redirect(loginUrl);
+      return redirectToLoginWithError("forbidden");
     }
 
     // For other errors, redirect to login
-    const loginUrl = new URL(routes.LOGIN, request.url);
-    loginUrl.searchParams.set("error", "auth_failed");
-    return NextResponse.redirect(loginUrl);
+    return redirectToLoginWithError("auth_failed");
   }
 }

@@ -10,24 +10,21 @@ import {
   ModalProps,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { QUERYKEYS } from "@/lib/endpoints";
-import { logout } from "@/services/api/api.service";
+import { logoutFromAllDevices } from "@/services/api/api.service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 function LogoutModal({ isOpen, onClose }: ModalProps) {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const logoutMutation = useMutation({
-    mutationFn: logout,
+    mutationFn: logoutFromAllDevices,
     onSuccess: () => {
-      // The logout function will handle the redirect to /auth/login
-      queryClient
-        .invalidateQueries({
-          queryKey: [QUERYKEYS.GET_USER_DATA],
-        })
-        .then(() => {
-          onClose();
-        });
+      queryClient.clear();
+      router.refresh();
+
+      onClose();
     },
   });
 

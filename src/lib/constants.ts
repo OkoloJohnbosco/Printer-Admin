@@ -15,9 +15,9 @@ export const specificationTypes = [
 ];
 
 export const PRINTA_APP_KEY = {
-  TOKEN: "printa__app_auth_session",
-  REFRESH: "printa__app_refresh_session",
-  USER: "printa__app_user_session",
+  TOKEN: "printa__admin_auth_session",
+  REFRESH: "printa__admin_refresh_session",
+  USER: "printa__admin_user_session",
 };
 
 export const baseURL =
