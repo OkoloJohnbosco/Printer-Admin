@@ -23,8 +23,9 @@ function LogoutModal({ isOpen, onClose }: ModalProps) {
     onSuccess: () => {
       queryClient.clear();
       router.refresh();
-
-      onClose();
+      setTimeout(() => {
+        onClose();
+      }, 2000);
     },
   });
 
