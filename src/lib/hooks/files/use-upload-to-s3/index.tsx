@@ -73,7 +73,6 @@ const useUploadToS3 = (options: UseUploadToS3Options): UploadToS3Result => {
         await axios.put(uploadUrl, file, {
           headers: {
             "Content-Type": file.type,
-            "Content-Length": file.size,
           },
         });
 
