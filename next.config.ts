@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
       new URL("http://159.89.91.30:9000/**"),
       new URL("https://s3.printa.africa/**"),
       new URL("https://s3.stagprinta.africa/**"),
+      new URL("https://fra1.digitaloceanspaces.com/**"),
     ],
   },
 };
