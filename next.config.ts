@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
       new URL("https://s3.printa.africa/**"),
       new URL("https://s3.stagprinta.africa/**"),
       new URL("https://fra1.digitaloceanspaces.com/**"),
+      new URL(
+        "https://zynk-printa-media-prod.fra1.cdn.digitaloceanspaces.com/**",
+      ),
     ],
   },
 };
