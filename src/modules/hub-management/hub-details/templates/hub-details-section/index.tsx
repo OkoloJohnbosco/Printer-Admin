@@ -24,6 +24,7 @@ import {
 import { QUERYKEYS } from "@/lib/endpoints";
 import { HubStatus, PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
 import useUpdateVerificationStatus from "@/lib/hooks/admin/use-update-verification-status";
+import { getFileExtension } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { AlertCircle, MapPin } from "lucide-react";
 import { useState } from "react";
@@ -38,8 +39,8 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
 
   // Map hub documents to DocumentViewer format
   const getDocumentType = (url: string): "image" | "pdf" | "doc" => {
-    const extension = url.split(".").pop()?.toLowerCase();
-    if (["jpg", "jpeg", "png", "gif", "webp"].includes(extension || "")) {
+    const extension = getFileExtension(url);
+    if (["jpg", "jpeg", "png", "gif", "webp", "avif"].includes(extension)) {
       return "image";
     }
     if (extension === "pdf") {

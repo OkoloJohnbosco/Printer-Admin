@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
+import { cn, getFileExtension, getFileNameFromUrl } from "@/lib/utils";
 import { Download, FileImage, FileText, Image, Layers } from "lucide-react";
 import { useState } from "react";
 
@@ -26,9 +26,8 @@ const PSD_EXTENSIONS = ["psd"];
 const CDR_EXTENSIONS = ["cdr"];
 
 function getFileInfo(url: string): FileInfo {
-  const urlParts = url.split("/");
-  const fileName = urlParts[urlParts.length - 1];
-  const extension = fileName.split(".").pop()?.toLowerCase() || "";
+  const fileName = getFileNameFromUrl(url);
+  const extension = getFileExtension(url);
 
   let type: FileType = "unknown";
   if (IMAGE_EXTENSIONS.includes(extension)) {

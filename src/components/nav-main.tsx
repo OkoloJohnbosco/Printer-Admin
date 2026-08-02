@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -30,6 +31,8 @@ export function NavMain({
   label?: string;
 }) {
   const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
+
   return (
     <SidebarGroup className="px-0">
       <SidebarGroupLabel className="text-brand-gray-200 pl-4 font-[600]">
@@ -45,7 +48,12 @@ export function NavMain({
               tooltip={item.title}
               isActive={pathname.includes(item.url)}
             >
-              <Link href={item.url}>
+              <Link
+                href={item.url}
+                onClick={() => {
+                  if (isMobile) setTimeout(() => setOpenMobile(false), 1000);
+                }}
+              >
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
               </Link>

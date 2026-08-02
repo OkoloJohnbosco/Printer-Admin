@@ -58,6 +58,10 @@ export default function DocumentReviewSheet({
               src={document.url ?? ""}
               fill
               alt={document.name}
+              // Verification documents are served from short-lived presigned
+              // URLs marked `no-store`, so they must not be re-cached by the
+              // image optimizer.
+              unoptimized
               className="max-h-[400px] max-w-full rounded-lg object-contain"
             />
           </div>

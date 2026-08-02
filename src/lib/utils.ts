@@ -52,6 +52,24 @@ export const fileSchema = (maxSize: number, allowedTypes: string[]) =>
 
 export const fileSize = 100 * 1024 * 1024;
 
+/**
+ * Presigned storage URLs carry a query string (`?X-Amz-Signature=...`) and may
+ * carry a hash, so the extension has to be read from the path alone.
+ */
+export function getFileNameFromUrl(url: string): string {
+  const path = url.split(/[?#]/)[0];
+  const fileName = path.split("/").pop() ?? "";
+
+  return decodeURIComponent(fileName);
+}
+
+export function getFileExtension(url: string): string {
+  const fileName = getFileNameFromUrl(url);
+  const dotIndex = fileName.lastIndexOf(".");
+
+  return dotIndex === -1 ? "" : fileName.slice(dotIndex + 1).toLowerCase();
+}
+
 export function formatNumber(num: number): string {
   if (isNaN(num)) return "0";
   if (num < 1000) return num?.toString();
