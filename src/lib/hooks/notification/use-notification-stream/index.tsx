@@ -111,12 +111,12 @@ const useNotificationStream = (
     isReceivingHistoryRef.current = true;
 
     try {
-      // SSE cannot set Authorization headers reliably, so pass the access
-      // token as a query param per the backend contract.
-      const streamUrl = `${baseURL}${ENDPOINTS.GET_NOTIFICATIONS_STREAM}?token=${encodeURIComponent(
-        tokenStr,
-      )}`;
-      const eventSource = new EventSourcePolyfill(streamUrl);
+      const streamUrl = `${baseURL}${ENDPOINTS.GET_NOTIFICATIONS_STREAM}`;
+      const eventSource = new EventSourcePolyfill(streamUrl, {
+        headers: {
+          Authorization: `Bearer ${tokenStr}`,
+        },
+      });
 
       eventSource.onopen = () => {
         isConnectingRef.current = false;
