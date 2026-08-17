@@ -2,6 +2,8 @@ import Loader from "@/components/ui/loader";
 import DashboardLayoutWrapper from "@/layout/dashboard-layout";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+
 export default function DashboardLayout({
   children,
 }: Readonly<{
