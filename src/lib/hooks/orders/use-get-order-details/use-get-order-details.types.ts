@@ -72,6 +72,21 @@ export interface Item {
   createdAt: string;
   offering: Offering;
   designFileUrl: string | null;
+  designFileUrls?: string[];
+}
+
+export function getDesignFileUrls(
+  item: Pick<Item, "designFileUrl" | "designFileUrls">,
+): string[] {
+  if (item.designFileUrls && item.designFileUrls.length > 0) {
+    return item.designFileUrls;
+  }
+
+  if (item.designFileUrl) {
+    return [item.designFileUrl];
+  }
+
+  return [];
 }
 
 export interface Specifications {

@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useGetHubById from "@/lib/hooks/admin/use-get-hub-by-id";
 import useDisclosure from "@/lib/hooks/common/use-disclosure";
 import useGetOrderDetails from "@/lib/hooks/orders/use-get-order-details";
+import { getDesignFileUrls } from "@/lib/hooks/orders/use-get-order-details/use-get-order-details.types";
 import {
   Payout,
   PayoutStatus,
@@ -220,6 +221,7 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
                                   ([, value]) => value != null && value !== "",
                                 )
                               : [];
+                            const designFileUrls = getDesignFileUrls(item);
                             return (
                               <div
                                 key={item.id}
@@ -270,10 +272,14 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
                                     )}
                                   </div>
                                 </div>
-                                {item.designFileUrl && (
+                                {designFileUrls.length > 0 && (
                                   <ReferenceFilesCard
-                                    references={[item.designFileUrl]}
-                                    title="Design file"
+                                    references={designFileUrls}
+                                    title={
+                                      designFileUrls.length > 1
+                                        ? "Design files"
+                                        : "Design file"
+                                    }
                                   />
                                 )}
                               </div>

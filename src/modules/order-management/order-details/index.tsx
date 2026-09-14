@@ -24,6 +24,7 @@ import { QUERYKEYS } from "@/lib/endpoints";
 import useDeliverOrder from "@/lib/hooks/orders/use-deliver-order";
 import { OrderStatus } from "@/lib/hooks/orders/use-get-all-orders/use-get-all-orders.types";
 import useGetOrderDetails from "@/lib/hooks/orders/use-get-order-details";
+import { getDesignFileUrls } from "@/lib/hooks/orders/use-get-order-details/use-get-order-details.types";
 import getInitials, {
   formatCurrency,
   formatStatusText,
@@ -213,6 +214,7 @@ export default function OrderDetailPageTemplate({
                             ([, value]) => value != null && value !== "",
                           )
                         : [];
+                      const designFileUrls = getDesignFileUrls(item);
                       return (
                         <div
                           key={item.id}
@@ -262,10 +264,14 @@ export default function OrderDetailPageTemplate({
                               )}
                             </div>
                           </div>
-                          {item.designFileUrl && (
+                          {designFileUrls.length > 0 && (
                             <ReferenceFilesCard
-                              references={[item.designFileUrl]}
-                              title="Design file"
+                              references={designFileUrls}
+                              title={
+                                designFileUrls.length > 1
+                                  ? "Design files"
+                                  : "Design file"
+                              }
                             />
                           )}
                         </div>
