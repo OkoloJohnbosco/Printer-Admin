@@ -52,7 +52,7 @@ function NavHeader() {
       <div className="container-wrapper flex w-full min-w-0 items-center justify-between gap-2">
         <div className="flex min-w-0 flex-1 items-center gap-1 sm:-ml-3 sm:gap-2 sm:px-4">
           <SidebarTrigger className="size-9 shrink-0 sm:size-7" />
-          <Heading size="h5" className="truncate">
+          <Heading size="h5" className="truncate md:text-[20px]">
             Admin Dashboard
           </Heading>
         </div>
@@ -74,7 +74,7 @@ function NavHeader() {
           {isLoading ? (
             <div className="page-fade-in flex items-center gap-2">
               <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
-              <div className="hidden flex-col gap-1 sm:flex">
+              <div className="hidden flex-col gap-1 md:flex">
                 <Skeleton className="h-4.5 w-28" />
                 <Skeleton className="h-4 w-16" />
               </div>

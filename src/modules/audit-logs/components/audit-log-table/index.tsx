@@ -1,6 +1,7 @@
 "use client";
 
 import EmptyState from "@/components/ui/empty-state";
+import { MobileListSkeleton } from "@/components/ui/mobile-list-skeleton";
 import {
   Table,
   TableBody,
@@ -11,7 +12,7 @@ import {
 import TableSkeletonRowLoader from "@/components/ui/table-row-skeleton";
 import { AuditLog } from "@/lib/hooks/audit-logs/use-get-audit-logs/use-get-audit-logs.types";
 import { FileText } from "lucide-react";
-import AuditLogTableRow from "../audit-log-tablerow";
+import AuditLogTableRow, { AuditLogMobileCard } from "../audit-log-tablerow";
 
 interface AuditLogTableProps {
   logs: AuditLog[];
@@ -24,20 +25,29 @@ export default function AuditLogTable({
   isLoading,
   onSelectLog,
 }: AuditLogTableProps) {
+  const tableHeader = (
+    <TableHeader>
+      <TableRow>
+        <TableHead>Actor</TableHead>
+        <TableHead>Action</TableHead>
+        <TableHead>Entity</TableHead>
+        <TableHead>Details</TableHead>
+        <TableHead>Date</TableHead>
+      </TableRow>
+    </TableHeader>
+  );
+
   if (isLoading) {
     return (
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Actor</TableHead>
-            <TableHead>Action</TableHead>
-            <TableHead>Entity</TableHead>
-            <TableHead>Details</TableHead>
-            <TableHead>Date</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableSkeletonRowLoader length={5} noOfRows={10} />
-      </Table>
+      <>
+        <MobileListSkeleton rows={8} />
+        <div className="hidden md:block">
+          <Table>
+            {tableHeader}
+            <TableSkeletonRowLoader length={5} noOfRows={10} />
+          </Table>
+        </div>
+      </>
     );
   }
 
@@ -52,21 +62,23 @@ export default function AuditLogTable({
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Actor</TableHead>
-          <TableHead>Action</TableHead>
-          <TableHead>Entity</TableHead>
-          <TableHead>Details</TableHead>
-          <TableHead>Date</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
+    <>
+      <div className="divide-y md:hidden">
         {logs.map((log) => (
-          <AuditLogTableRow key={log.id} log={log} onSelect={onSelectLog} />
+          <AuditLogMobileCard key={log.id} log={log} onSelect={onSelectLog} />
         ))}
-      </TableBody>
-    </Table>
+      </div>
+
+      <div className="hidden md:block">
+        <Table>
+          {tableHeader}
+          <TableBody>
+            {logs.map((log) => (
+              <AuditLogTableRow key={log.id} log={log} onSelect={onSelectLog} />
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 }

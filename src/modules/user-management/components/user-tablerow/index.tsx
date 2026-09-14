@@ -23,6 +23,35 @@ const getRoleBadgeVariant = (role: string) => {
   return variantMap[role] || "outline";
 };
 
+export function UserMobileCard({ user }: UserTableRowProps) {
+  const router = useRouter();
+
+  return (
+    <button
+      type="button"
+      onClick={() => router.push(`/users/${user.id}`)}
+      className="hover:bg-muted/50 w-full space-y-3 border-b p-4 text-left transition-colors last:border-b-0"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="font-medium">
+            {user.firstName} {user.lastName}
+          </p>
+          <p className="text-muted-foreground mt-1 truncate text-xs">
+            {user.email}
+          </p>
+        </div>
+        <Badge variant={getRoleBadgeVariant(user.role)} className="shrink-0">
+          {formatStatusText(user.role)}
+        </Badge>
+      </div>
+      <p className="text-muted-foreground text-xs">
+        Joined {new Date(user.createdAt).toLocaleDateString()}
+      </p>
+    </button>
+  );
+}
+
 export default function UserTableRow({ user }: UserTableRowProps) {
   const router = useRouter();
 
@@ -36,7 +65,6 @@ export default function UserTableRow({ user }: UserTableRowProps) {
 
   return (
     <TableRow
-      key={user.id}
       className="hover:bg-muted/50 cursor-pointer"
       onClick={handleClick}
       onKeyDown={handleKeyDown}

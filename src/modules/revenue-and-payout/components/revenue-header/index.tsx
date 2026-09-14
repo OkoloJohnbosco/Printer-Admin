@@ -14,17 +14,17 @@ function RevenueHeader({
   isExportDisabled = false,
 }: RevenueHeaderProps) {
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-      <div>
-        <Heading size={"h4"}>Earnings Overview</Heading>
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="min-w-0">
+        <Heading size="h4">Earnings Overview</Heading>
         <p className="text-muted-foreground text-sm sm:text-base">
           Track your revenue and manage payouts
         </p>
       </div>
-      <div className="flex items-center gap-4">
+      <div className="w-full shrink-0 lg:w-auto">
         <Button
           variant="outline"
-          className="w-full bg-white sm:w-auto"
+          className="w-full bg-white lg:w-auto"
           onClick={onDownloadReport}
           disabled={isExporting || isExportDisabled}
         >

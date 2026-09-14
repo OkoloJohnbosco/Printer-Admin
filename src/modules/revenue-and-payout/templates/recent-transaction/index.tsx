@@ -127,22 +127,22 @@ function RecentTransactions() {
         isExporting={isExporting}
         isExportDisabled={getAllPayouts.isLoading}
       />
-      <div className="grid w-full grid-cols-12 rounded-2xl bg-white shadow">
-        <div className="col-span-12 flex items-center justify-between p-4">
-          <div>
+      <div className="grid w-full min-w-0 grid-cols-12 overflow-hidden rounded-2xl bg-white shadow">
+        <div className="col-span-12 flex flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-start lg:justify-between lg:gap-6">
+          <div className="min-w-0 lg:shrink-0">
             <Heading size="h7">Recent Transactions</Heading>
             <p className="text-brand-gray-300 text-sm">
               View and manage your transaction history
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="grid w-full grid-cols-1 gap-2 sm:grid-cols-2 lg:flex lg:w-auto lg:shrink-0 lg:items-center lg:gap-2">
             <Select
               value={filters.hubFilter}
               onValueChange={(value) =>
                 setFilters({ ...filters, hubFilter: value })
               }
             >
-              <SelectTrigger className="w-full capitalize md:w-[180px]">
+              <SelectTrigger className="w-full capitalize lg:w-[180px]">
                 <SelectValue placeholder="Filter by hub" />
               </SelectTrigger>
               <SelectContent>
@@ -167,7 +167,7 @@ function RecentTransactions() {
                 })
               }
             >
-              <SelectTrigger className="w-full capitalize md:w-[180px]">
+              <SelectTrigger className="w-full capitalize lg:w-[180px]">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
@@ -192,7 +192,7 @@ function RecentTransactions() {
                 })
               }
             >
-              <SelectTrigger className="w-full capitalize md:w-[180px]">
+              <SelectTrigger className="w-full capitalize lg:w-[180px]">
                 <SelectValue placeholder="Filter by type" />
               </SelectTrigger>
               <SelectContent>
@@ -210,7 +210,7 @@ function RecentTransactions() {
             </Select>
           </div>
         </div>
-        <div className="col-span-12 px-4">
+        <div className="col-span-12 px-4 sm:px-5">
           <ActiveFiltersBar
             filters={filters}
             resultCount={getAllPayouts?.value?.data?.payouts?.length}
@@ -220,7 +220,7 @@ function RecentTransactions() {
         </div>
         <div className="col-span-12 grid">
           <TransactionTable getAllPayouts={getAllPayouts} />
-          <div className="rounded-2xl bg-white p-4">
+          <div className="rounded-2xl bg-white p-3 sm:p-4 lg:px-6 lg:py-4">
             <CursorPaginationDetailed
               hasNextPage={pagination.hasNextPage}
               hasPreviousPage={pagination.hasPreviousPage}

@@ -35,8 +35,8 @@ export default function ActiveFiltersBar({
   if (!hasActiveFilters) return null;
 
   return (
-    <div className="bg-muted/50 mb-4 flex items-center justify-between rounded-lg border px-4 py-3">
-      <div className="flex flex-wrap items-center gap-2">
+    <div className="bg-muted/50 mb-4 flex flex-col gap-3 rounded-lg border px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
         <span className="text-muted-foreground text-sm font-medium">
           Filter Result: {resultCount || 0}
         </span>
@@ -86,7 +86,7 @@ export default function ActiveFiltersBar({
         variant="ghost"
         size="sm"
         onClick={onClearAll}
-        className="text-muted-foreground hover:text-foreground h-auto p-0 text-sm font-normal"
+        className="text-muted-foreground hover:text-foreground h-auto self-start p-0 text-sm font-normal lg:self-center"
       >
         Clear all
       </Button>

@@ -40,6 +40,85 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
+function formatAuditDate(createdAt: string) {
+  return new Date(createdAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function getActorDisplay(log: AuditLog) {
+  if (log.actor) {
+    return {
+      name: `${log.actor.firstName} ${log.actor.lastName}`,
+      subtitle: log.actor.email,
+    };
+  }
+
+  return {
+    name: `${log.actorId.slice(0, 8)}...`,
+    subtitle: log.actorType.toLowerCase().replace(/_/g, " "),
+  };
+}
+
+function getMetadataSummary(log: AuditLog) {
+  if (!log.metadata) return null;
+
+  if (log.metadata.orderId) {
+    return `Order: ${log.metadata.orderId.slice(0, 8)}...`;
+  }
+  if (log.metadata.hubId) {
+    return `Hub: ${log.metadata.hubId.slice(0, 8)}...`;
+  }
+  if (log.metadata.amount !== undefined && log.metadata.amount !== null) {
+    return `Amount: ${formatCurrency(log.metadata.amount)}`;
+  }
+
+  return null;
+}
+
+export function AuditLogMobileCard({ log, onSelect }: AuditLogTableRowProps) {
+  const actor = getActorDisplay(log);
+  const metadataSummary = getMetadataSummary(log);
+
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(log)}
+      className="hover:bg-muted/50 w-full space-y-3 border-b p-4 text-left transition-colors last:border-b-0"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="font-medium">{actor.name}</p>
+          <p className="text-muted-foreground mt-1 truncate text-xs">
+            {actor.subtitle}
+          </p>
+          <p className="text-muted-foreground mt-1 text-xs">
+            {formatAuditDate(log.createdAt)}
+          </p>
+        </div>
+        <Badge variant={getActionBadgeVariant(log.action)} className="shrink-0">
+          {formatStatusText(log.action.toLowerCase().replace(/_/g, " "))}
+        </Badge>
+      </div>
+      <div className="text-sm">
+        <p className="capitalize">
+          {log.entityType.toLowerCase().replace(/_/g, " ")}
+        </p>
+        <p className="text-muted-foreground font-mono text-xs">
+          {log.entityId.slice(0, 8)}...
+        </p>
+      </div>
+      {metadataSummary && (
+        <p className="text-muted-foreground text-xs">{metadataSummary}</p>
+      )}
+    </button>
+  );
+}
+
 export default function AuditLogTableRow({
   log,
   onSelect,
@@ -119,15 +198,7 @@ export default function AuditLogTableRow({
           <span className="text-muted-foreground text-xs">—</span>
         )}
       </TableCell>
-      <TableCell>
-        {new Date(log.createdAt).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        })}
-      </TableCell>
+      <TableCell>{formatAuditDate(log.createdAt)}</TableCell>
     </TableRow>
   );
 }

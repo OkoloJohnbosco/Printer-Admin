@@ -27,7 +27,7 @@ export function NavUser({ user }: { user?: User }) {
           <Button
             variant="outline"
             size="lg"
-            className="page-fade-in h-9 w-9 shrink-0 border-0 p-0 shadow-none hover:bg-white sm:h-auto sm:w-auto sm:px-4"
+            className="page-fade-in h-9 w-9 shrink-0 border-0 p-0 shadow-none hover:bg-white md:h-auto md:w-auto md:px-4"
           >
             <Avatar className="h-8 w-8 rounded-full sm:h-9 sm:w-9">
               <AvatarImage src={user?.avatar || ""} alt={user?.firstName} />
@@ -35,7 +35,7 @@ export function NavUser({ user }: { user?: User }) {
                 {getInitials(`${user?.firstName} ${user?.lastName}`)}
               </AvatarFallback>
             </Avatar>
-            <div className="hidden min-w-0 flex-1 text-left text-sm leading-tight sm:grid">
+            <div className="hidden min-w-0 flex-1 text-left text-sm leading-tight md:grid">
               <span className="text-brand-gray-400 truncate font-[family-name:var(--font-manrope-heading)] font-medium">
                 {user?.firstName} {user?.lastName}
               </span>
@@ -46,7 +46,7 @@ export function NavUser({ user }: { user?: User }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="w-[calc(100vw-2rem)] max-w-80 min-w-56 rounded-lg p-0 pb-3 sm:w-(--radix-dropdown-menu-trigger-width) sm:min-w-80"
+          className="w-[calc(100vw-2rem)] max-w-80 min-w-56 rounded-lg p-0 pb-3 md:w-(--radix-dropdown-menu-trigger-width) md:min-w-80"
           align="end"
           sideOffset={10}
         >

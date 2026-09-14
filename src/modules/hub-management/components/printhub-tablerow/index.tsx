@@ -17,6 +17,40 @@ const hubStatusIcons = {
   action_required: <AlertCircle className="size-3" />,
 };
 
+export function PrintHubMobileCard({ printHub }: { printHub: PrintHub }) {
+  const router = useRouter();
+
+  return (
+    <button
+      type="button"
+      onClick={() => router.push(`/print-hubs/${printHub.id}`)}
+      className="hover:bg-muted/50 w-full space-y-3 border-b p-4 text-left transition-colors last:border-b-0"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="font-medium">{printHub.businessName}</p>
+          <p className="text-muted-foreground mt-1 text-xs">
+            {formatToMDY(printHub.createdAt)}
+          </p>
+        </div>
+        <Badge
+          variant={getHubStatusBadgeVariant(printHub.status as HubStatus)}
+          className="shrink-0"
+        >
+          {hubStatusIcons[getHubStatusIconKey(printHub.status as HubStatus)]}
+          {formatStatusText(printHub.status)}
+        </Badge>
+      </div>
+      <p className="text-muted-foreground text-sm wrap-break-word">
+        {printHub.businessAddress}
+      </p>
+      <p className="text-muted-foreground truncate text-xs">
+        {printHub.businessEmail}
+      </p>
+    </button>
+  );
+}
+
 function PrintHubTableRow({ printHub }: { printHub: PrintHub }) {
   const router = useRouter();
 
@@ -30,7 +64,6 @@ function PrintHubTableRow({ printHub }: { printHub: PrintHub }) {
 
   return (
     <TableRow
-      key={printHub.userId}
       className="hover:bg-muted/50 cursor-pointer"
       onClick={handleClick}
       onKeyDown={handleKeyDown}
