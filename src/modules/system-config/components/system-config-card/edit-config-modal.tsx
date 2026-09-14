@@ -8,161 +8,167 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { QUERYKEYS } from "@/lib/endpoints";
-import useGetDeliveryPriceConfig from "@/lib/hooks/system-config/use-get-delivery-price-config";
-import type { ConfigItem } from "@/lib/hooks/system-config/use-get-system-configs/use-get-system-configs.types";
-import useUpdateDeliveryPriceConfig from "@/lib/hooks/system-config/use-update-delivery-price-config";
+import useCreateSystemConfig from "@/lib/hooks/system-config/use-create-system-config";
+import type { ConfigCatalogItem } from "@/lib/hooks/system-config/use-get-system-config-catalog/use-get-system-config-catalog.types";
 import useUpdateSystemConfig from "@/lib/hooks/system-config/use-update-system-config";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  ConfigExamplePreview,
+  ConfigValueEditor,
+} from "../config-value-editor";
+import {
+  formatConfigValueForEditor,
+  getInitialConfigValue,
+  getValueTypeLabel,
+  parseConfigValueFromEditor,
+} from "../../utils/config-value";
 
 interface EditConfigModalProps {
-  config: ConfigItem;
+  catalogItem: ConfigCatalogItem;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
 }
 
 export function EditConfigModal({
-  config,
+  catalogItem,
   open,
   onOpenChange,
   onSuccess,
 }: EditConfigModalProps) {
   const queryClient = useQueryClient();
-  const updateConfig = useUpdateSystemConfig(config.key);
-  useGetDeliveryPriceConfig();
-  const updateDeliveryPriceConfig = useUpdateDeliveryPriceConfig();
+  const createConfig = useCreateSystemConfig();
+  const updateConfig = useUpdateSystemConfig(catalogItem.key);
+  const [value, setValue] = useState("");
+  const [parseError, setParseError] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState({
-    key: config.key || "",
-    value:
-      typeof config.value === "object"
-        ? JSON.stringify(config.value, null, 2)
-        : String(config.value),
-    description: config.description || "",
-  });
+  const isSaving = createConfig.isPending || updateConfig.isPending;
 
-  const isDeliveryTiers = config.key === "DELIVERY_TIERS";
-  const isUpdating =
-    updateConfig.isPending || updateDeliveryPriceConfig.isPending;
+  useEffect(() => {
+    if (!open) return;
+
+    setParseError(null);
+    setValue(
+      formatConfigValueForEditor(
+        getInitialConfigValue(catalogItem),
+        catalogItem.valueType,
+      ),
+    );
+  }, [catalogItem, open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      // Parse value if it's JSON, otherwise send as number
-      let parsedValue: number | object;
-      try {
-        parsedValue = JSON.parse(formData.value);
-      } catch {
-        // If not valid JSON, parse as number
-        parsedValue = Number(formData.value);
-      }
+      const parsedValue = parseConfigValueFromEditor(
+        value,
+        catalogItem.valueType,
+      );
 
-      if (isDeliveryTiers) {
-        // Use delivery price config endpoint for DELIVERY_TIERS
-        await updateDeliveryPriceConfig.mutateAsync({
-          tiers: parsedValue,
+      if (catalogItem.configured) {
+        await updateConfig.mutateAsync({
+          value: parsedValue,
+          description: catalogItem.description,
         });
       } else {
-        // Use regular update endpoint for other configs
-        await updateConfig.mutateAsync({
-          key: formData.key,
+        await createConfig.mutateAsync({
+          key: catalogItem.key,
           value: parsedValue,
-          description: formData.description,
+          description: catalogItem.description,
         });
       }
 
       await queryClient.invalidateQueries({
         queryKey: [QUERYKEYS.GET_SYSTEM_CONFIG],
       });
+      await queryClient.invalidateQueries({
+        queryKey: [QUERYKEYS.GET_SYSTEM_CONFIG_CATALOG],
+      });
+
       onOpenChange(false);
       onSuccess();
     } catch (error) {
-      console.error("Failed to update config:", error);
+      if (error instanceof Error && !("response" in error)) {
+        setParseError(error.message);
+      }
     }
   };
 
-  // Check if all required fields are filled
-  const isFormValid =
-    formData.key.trim() !== "" &&
-    formData.value.trim() !== "" &&
-    formData.description.trim() !== "";
+  const isFormValid = value.trim() !== "";
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="sm:max-w-[525px]">
+      <AlertDialogContent className="sm:max-w-[600px]">
         <form onSubmit={handleSubmit}>
           <AlertDialogHeader>
-            <AlertDialogTitle>Edit Configuration</AlertDialogTitle>
+            <AlertDialogTitle>
+              {catalogItem.configured
+                ? "Edit Configuration"
+                : "Configure Setting"}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              Update the configuration settings below
+              {catalogItem.configured
+                ? "Update the selected configuration value."
+                : "Create this configuration using the supported backend key."}
             </AlertDialogDescription>
           </AlertDialogHeader>
 
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="key">Key</Label>
-              <Input
-                id="key"
-                value={formData.key}
-                onChange={(e) =>
-                  setFormData({ ...formData, key: e.target.value })
-                }
-                placeholder="config_key"
-                required
-              />
+              <Label>Configuration</Label>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="outline">{catalogItem.key}</Badge>
+                <Badge variant="secondary">
+                  {getValueTypeLabel(catalogItem.valueType)}
+                </Badge>
+                {!catalogItem.configured && (
+                  <Badge variant="outline">Not configured</Badge>
+                )}
+              </div>
+              <p className="font-medium">{catalogItem.label}</p>
             </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="value">Value</Label>
-              <Textarea
-                id="value"
-                value={formData.value}
-                onChange={(e) =>
-                  setFormData({ ...formData, value: e.target.value })
-                }
-                placeholder="Configuration value or JSON"
-                rows={8}
-                required
-                className="font-mono text-sm"
-              />
-              <p className="text-muted-foreground text-xs">
-                For delivery tiers, use JSON array format. For numbers, enter a
-                numeric value.
-              </p>
-            </div>
+            <p className="text-muted-foreground text-sm">
+              {catalogItem.description}
+            </p>
 
-            <div className="grid gap-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-                placeholder="Brief description of this configuration"
-                rows={2}
-                required
-              />
-            </div>
+            <ConfigExamplePreview example={catalogItem.example} />
+
+            <ConfigValueEditor
+              id="edit-config-value"
+              valueType={catalogItem.valueType}
+              value={value}
+              onChange={(nextValue) => {
+                setParseError(null);
+                setValue(nextValue);
+              }}
+              example={catalogItem.example}
+            />
+
+            {parseError && (
+              <p className="text-destructive text-sm">{parseError}</p>
+            )}
           </div>
 
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isUpdating}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isSaving}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               type="submit"
-              disabled={!isFormValid || isUpdating}
+              disabled={!isFormValid || isSaving}
               onClick={(e) => {
                 e.preventDefault();
                 handleSubmit(e as React.FormEvent);
               }}
             >
-              {isUpdating ? "Updating..." : "Update Config"}
+              {isSaving
+                ? "Saving..."
+                : catalogItem.configured
+                  ? "Update Config"
+                  : "Save Config"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </form>

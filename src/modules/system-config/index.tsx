@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import useGetSystemConfigs from "@/lib/hooks/system-config/use-get-system-configs";
-import type { ConfigItem } from "@/lib/hooks/system-config/use-get-system-configs/use-get-system-configs.types";
+import useGetSystemConfigCatalog from "@/lib/hooks/system-config/use-get-system-config-catalog";
+import type { ConfigCatalogItem } from "@/lib/hooks/system-config/use-get-system-config-catalog/use-get-system-config-catalog.types";
 import { cn } from "@/lib/utils";
 import { Plus, RefreshCw } from "lucide-react";
 import { motion } from "motion/react";
@@ -13,106 +13,89 @@ import { SystemConfigCard } from "./components/system-config-card";
 import { SystemConfigSkeleton } from "./components/system-config-skeleton";
 
 const tabs = [
-  {
-    title: "Normal Configs",
-    value: "number",
-  },
-  {
-    title: "Delivery Configs",
-    value: "delivery",
-  },
+  { title: "All", value: "all" },
+  { title: "Configured", value: "configured" },
+  { title: "Unconfigured", value: "unconfigured" },
 ];
 
 export default function SystemConfigPageTemplate() {
-  const { value, isLoading, refetch, isFetching } = useGetSystemConfigs();
-  const configs = useMemo(
-    () => (value?.data || []) as ConfigItem[],
+  const { value, isLoading, refetch, isFetching } = useGetSystemConfigCatalog();
+  const catalogItems = useMemo(
+    () => (value?.data || []) as ConfigCatalogItem[],
     [value?.data],
   );
-  const [activeTab, setActiveTab] = useState<string>("number");
+  const [activeTab, setActiveTab] = useState<string>("all");
 
-  const filteredConfigs = useMemo(() => {
-    if (activeTab === "all") return configs;
-    if (activeTab === "delivery") {
-      return configs.filter((c) => Array.isArray(c.value));
+  const filteredItems = useMemo(() => {
+    if (activeTab === "configured") {
+      return catalogItems.filter((item) => item.configured);
     }
-    if (activeTab === "number") {
-      return configs.filter((c) => typeof c.value === "number");
+    if (activeTab === "unconfigured") {
+      return catalogItems.filter((item) => !item.configured);
     }
-    return configs;
-  }, [configs, activeTab]);
+    return catalogItems;
+  }, [catalogItems, activeTab]);
+
+  const configuredCount = catalogItems.filter((item) => item.configured).length;
+  const unconfiguredCount = catalogItems.length - configuredCount;
 
   return (
     <div className="page-fade-in w-full">
       <main>
-        {/* Header */}
         <div className="mb-6">
           <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl">
             System Configuration
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base">
-            Manage and configure your system settings
+            Choose from backend-supported configuration keys and edit values
+            with the correct format.
           </p>
         </div>
 
-        {/* Stats Cards */}
         <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card className="shadow-none">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Total Configs
+                Supported Configs
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{configs.length}</div>
+              <div className="text-2xl font-bold">{catalogItems.length}</div>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-none">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Configured</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{configuredCount}</div>
             </CardContent>
           </Card>
 
           <Card className="shadow-none">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Delivery Configs
+                Unconfigured
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
-                {
-                  configs.filter((c) =>
-                    c.key.toLowerCase().includes("delivery"),
-                  ).length
-                }
-              </div>
+              <div className="text-2xl font-bold">{unconfiguredCount}</div>
             </CardContent>
           </Card>
 
           <Card className="shadow-none">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Tier Configs
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Value Types</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {configs.filter((c) => Array.isArray(c.value)).length}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="shadow-none">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Number Configs
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {configs.filter((c) => typeof c.value === "number").length}
+                {new Set(catalogItems.map((item) => item.valueType)).size}
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Actions */}
         <Card className="mb-6 shadow-none">
           <CardContent className="pt-6">
             <div className="flex items-center justify-end gap-2">
@@ -129,9 +112,10 @@ export default function SystemConfigPageTemplate() {
               </Button>
 
               <CreateConfigModal
+                catalogItems={catalogItems}
                 onSuccess={refetch}
                 trigger={
-                  <Button size="sm">
+                  <Button size="sm" disabled={unconfiguredCount === 0}>
                     <Plus className="mr-2 h-4 w-4" />
                     Add Config
                   </Button>
@@ -141,19 +125,17 @@ export default function SystemConfigPageTemplate() {
           </CardContent>
         </Card>
 
-        {/* Configurations List */}
         <div className="space-y-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="text-lg font-semibold">
-              Configurations{" "}
+              Configuration Catalog{" "}
               <span className="text-muted-foreground text-sm font-normal">
-                ({filteredConfigs.length})
+                ({filteredItems.length})
               </span>
             </h2>
 
-            {/* Tabs */}
             <div className="bg-brand-gray-50 flex shrink-0 items-center gap-2 overflow-hidden rounded-full">
-              {tabs?.map((tab) => (
+              {tabs.map((tab) => (
                 <Button
                   key={tab.value}
                   value={activeTab}
@@ -188,33 +170,22 @@ export default function SystemConfigPageTemplate() {
 
           {isLoading ? (
             <SystemConfigSkeleton />
-          ) : filteredConfigs.length === 0 ? (
+          ) : filteredItems.length === 0 ? (
             <Card className="shadow-none">
               <CardContent className="flex flex-col items-center justify-center py-16">
                 <p className="text-muted-foreground mb-4 text-center">
                   {activeTab === "all"
-                    ? "No system configurations yet"
-                    : `No ${activeTab} configurations found`}
+                    ? "No supported configurations returned by the backend catalog."
+                    : `No ${activeTab} configurations found.`}
                 </p>
-                {activeTab === "all" && (
-                  <CreateConfigModal
-                    onSuccess={refetch}
-                    trigger={
-                      <Button>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Create First Config
-                      </Button>
-                    }
-                  />
-                )}
               </CardContent>
             </Card>
           ) : (
             <div className="space-y-3">
-              {filteredConfigs.map((config) => (
+              {filteredItems.map((catalogItem) => (
                 <SystemConfigCard
-                  key={config.id}
-                  config={config}
+                  key={catalogItem.key}
+                  catalogItem={catalogItem}
                   onSuccess={refetch}
                 />
               ))}

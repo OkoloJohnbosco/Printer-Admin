@@ -9,131 +9,192 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { QUERYKEYS } from "@/lib/endpoints";
 import useCreateSystemConfig from "@/lib/hooks/system-config/use-create-system-config";
+import type { ConfigCatalogItem } from "@/lib/hooks/system-config/use-get-system-config-catalog/use-get-system-config-catalog.types";
 import { useQueryClient } from "@tanstack/react-query";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
+import {
+  ConfigExamplePreview,
+  ConfigValueEditor,
+} from "../config-value-editor";
+import {
+  formatConfigValueForEditor,
+  getInitialConfigValue,
+  getValueTypeLabel,
+  parseConfigValueFromEditor,
+} from "../../utils/config-value";
 
 interface CreateConfigModalProps {
   trigger: ReactNode;
+  catalogItems: ConfigCatalogItem[];
   onSuccess: () => void;
 }
 
 export function CreateConfigModal({
   trigger,
+  catalogItems,
   onSuccess,
 }: CreateConfigModalProps) {
   const queryClient = useQueryClient();
   const createConfig = useCreateSystemConfig();
   const [open, setOpen] = useState(false);
+  const [selectedKey, setSelectedKey] = useState("");
+  const [value, setValue] = useState("");
+  const [parseError, setParseError] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState({
-    key: "",
-    value: "",
-    description: "",
-  });
+  const availableItems = useMemo(
+    () => catalogItems.filter((item) => !item.configured),
+    [catalogItems],
+  );
+
+  const selectedItem = useMemo(
+    () => availableItems.find((item) => item.key === selectedKey),
+    [availableItems, selectedKey],
+  );
+
+  useEffect(() => {
+    if (!open) {
+      setSelectedKey("");
+      setValue("");
+      setParseError(null);
+      return;
+    }
+
+    if (!selectedKey && availableItems.length > 0) {
+      const firstItem = availableItems[0];
+      setSelectedKey(firstItem.key);
+      setValue(
+        formatConfigValueForEditor(
+          getInitialConfigValue(firstItem),
+          firstItem.valueType,
+        ),
+      );
+    }
+  }, [open, availableItems, selectedKey]);
+
+  const handleKeyChange = (key: string) => {
+    const item = availableItems.find((catalogItem) => catalogItem.key === key);
+    if (!item) return;
+
+    setSelectedKey(key);
+    setParseError(null);
+    setValue(
+      formatConfigValueForEditor(getInitialConfigValue(item), item.valueType),
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedItem) return;
 
     try {
-      // Parse value if it's JSON, otherwise send as number
-      let parsedValue: number | object;
-      try {
-        parsedValue = JSON.parse(formData.value);
-      } catch {
-        // If not valid JSON, parse as number
-        parsedValue = Number(formData.value);
-      }
+      const parsedValue = parseConfigValueFromEditor(
+        value,
+        selectedItem.valueType,
+      );
 
       await createConfig.mutateAsync({
-        key: formData.key,
+        key: selectedItem.key,
         value: parsedValue,
-        description: formData.description,
+        description: selectedItem.description,
       });
+
       await queryClient.invalidateQueries({
         queryKey: [QUERYKEYS.GET_SYSTEM_CONFIG],
       });
-      setOpen(false);
-      setFormData({
-        key: "",
-        value: "",
-        description: "",
+      await queryClient.invalidateQueries({
+        queryKey: [QUERYKEYS.GET_SYSTEM_CONFIG_CATALOG],
       });
+
+      setOpen(false);
       onSuccess();
     } catch (error) {
-      console.error("Failed to create config:", error);
+      if (error instanceof Error && !("response" in error)) {
+        setParseError(error.message);
+      }
     }
   };
 
-  // Check if all required fields are filled
-  const isFormValid =
-    formData.key.trim() !== "" &&
-    formData.value.trim() !== "" &&
-    formData.description.trim() !== "";
+  const isFormValid = Boolean(selectedItem) && value.trim() !== "";
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      <AlertDialogContent className="sm:max-w-[525px]">
+      <AlertDialogContent className="sm:max-w-[600px]">
         <form onSubmit={handleSubmit}>
           <AlertDialogHeader>
             <AlertDialogTitle>Create Configuration</AlertDialogTitle>
             <AlertDialogDescription>
-              Add a new system configuration setting
+              Choose a supported configuration from the backend catalog.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="key">Key *</Label>
-              <Input
-                id="key"
-                value={formData.key}
-                onChange={(e) =>
-                  setFormData({ ...formData, key: e.target.value })
-                }
-                placeholder="e.g., max_upload_size, delivery_pricing"
-                required
-              />
-            </div>
+          {availableItems.length === 0 ? (
+            <p className="text-muted-foreground py-6 text-sm">
+              All supported configurations are already configured.
+            </p>
+          ) : (
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="config-key">Configuration *</Label>
+                <Select value={selectedKey} onValueChange={handleKeyChange}>
+                  <SelectTrigger id="config-key">
+                    <SelectValue placeholder="Select a configuration" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableItems.map((item) => (
+                      <SelectItem key={item.key} value={item.key}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="value">Value *</Label>
-              <Textarea
-                id="value"
-                value={formData.value}
-                onChange={(e) =>
-                  setFormData({ ...formData, value: e.target.value })
-                }
-                placeholder="Configuration value or JSON array"
-                rows={8}
-                required
-                className="font-mono text-sm"
-              />
-              <p className="text-muted-foreground text-xs">
-                For delivery tiers, use JSON array format. For numbers, enter a
-                numeric value.
-              </p>
-            </div>
+              {selectedItem && (
+                <>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="outline">{selectedItem.key}</Badge>
+                    <Badge variant="secondary">
+                      {getValueTypeLabel(selectedItem.valueType)}
+                    </Badge>
+                    <Badge variant="outline">Not configured</Badge>
+                  </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="description">Description *</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-                placeholder="Brief description of this configuration"
-                rows={2}
-                required
-              />
+                  <p className="text-muted-foreground text-sm">
+                    {selectedItem.description}
+                  </p>
+
+                  <ConfigExamplePreview example={selectedItem.example} />
+
+                  <ConfigValueEditor
+                    id="config-value"
+                    valueType={selectedItem.valueType}
+                    value={value}
+                    onChange={(nextValue) => {
+                      setParseError(null);
+                      setValue(nextValue);
+                    }}
+                    example={selectedItem.example}
+                  />
+
+                  {parseError && (
+                    <p className="text-destructive text-sm">{parseError}</p>
+                  )}
+                </>
+              )}
             </div>
-          </div>
+          )}
 
           <AlertDialogFooter>
             <AlertDialogCancel disabled={createConfig.isPending}>
@@ -141,7 +202,11 @@ export function CreateConfigModal({
             </AlertDialogCancel>
             <AlertDialogAction
               type="submit"
-              disabled={!isFormValid || createConfig.isPending}
+              disabled={
+                !isFormValid ||
+                createConfig.isPending ||
+                availableItems.length === 0
+              }
               onClick={(e) => {
                 e.preventDefault();
                 handleSubmit(e as React.FormEvent);

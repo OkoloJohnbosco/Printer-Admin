@@ -39,6 +39,15 @@ async function getUserFromCookie(): Promise<User | null> {
   }
 }
 
+/** Prevent CDN from caching auth-sensitive HTML/RSC responses. */
+function withPrivateCache(response: NextResponse) {
+  response.headers.set(
+    "Cache-Control",
+    "private, no-cache, no-store, must-revalidate",
+  );
+  return response;
+}
+
 export default async function middleware(req: NextRequest) {
   // 2. Check if the current route is protected or public
   const path = req.nextUrl.pathname;
@@ -61,7 +70,7 @@ export default async function middleware(req: NextRequest) {
       const loginUrl = new URL("/auth/login", req.nextUrl);
       // Append the 'callback' query parameter
       loginUrl.searchParams.set("callback", callbackUrl);
-      return NextResponse.redirect(loginUrl);
+      return withPrivateCache(NextResponse.redirect(loginUrl));
     }
 
     // If token exists, check if user is ADMIN
@@ -71,8 +80,10 @@ export default async function middleware(req: NextRequest) {
     if (userRole !== "ADMIN") {
       const loginUrl = new URL("/auth/login", req.nextUrl);
       loginUrl.searchParams.set("callback", callbackUrl);
-      return NextResponse.redirect(loginUrl);
+      return withPrivateCache(NextResponse.redirect(loginUrl));
     }
+
+    return withPrivateCache(NextResponse.next());
   }
 
   // 6. Redirect to /dashboard if the user is authenticated and accessing public routes
@@ -85,7 +96,9 @@ export default async function middleware(req: NextRequest) {
     const userRole = userData?.role;
 
     if (userRole === "ADMIN") {
-      return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
+      return withPrivateCache(
+        NextResponse.redirect(new URL("/dashboard", req.nextUrl)),
+      );
     }
   }
 

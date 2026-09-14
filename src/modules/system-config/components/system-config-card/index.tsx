@@ -9,30 +9,66 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useDeleteSystemConfig from "@/lib/hooks/system-config/use-delete-system-config";
-import type { ConfigItem } from "@/lib/hooks/system-config/use-get-system-configs/use-get-system-configs.types";
-import { formatToMDY } from "@/lib/utils";
-import { Calendar, Copy, Edit, MoreVertical, Trash2 } from "lucide-react";
+import type {
+  ConfigCatalogItem,
+  DeliveryTier,
+  DesignPriceEntry,
+} from "@/lib/hooks/system-config/use-get-system-config-catalog/use-get-system-config-catalog.types";
+import { Copy, Edit, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { getValueTypeLabel } from "../../utils/config-value";
 import { DeleteConfirmDialog } from "./delete-confirm-dialog";
 import { EditConfigModal } from "./edit-config-modal";
 
 interface SystemConfigCardProps {
-  config: ConfigItem;
+  catalogItem: ConfigCatalogItem;
   onSuccess: () => Promise<unknown>;
 }
 
-export function SystemConfigCard({ config, onSuccess }: SystemConfigCardProps) {
+function isDeliveryTier(value: unknown): value is DeliveryTier {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "minKm" in value &&
+    "basePrice" in value
+  );
+}
+
+function isDesignPrices(
+  value: unknown,
+): value is Record<string, DesignPriceEntry> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    !Array.isArray(value) &&
+    Object.values(value).every(
+      (entry) =>
+        typeof entry === "object" &&
+        entry !== null &&
+        "price" in entry &&
+        "timeline" in entry,
+    )
+  );
+}
+
+export function SystemConfigCard({
+  catalogItem,
+  onSuccess,
+}: SystemConfigCardProps) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const deleteConfig = useDeleteSystemConfig(config.key);
+  const deleteConfig = useDeleteSystemConfig(catalogItem.key);
+
+  const displayValue = catalogItem.configured
+    ? catalogItem.currentValue
+    : catalogItem.example;
 
   const handleCopyValue = () => {
     const valueString =
-      typeof config.value === "object"
-        ? JSON.stringify(config.value, null, 2)
-        : String(config.value);
+      typeof displayValue === "object"
+        ? JSON.stringify(displayValue, null, 2)
+        : String(displayValue);
     navigator.clipboard.writeText(valueString);
-    // TODO: Add toast notification
   };
 
   const handleDelete = async () => {
@@ -48,30 +84,29 @@ export function SystemConfigCard({ config, onSuccess }: SystemConfigCardProps) {
       });
   };
 
-  // Determine config type based on value
-  const configType = Array.isArray(config.value) ? "Delivery Tiers" : "Number";
-  const configBadgeVariant = Array.isArray(config.value)
-    ? "default"
-    : "secondary";
-
   return (
     <>
       <Card className="shadow-none transition-shadow hover:shadow-sm">
         <CardContent className="p-4">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 space-y-3">
-              {/* Header */}
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="mb-2 flex items-center gap-2">
-                    <h3 className="font-semibold">{config.key}</h3>
-                    <Badge variant={configBadgeVariant}>{configType}</Badge>
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <h3 className="font-semibold">{catalogItem.label}</h3>
+                    <Badge variant="outline">{catalogItem.key}</Badge>
+                    <Badge variant="secondary">
+                      {getValueTypeLabel(catalogItem.valueType)}
+                    </Badge>
+                    <Badge
+                      variant={catalogItem.configured ? "default" : "outline"}
+                    >
+                      {catalogItem.configured ? "Configured" : "Not configured"}
+                    </Badge>
                   </div>
-                  {config.description && (
-                    <p className="text-muted-foreground text-sm">
-                      {config.description}
-                    </p>
-                  )}
+                  <p className="text-muted-foreground text-sm">
+                    {catalogItem.description}
+                  </p>
                 </div>
 
                 <DropdownMenu>
@@ -83,31 +118,37 @@ export function SystemConfigCard({ config, onSuccess }: SystemConfigCardProps) {
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem onClick={() => setShowEditModal(true)}>
                       <Edit className="mr-2 h-4 w-4" />
-                      Edit
+                      {catalogItem.configured ? "Edit" : "Configure"}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleCopyValue}>
                       <Copy className="mr-2 h-4 w-4" />
-                      Copy Value
+                      Copy {catalogItem.configured ? "Value" : "Example"}
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => setShowDeleteDialog(true)}
-                      className="text-destructive focus:text-destructive"
-                    >
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Delete
-                    </DropdownMenuItem>
+                    {catalogItem.configured && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => setShowDeleteDialog(true)}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
 
-              {/* Value */}
               <div className="space-y-2">
-                <p className="text-muted-foreground text-xs">Value</p>
-                {Array.isArray(config.value) ? (
-                  // Display each delivery tier as a card
+                <p className="text-muted-foreground text-xs">
+                  {catalogItem.configured ? "Current value" : "Example value"}
+                </p>
+
+                {Array.isArray(displayValue) &&
+                displayValue.every(isDeliveryTier) ? (
                   <div className="space-y-2">
-                    {config.value.map((tier, index) => (
+                    {displayValue.map((tier, index) => (
                       <div
                         key={index}
                         className="border-border bg-card flex items-center justify-between rounded-md border p-3"
@@ -140,50 +181,35 @@ export function SystemConfigCard({ config, onSuccess }: SystemConfigCardProps) {
                             <p className="font-medium">₦{tier.pricePerKm}</p>
                           </div>
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={handleCopyValue}
-                          className="ml-2"
-                        >
-                          <Copy className="h-3 w-3" />
-                        </Button>
                       </div>
                     ))}
                   </div>
-                ) : (
-                  // Display number value
-                  <div className="bg-muted rounded-md p-3">
-                    <div className="flex items-center justify-between">
-                      <code className="font-mono text-lg font-semibold">
-                        {config.value}
-                      </code>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleCopyValue}
-                        className="ml-2"
+                ) : isDesignPrices(displayValue) ? (
+                  <div className="space-y-2">
+                    {Object.entries(displayValue).map(([designType, entry]) => (
+                      <div
+                        key={designType}
+                        className="border-border bg-card flex items-center justify-between rounded-md border p-3"
                       >
-                        <Copy className="h-3 w-3" />
-                      </Button>
-                    </div>
+                        <div>
+                          <p className="font-medium">{designType}</p>
+                          <p className="text-muted-foreground text-sm">
+                            ₦{entry.price} · {entry.timeline}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                )}
-              </div>
-
-              {/* Metadata */}
-              <div className="text-muted-foreground flex flex-wrap items-center gap-4 text-xs">
-                {config.createdAt && (
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
-                    <span>Created {formatToMDY(config.createdAt)}</span>
+                ) : typeof displayValue === "number" ? (
+                  <div className="bg-muted rounded-md p-3">
+                    <code className="font-mono text-lg font-semibold">
+                      {displayValue}
+                    </code>
                   </div>
-                )}
-                {config.updatedAt && config.updatedAt !== config.createdAt && (
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
-                    <span>Updated {formatToMDY(config.updatedAt)}</span>
-                  </div>
+                ) : (
+                  <pre className="bg-muted max-h-48 overflow-auto rounded-md p-3 font-mono text-xs">
+                    {JSON.stringify(displayValue, null, 2)}
+                  </pre>
                 )}
               </div>
             </div>
@@ -191,21 +217,22 @@ export function SystemConfigCard({ config, onSuccess }: SystemConfigCardProps) {
         </CardContent>
       </Card>
 
-      {/* Modals */}
       <EditConfigModal
-        config={config}
+        catalogItem={catalogItem}
         open={showEditModal}
         onOpenChange={setShowEditModal}
         onSuccess={onSuccess}
       />
 
-      <DeleteConfirmDialog
-        open={showDeleteDialog}
-        onOpenChange={setShowDeleteDialog}
-        onConfirm={handleDelete}
-        configKey={config.key}
-        isDeleting={deleteConfig.isPending}
-      />
+      {catalogItem.configured && (
+        <DeleteConfirmDialog
+          open={showDeleteDialog}
+          onOpenChange={setShowDeleteDialog}
+          onConfirm={handleDelete}
+          configKey={catalogItem.key}
+          isDeleting={deleteConfig.isPending}
+        />
+      )}
     </>
   );
 }

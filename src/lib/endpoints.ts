@@ -134,6 +134,7 @@ export const ENDPOINTS = {
   // System Config Endpoints
   CREATE_SYSTEM_CONFIG: "admin/configs",
   GET_SYSTEM_CONFIG: "admin/configs",
+  GET_SYSTEM_CONFIG_CATALOG: "admin/configs/catalog",
   UPDATE_SYSTEM_CONFIG: (configId: string) => `admin/configs/${configId}`,
   DELETE_SYSTEM_CONFIG: (configId: string) => `admin/configs/${configId}`,
   GET_DELIVERY_PRICE_CONFIG: "admin/configs/delivery",
@@ -314,6 +315,7 @@ export const QUERYKEYS = {
   GET_ELIGIBLE_HUBS: "GET_ELIGIBLE_HUBS",
 
   GET_SYSTEM_CONFIG: "GET_SYSTEM_CONFIG",
+  GET_SYSTEM_CONFIG_CATALOG: "GET_SYSTEM_CONFIG_CATALOG",
   GET_DELIVERY_PRICE_CONFIG: "GET_DELIVERY_PRICE_CONFIG",
 
   GET_ALL_PAYOUTS: "GET_ALL_PAYOUTS",
