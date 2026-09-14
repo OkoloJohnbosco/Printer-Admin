@@ -27,15 +27,15 @@ export function NavUser({ user }: { user?: User }) {
           <Button
             variant="outline"
             size="lg"
-            className="page-fade-in border-0 px-4 shadow-none hover:bg-white"
+            className="page-fade-in h-9 w-9 shrink-0 border-0 p-0 shadow-none hover:bg-white sm:h-auto sm:w-auto sm:px-4"
           >
-            <Avatar className="h-9 w-9 rounded-full">
+            <Avatar className="h-8 w-8 rounded-full sm:h-9 sm:w-9">
               <AvatarImage src={user?.avatar || ""} alt={user?.firstName} />
               <AvatarFallback className="rounded-lg">
                 {getInitials(`${user?.firstName} ${user?.lastName}`)}
               </AvatarFallback>
             </Avatar>
-            <div className="grid flex-1 text-left text-sm leading-tight">
+            <div className="hidden min-w-0 flex-1 text-left text-sm leading-tight sm:grid">
               <span className="text-brand-gray-400 truncate font-[family-name:var(--font-manrope-heading)] font-medium">
                 {user?.firstName} {user?.lastName}
               </span>
@@ -46,7 +46,7 @@ export function NavUser({ user }: { user?: User }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="w-(--radix-dropdown-menu-trigger-width) min-w-80 rounded-lg p-0 pb-3"
+          className="w-[calc(100vw-2rem)] max-w-80 min-w-56 rounded-lg p-0 pb-3 sm:w-(--radix-dropdown-menu-trigger-width) sm:min-w-80"
           align="end"
           sideOffset={10}
         >

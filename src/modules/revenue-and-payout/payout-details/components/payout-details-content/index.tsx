@@ -69,7 +69,7 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
             <h1 className="mb-1 text-2xl font-bold sm:mb-2 sm:text-3xl">
               Payout details
             </h1>
-            <p className="text-muted-foreground text-sm sm:text-base">
+            <p className="text-muted-foreground text-sm break-all sm:text-base">
               Payout {payout.reference}
             </p>
           </div>
@@ -79,7 +79,7 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
               size="sm"
               onClick={onOpen}
               disabled={!canApprovePayout}
-              className="shrink-0 gap-2"
+              className="w-full shrink-0 gap-2 sm:w-auto"
             >
               <FileCheck className="h-4 w-4" />
               Review Payout
@@ -92,51 +92,51 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
           payout={payout}
         />
 
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="space-y-6 md:col-span-2">
+        <div className="grid min-w-0 gap-6 md:grid-cols-3">
+          <div className="min-w-0 space-y-6 md:col-span-2">
             {/* Payout information */}
             <Card className="@container/card shadow-none">
               <CardHeader>
                 <CardTitle>Payout information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-start gap-3">
-                    <Hash className="text-muted-foreground mt-1 h-5 w-5" />
-                    <div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="flex min-w-0 items-start gap-3">
+                    <Hash className="text-muted-foreground mt-1 h-5 w-5 shrink-0" />
+                    <div className="min-w-0">
                       <p className="text-muted-foreground text-sm">Reference</p>
-                      <p className="font-mono font-medium">
+                      <p className="font-mono font-medium break-all">
                         {payout.reference}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <Calendar className="text-muted-foreground mt-1 h-5 w-5" />
-                    <div>
+                  <div className="flex min-w-0 items-start gap-3">
+                    <Calendar className="text-muted-foreground mt-1 h-5 w-5 shrink-0" />
+                    <div className="min-w-0">
                       <p className="text-muted-foreground text-sm">Date</p>
                       <p className="font-medium">
                         {formatToFullYMD(payout.createdAt)}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <NairaIcon className="text-muted-foreground mt-1 h-5 w-5" />
-                    <div>
+                  <div className="flex min-w-0 items-start gap-3">
+                    <NairaIcon className="text-muted-foreground mt-1 h-5 w-5 shrink-0" />
+                    <div className="min-w-0">
                       <p className="text-muted-foreground text-sm">Amount</p>
                       <p className="font-medium">
                         {formatCurrency(Number(payout.amount))}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <FileText className="text-muted-foreground mt-1 h-5 w-5" />
-                    <div>
+                  <div className="flex min-w-0 items-start gap-3">
+                    <FileText className="text-muted-foreground mt-1 h-5 w-5 shrink-0" />
+                    <div className="min-w-0">
                       <p className="text-muted-foreground text-sm">Type</p>
                       <p className="font-medium capitalize">{payout.type}</p>
                     </div>
                   </div>
                 </div>
-                <div className="border-border flex items-center justify-between border-t pt-4">
+                <div className="border-border flex flex-col gap-2 border-t pt-4 sm:flex-row sm:items-center sm:justify-between">
                   <p className="text-muted-foreground text-sm">Status</p>
                   <Badge
                     variant={getPayoutStatusBadgeVariant(
@@ -184,23 +184,23 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
                 )}
                 {order && !orderLoading && (
                   <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <Hash className="text-muted-foreground mt-1 h-5 w-5" />
-                      <div>
+                    <div className="flex min-w-0 items-start gap-3">
+                      <Hash className="text-muted-foreground mt-1 h-5 w-5 shrink-0" />
+                      <div className="min-w-0">
                         <p className="text-muted-foreground text-sm">
                           Order reference
                         </p>
                         <Link
                           href={`/orders/${order.id}`}
-                          className="text-primary font-mono font-medium hover:underline"
+                          className="text-primary font-mono font-medium break-all hover:underline"
                         >
                           {order.reference}
                         </Link>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <NairaIcon className="text-muted-foreground mt-1 h-5 w-5" />
-                      <div>
+                    <div className="flex min-w-0 items-start gap-3">
+                      <NairaIcon className="text-muted-foreground mt-1 h-5 w-5 shrink-0" />
+                      <div className="min-w-0">
                         <p className="text-muted-foreground text-sm">Total</p>
                         <p className="font-medium">
                           {formatCurrency(parseFloat(order.total))}
@@ -225,12 +225,12 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
                             return (
                               <div
                                 key={item.id}
-                                className="border-border flex flex-col gap-4 rounded-md border p-3"
+                                className="border-border flex min-w-0 flex-col gap-4 rounded-md border p-3"
                               >
-                                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                   <div className="min-w-0 flex-1">
-                                    <div className="flex flex-wrap items-start justify-between gap-2">
-                                      <div>
+                                    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
+                                      <div className="min-w-0">
                                         <p className="font-medium">
                                           {item.productName}
                                         </p>
@@ -250,11 +250,11 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
                                     {specEntries.length > 0 && (
                                       <>
                                         <Separator className="my-3" />
-                                        <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                                        <dl className="flex flex-wrap gap-2 text-xs">
                                           {specEntries.map(([key, value]) => (
                                             <div
                                               key={key}
-                                              className="flex w-fit gap-2 rounded-full border bg-gray-50 px-2 py-1"
+                                              className="flex max-w-full gap-2 rounded-full border bg-gray-50 px-2 py-1"
                                             >
                                               <dt className="text-muted-foreground shrink-0 font-medium capitalize">
                                                 {key
@@ -262,7 +262,7 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
                                                   .trim()}
                                                 :
                                               </dt>
-                                              <dd className="min-w-0 truncate font-medium">
+                                              <dd className="min-w-0 font-medium wrap-break-word">
                                                 {String(value)}
                                               </dd>
                                             </div>
@@ -295,7 +295,7 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
           </div>
 
           {/* Hub details */}
-          <div className="space-y-6">
+          <div className="min-w-0 space-y-6">
             <Card className="@container/card shadow-none">
               <CardHeader>
                 <CardTitle>Hub details</CardTitle>
@@ -322,39 +322,41 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
                 )}
                 {hub && !hubLoading && (
                   <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <Building2 className="text-muted-foreground mt-1 h-5 w-5" />
-                      <div>
+                    <div className="flex min-w-0 items-start gap-3">
+                      <Building2 className="text-muted-foreground mt-1 h-5 w-5 shrink-0" />
+                      <div className="min-w-0">
                         <p className="text-muted-foreground text-sm">
                           Business
                         </p>
                         <Link
                           href={`/print-hubs/${hub.id}`}
-                          className="text-primary font-medium hover:underline"
+                          className="text-primary font-medium wrap-break-word hover:underline"
                         >
                           {hub.businessName}
                         </Link>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <MapPin className="text-muted-foreground mt-1 h-5 w-5" />
-                      <div>
+                    <div className="flex min-w-0 items-start gap-3">
+                      <MapPin className="text-muted-foreground mt-1 h-5 w-5 shrink-0" />
+                      <div className="min-w-0">
                         <p className="text-muted-foreground text-sm">
                           Location
                         </p>
-                        <p className="font-medium">
+                        <p className="font-medium wrap-break-word">
                           {[hub.city, hub.state].filter(Boolean).join(", ") ||
                             "—"}
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <Hash className="text-muted-foreground mt-1 h-5 w-5" />
-                      <div>
+                    <div className="flex min-w-0 items-start gap-3">
+                      <Hash className="text-muted-foreground mt-1 h-5 w-5 shrink-0" />
+                      <div className="min-w-0">
                         <p className="text-muted-foreground text-sm">
                           Business address
                         </p>
-                        <p className="text-sm">{hub.businessAddress || "—"}</p>
+                        <p className="text-sm wrap-break-word">
+                          {hub.businessAddress || "—"}
+                        </p>
                       </div>
                     </div>
                   </div>

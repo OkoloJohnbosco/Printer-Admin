@@ -48,19 +48,20 @@ function NavHeader() {
   });
 
   return (
-    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b border-gray-100 bg-white transition-[width,height] ease-linear">
-      <div className="container-wrapper flex w-full items-center justify-between">
-        <div className="-ml-3 flex items-center gap-2 px-4">
-          <SidebarTrigger />
-          <Heading size="h5">Admin Dashboard</Heading>
+    <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center border-b border-gray-100 bg-white transition-[width,height] ease-linear sm:h-16">
+      <div className="container-wrapper flex w-full min-w-0 items-center justify-between gap-2">
+        <div className="flex min-w-0 flex-1 items-center gap-1 sm:-ml-3 sm:gap-2 sm:px-4">
+          <SidebarTrigger className="size-9 shrink-0 sm:size-7" />
+          <Heading size="h5" className="truncate">
+            Admin Dashboard
+          </Heading>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
           <Link href={routes.NOTIFICATIONS}>
             <Button
-              // asChild
               variant="ghost"
               size="icon"
-              className="relative shrink-0"
+              className="relative size-9 shrink-0 sm:size-10"
             >
               <Bell className="h-5 w-5" />
               {count > 0 && (
@@ -72,8 +73,8 @@ function NavHeader() {
           </Link>
           {isLoading ? (
             <div className="page-fade-in flex items-center gap-2">
-              <Skeleton className="h-9 w-9 rounded-full" />
-              <div className="flex flex-col gap-1">
+              <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
+              <div className="hidden flex-col gap-1 sm:flex">
                 <Skeleton className="h-4.5 w-28" />
                 <Skeleton className="h-4 w-16" />
               </div>
