@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import useGetUserById from "@/lib/hooks/users/use-get-user-by-id";
 import { Calendar, Mail, Phone, Shield, User } from "lucide-react";
-import { toast } from "sonner";
-import UserActionsSidebar from "./components/user-actions-sidebar";
+// import { toast } from "sonner";
+// import UserActionsSidebar from "./components/user-actions-sidebar";
 import UserDetailsSkeleton from "./components/user-details-skeleton";
 
 export default function UserDetailsPageTemplate({
@@ -49,17 +49,17 @@ export default function UserDetailsPageTemplate({
     createdAt: apiUser?.createdAt || "",
   };
 
-  const handlePasswordReset = async () => {
-    toast.success("Password reset email sent successfully");
-  };
+  // const handlePasswordReset = async () => {
+  //   toast.success("Password reset email sent successfully");
+  // };
 
-  const handleProfileUpdate = async () => {
-    toast.success("Profile updated successfully");
-  };
+  // const handleProfileUpdate = async () => {
+  //   toast.success("Profile updated successfully");
+  // };
 
-  const handleRoleChange = async (role: "USER" | "ADMIN" | "HUB_OWNER") => {
-    toast.success(`Role updated to ${role} successfully`);
-  };
+  // const handleRoleChange = async (role: "USER" | "ADMIN" | "HUB_OWNER") => {
+  //   toast.success(`Role updated to ${role} successfully`);
+  // };
 
   return (
     <div className="page-fade-in w-full">
@@ -94,7 +94,7 @@ export default function UserDetailsPageTemplate({
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Action Sidebar - Shown first on mobile */}
           <div className="order-first space-y-6 lg:order-last">
-            <UserActionsSidebar
+            {/* <UserActionsSidebar
               userId={params.id}
               userName={`${user.firstName} ${user.lastName}`}
               currentStatus={"ACTIVE"}
@@ -109,7 +109,7 @@ export default function UserDetailsPageTemplate({
               onPasswordReset={handlePasswordReset}
               onProfileUpdate={handleProfileUpdate}
               onRoleChange={handleRoleChange}
-            />
+            /> */}
           </div>
 
           <div className="space-y-6 lg:col-span-2">
