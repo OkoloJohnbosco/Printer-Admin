@@ -26,7 +26,7 @@ const useGetAllDiscountCodes = (status?: "ACTIVE" | "INACTIVE") => {
   return useQueryActionHook<GetAllDiscountCodesResponse>({
     method: "get",
     endpoint: ENDPOINTS.GET_ALL_DISCOUNT_CODES(status),
-    queryKey: [QUERYKEYS.GET_ALL_DISCOUNT_CODES, status],
+    queryKey: [QUERYKEYS.GET_ALL_DISCOUNT_CODES, `${status}`],
   });
 };
 
