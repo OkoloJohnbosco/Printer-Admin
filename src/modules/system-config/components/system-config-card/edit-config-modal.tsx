@@ -102,9 +102,9 @@ export function EditConfigModal({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="sm:max-w-[600px]">
-        <form onSubmit={handleSubmit}>
-          <AlertDialogHeader>
+      <AlertDialogContent className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-[600px]">
+        <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
+          <AlertDialogHeader className="shrink-0 px-6 pt-6 text-left">
             <AlertDialogTitle>
               {catalogItem.configured
                 ? "Edit Configuration"
@@ -117,44 +117,46 @@ export function EditConfigModal({
             </AlertDialogDescription>
           </AlertDialogHeader>
 
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label>Configuration</Label>
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="outline">{catalogItem.key}</Badge>
-                <Badge variant="secondary">
-                  {getValueTypeLabel(catalogItem.valueType)}
-                </Badge>
-                {!catalogItem.configured && (
-                  <Badge variant="outline">Not configured</Badge>
-                )}
+          <div className="min-h-0 flex-1 overflow-y-auto px-6 py-4">
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Label>Configuration</Label>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant="outline">{catalogItem.key}</Badge>
+                  <Badge variant="secondary">
+                    {getValueTypeLabel(catalogItem.valueType)}
+                  </Badge>
+                  {!catalogItem.configured && (
+                    <Badge variant="outline">Not configured</Badge>
+                  )}
+                </div>
+                <p className="font-medium">{catalogItem.label}</p>
               </div>
-              <p className="font-medium">{catalogItem.label}</p>
+
+              <p className="text-muted-foreground text-sm">
+                {catalogItem.description}
+              </p>
+
+              <ConfigExamplePreview example={catalogItem.example} />
+
+              <ConfigValueEditor
+                id="edit-config-value"
+                valueType={catalogItem.valueType}
+                value={value}
+                onChange={(nextValue) => {
+                  setParseError(null);
+                  setValue(nextValue);
+                }}
+                example={catalogItem.example}
+              />
+
+              {parseError && (
+                <p className="text-destructive text-sm">{parseError}</p>
+              )}
             </div>
-
-            <p className="text-muted-foreground text-sm">
-              {catalogItem.description}
-            </p>
-
-            <ConfigExamplePreview example={catalogItem.example} />
-
-            <ConfigValueEditor
-              id="edit-config-value"
-              valueType={catalogItem.valueType}
-              value={value}
-              onChange={(nextValue) => {
-                setParseError(null);
-                setValue(nextValue);
-              }}
-              example={catalogItem.example}
-            />
-
-            {parseError && (
-              <p className="text-destructive text-sm">{parseError}</p>
-            )}
           </div>
 
-          <AlertDialogFooter>
+          <AlertDialogFooter className="shrink-0 border-t px-6 py-4">
             <AlertDialogCancel disabled={isSaving}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               type="submit"

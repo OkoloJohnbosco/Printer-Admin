@@ -11,6 +11,7 @@ import {
   Palette,
   Printer,
   Settings,
+  Tag,
   User2Icon,
   Users,
 } from "lucide-react";
@@ -73,6 +74,11 @@ const data = {
       title: "Categories",
       url: routes.CATEGORIES,
       icon: FolderTree,
+    },
+    {
+      title: "Discount Codes",
+      url: routes.DISCOUNT_CODES,
+      icon: Tag,
     },
     {
       title: "Products",

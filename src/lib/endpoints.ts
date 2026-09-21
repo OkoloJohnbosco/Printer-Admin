@@ -189,6 +189,13 @@ export const ENDPOINTS = {
   GET_DESIGNER_REQUEST_BY_REFERENCE: (reference: string) =>
     `admin/designer-requests/ref/${reference}`,
 
+  // Discount Code Endpoints
+  CREATE_DISCOUNT_CODE: "admin/discount-codes",
+  GET_ALL_DISCOUNT_CODES: (status?: "ACTIVE" | "INACTIVE") =>
+    `admin/discount-codes${status ? `?status=${status}` : ""}`,
+  GET_DISCOUNT_CODE_BY_ID: (id: string) => `admin/discount-codes/${id}`,
+  UPDATE_DISCOUNT_CODE: (id: string) => `admin/discount-codes/${id}`,
+
   // Audit Logs Endpoints
   GET_AUDIT_LOGS: (params: GetAuditLogsParams) => {
     const searchParams = new URLSearchParams();
@@ -326,6 +333,10 @@ export const QUERYKEYS = {
   // Designer Requests Query Keys
   GET_ALL_DESIGNER_REQUESTS: "GET_ALL_DESIGNER_REQUESTS",
   GET_DESIGNER_REQUEST_BY_ID: "GET_DESIGNER_REQUEST_BY_ID",
+
+  // Discount Code Query Keys
+  GET_ALL_DISCOUNT_CODES: "GET_ALL_DISCOUNT_CODES",
+  GET_DISCOUNT_CODE_BY_ID: "GET_DISCOUNT_CODE_BY_ID",
 
   // Notification Query Keys
   GET_NOTIFICATIONS: "GET_NOTIFICATIONS",

@@ -31,6 +31,7 @@ const routes = {
     `/revenue-and-payout/${payoutIdOrReference}`,
   HUB_DETAILS: (hubId: string) => `/print-hubs/${hubId}`,
   PARTNER_APPLICATIONS: "/partner-applications",
+  DISCOUNT_CODES: "/discount-codes",
 
   NOTIFICATIONS: "/notifications",
   HELP_AND_SUPPORT: "/help-and-support",

@@ -49,6 +49,7 @@ const buttonVariants = cva(
 
 function Button({
   className,
+  contentClassName,
   variant,
   size,
   asChild = false,
@@ -61,6 +62,8 @@ function Button({
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     isLoading?: boolean;
+    /** Classes applied to the inner content wrapper (children span). */
+    contentClassName?: string;
   }) {
   const Comp = asChild ? Slot : "button";
 
@@ -69,7 +72,7 @@ function Button({
       data-slot="button"
       type="button"
       disabled={isLoading || disabled}
-      className={cn(buttonVariants({ variant, size, fullWidth, className }))}
+      className={cn(buttonVariants({ variant, size, fullWidth }), className)}
       {...props}
     >
       <Slottable>
@@ -77,7 +80,10 @@ function Button({
           style={{
             opacity: isLoading ? 0 : 1,
           }}
-          className="inline-flex w-full items-center justify-center gap-2"
+          className={cn(
+            "inline-flex w-full items-center justify-center gap-2",
+            contentClassName,
+          )}
         >
           {children}
         </span>
