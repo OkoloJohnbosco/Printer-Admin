@@ -50,6 +50,9 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
   const orderError = orderDetails.isError;
   const hubError = hubDetails.isError;
   const canApprovePayout = payout.status === PayoutStatus.PENDING;
+  const canRetryPayout =
+    payout.status === PayoutStatus.FAILED ||
+    payout.status === PayoutStatus.REJECTED;
 
   return (
     <div className="page-fade-in w-full">
@@ -73,16 +76,15 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
               Payout {payout.reference}
             </p>
           </div>
-          {canApprovePayout && (
+          {(canApprovePayout || canRetryPayout) && (
             <Button
               variant="default"
               size="sm"
               onClick={onOpen}
-              disabled={!canApprovePayout}
               className="w-full shrink-0 gap-2 sm:w-auto"
             >
               <FileCheck className="h-4 w-4" />
-              Review Payout
+              {canRetryPayout ? "Retry Payout" : "Review Payout"}
             </Button>
           )}
         </div>
@@ -90,6 +92,7 @@ export function PayoutDetailsContent({ payout }: PayoutDetailsContentProps) {
           isOpen={isOpen}
           onClose={onClose}
           payout={payout}
+          isRetry={canRetryPayout}
         />
 
         <div className="grid min-w-0 gap-6 md:grid-cols-3">

@@ -54,15 +54,17 @@ export default function ReviewPayoutForm({
   onCancel,
   reviewPayoutRequest,
   payout,
+  isRetry = false,
 }: {
   payout: Payout;
   reviewPayoutRequest: ReturnType<typeof useReviewPayoutRequest>;
   onCancel: () => void;
+  isRetry?: boolean;
 }) {
   const form = useForm<ReviewPayoutFormValues>({
     resolver: zodResolver(reviewPayoutSchema),
     defaultValues: {
-      status: undefined,
+      status: isRetry ? "APPROVED" : undefined,
       rejectionReason: "",
     },
   });
@@ -132,30 +134,36 @@ export default function ReviewPayoutForm({
           </div>
 
           {/* Action/Status */}
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Action</FormLabel>
-                <FormControl>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select action" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="APPROVED">Approve Payout</SelectItem>
-                      <SelectItem value="REJECTED">Reject Payout</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {isRetry ? (
+            <p className="text-muted-foreground text-sm">
+              This will resubmit the payout transfer for processing.
+            </p>
+          ) : (
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Action</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select action" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="APPROVED">Approve Payout</SelectItem>
+                        <SelectItem value="REJECTED">Reject Payout</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
 
           {/* Rejection Reason - Only shown when REJECTED is selected */}
-          {selectedStatus === "REJECTED" && (
+          {!isRetry && selectedStatus === "REJECTED" && (
             <FormField
               control={form.control}
               name="rejectionReason"
@@ -189,12 +197,16 @@ export default function ReviewPayoutForm({
               type="submit"
               isLoading={reviewPayoutRequest.isPending}
               variant={
-                selectedStatus === "REJECTED" ? "destructive" : "default"
+                !isRetry && selectedStatus === "REJECTED"
+                  ? "destructive"
+                  : "default"
               }
             >
-              {selectedStatus === "REJECTED"
-                ? "Reject Payout"
-                : "Approve Payout"}
+              {isRetry
+                ? "Retry Payout"
+                : selectedStatus === "REJECTED"
+                  ? "Reject Payout"
+                  : "Approve Payout"}
             </Button>
           </div>
         </form>
