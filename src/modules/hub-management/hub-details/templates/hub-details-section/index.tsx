@@ -31,6 +31,7 @@ import { useState } from "react";
 import DocumentViewer, { Document } from "../../components/document-viewer";
 import HubDetailsStats from "../../components/hub-details-stats";
 import HubOrdersTable from "../../components/hub-orders-table";
+import HubSuspensionCard from "../../components/hub-suspension-card";
 
 export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
   const [status, setStatus] = useState(hub.status);
@@ -260,6 +261,8 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
                 </Button>
               </CardContent>
             </Card>
+
+            <HubSuspensionCard hub={hub} />
 
             <AlertDialog
               open={isConfirmModalOpen}

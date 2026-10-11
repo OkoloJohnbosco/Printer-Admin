@@ -33,13 +33,15 @@ export function PrintHubMobileCard({ printHub }: { printHub: PrintHub }) {
             {formatToMDY(printHub.createdAt)}
           </p>
         </div>
-        <Badge
-          variant={getHubStatusBadgeVariant(printHub.status as HubStatus)}
-          className="shrink-0"
-        >
-          {hubStatusIcons[getHubStatusIconKey(printHub.status as HubStatus)]}
-          {formatStatusText(printHub.status)}
-        </Badge>
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <Badge
+            variant={getHubStatusBadgeVariant(printHub.status as HubStatus)}
+          >
+            {hubStatusIcons[getHubStatusIconKey(printHub.status as HubStatus)]}
+            {formatStatusText(printHub.status)}
+          </Badge>
+          {printHub.suspended && <Badge variant="destructive">Suspended</Badge>}
+        </div>
       </div>
       <p className="text-muted-foreground text-sm wrap-break-word">
         {printHub.businessAddress}
@@ -81,10 +83,15 @@ function PrintHubTableRow({ printHub }: { printHub: PrintHub }) {
       </TableCell>
       <TableCell className="px-5 py-4">{printHub.businessEmail}</TableCell>
       <TableCell className="px-5 py-4">
-        <Badge variant={getHubStatusBadgeVariant(printHub.status as HubStatus)}>
-          {hubStatusIcons[getHubStatusIconKey(printHub.status as HubStatus)]}
-          {formatStatusText(printHub.status)}
-        </Badge>
+        <div className="flex flex-wrap items-center gap-1.5">
+          <Badge
+            variant={getHubStatusBadgeVariant(printHub.status as HubStatus)}
+          >
+            {hubStatusIcons[getHubStatusIconKey(printHub.status as HubStatus)]}
+            {formatStatusText(printHub.status)}
+          </Badge>
+          {printHub.suspended && <Badge variant="destructive">Suspended</Badge>}
+        </div>
       </TableCell>
     </TableRow>
   );

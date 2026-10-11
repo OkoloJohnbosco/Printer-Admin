@@ -70,10 +70,15 @@ export function AssignedHubCard({
               {currentHub.status}
             </Badge>
           </div>
-          <div className="border-border mt-3 border-t pt-3">
+          <div className="border-border mt-3 space-y-1 border-t pt-3">
             <p className="text-muted-foreground text-xs">
               Email: {currentHub.businessEmail}
             </p>
+            {currentHub.businessPhone && (
+              <p className="text-muted-foreground text-xs">
+                Phone: {currentHub.businessPhone}
+              </p>
+            )}
           </div>
         </div>
 

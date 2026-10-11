@@ -45,6 +45,7 @@ export interface Hub {
   id: string;
   businessName: string;
   businessEmail: string;
+  businessPhone?: string | null;
   businessAddress: string;
   city: string;
   state: string;

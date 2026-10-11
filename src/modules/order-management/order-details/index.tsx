@@ -410,6 +410,14 @@ export default function OrderDetailPageTemplate({
                       {orderDetails.hub.businessEmail}
                     </p>
                   </div>
+                  {orderDetails.hub.businessPhone && (
+                    <div className="flex items-center gap-2">
+                      <Phone className="text-muted-foreground h-4 w-4 shrink-0" />
+                      <p className="text-muted-foreground truncate text-sm">
+                        {orderDetails.hub.businessPhone}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

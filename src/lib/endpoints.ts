@@ -42,6 +42,7 @@ export const ENDPOINTS = {
   GET_HUB_BY_ID: (hubId: string) => `admin/hubs/${hubId}`,
   UPDATE_VERIFICATION_STATUS: (hubId: string) =>
     `admin/hubs/${hubId}/verification-status`,
+  UPDATE_HUB_SUSPENSION: (hubId: string) => `admin/hubs/${hubId}/suspension`,
   CREATE_PRODUCT_CATEGORY: `admin/products/categories`,
   GET_ALL_PRODUCT_CATEGORIES: `admin/products/categories`,
   GET_PRODUCT_CATEGORY_BY_ID: (categoryId: string) =>

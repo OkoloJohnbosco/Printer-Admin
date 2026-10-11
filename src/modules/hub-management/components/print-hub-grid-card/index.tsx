@@ -20,7 +20,6 @@ const hubStatusIcons = {
 };
 
 function PrintHubGridCard({ hub }: { hub: PrintHub }) {
-  console.log(hub, "hub");
   return (
     <Card key={hub.userId} className="@container/card shadow-none">
       <CardHeader>
@@ -41,10 +40,13 @@ function PrintHubGridCard({ hub }: { hub: PrintHub }) {
               <p className="text-muted-foreground text-sm">{hub.city}</p>
             </div>
           </div>
-          <Badge variant={getHubStatusBadgeVariant(hub.status as HubStatus)}>
-            {hubStatusIcons[getHubStatusIconKey(hub.status as HubStatus)]}
-            {formatStatusText(hub.status)}
-          </Badge>
+          <div className="flex flex-col items-end gap-1">
+            <Badge variant={getHubStatusBadgeVariant(hub.status as HubStatus)}>
+              {hubStatusIcons[getHubStatusIconKey(hub.status as HubStatus)]}
+              {formatStatusText(hub.status)}
+            </Badge>
+            {hub.suspended && <Badge variant="destructive">Suspended</Badge>}
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
