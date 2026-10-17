@@ -47,6 +47,7 @@ export default function UserDetailsPageTemplate({
     email: apiUser?.email || "",
     role: apiUser?.role || "USER",
     createdAt: apiUser?.createdAt || "",
+    phone: apiUser?.phone || null,
   };
 
   // const handlePasswordReset = async () => {
@@ -142,7 +143,7 @@ export default function UserDetailsPageTemplate({
                     <Phone className="text-muted-foreground mt-0.5 h-5 w-5 shrink-0" />
                     <div className="min-w-0">
                       <p className="text-muted-foreground text-sm">Phone</p>
-                      <p className="font-medium">N/A</p>
+                      <p className="font-medium">{user.phone}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">

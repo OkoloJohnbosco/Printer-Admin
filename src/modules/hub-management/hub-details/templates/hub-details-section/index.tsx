@@ -174,7 +174,9 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
                       <span className="text-muted-foreground text-sm">
                         Phone
                       </span>
-                      <span className="text-sm font-medium">{hub.userId}</span>
+                      <span className="text-sm font-medium">
+                        {hub.businessPhoneNumber}
+                      </span>
                     </div>
                   </div>
                 </div>

@@ -12,4 +12,5 @@ export interface IUser {
   role: string;
   createdAt: string;
   updatedAt: string;
+  phone: string | null;
 }

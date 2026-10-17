@@ -20,6 +20,7 @@ export interface PrintHub {
   businessName: string;
   businessEmail: string;
   businessAddress: string;
+  businessPhone: string | null;
   suspended?: boolean;
   suspensionReason?: string | null;
   createdAt: string;
