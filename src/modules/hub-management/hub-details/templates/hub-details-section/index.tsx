@@ -175,7 +175,7 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
                         Phone
                       </span>
                       <span className="text-sm font-medium">
-                        {hub.businessPhoneNumber}
+                        {hub.businessPhone ?? "N/A"}
                       </span>
                     </div>
                   </div>
