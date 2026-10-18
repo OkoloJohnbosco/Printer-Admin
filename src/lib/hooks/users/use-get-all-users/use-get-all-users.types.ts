@@ -28,6 +28,7 @@ export interface User {
   id: string;
   role: string;
   email: string;
+  phone?: string | null;
   lastName: string;
   firstName: string;
   createdAt: string;

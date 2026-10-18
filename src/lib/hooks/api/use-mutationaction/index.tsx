@@ -8,12 +8,13 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { MutationBody, MutationConfig } from "./use-mutationaction.types";
 
-const formatError = (data: { status: boolean; error: string }): string => {
-  if (!data) return "Server error";
-
-  const error = data?.error;
-  if (typeof error === "string") return error;
-  return "Server error";
+const formatError = (data?: {
+  status: boolean;
+  error?: string;
+  message?: string;
+}): string => {
+  const text = data?.message ?? data?.error;
+  return typeof text === "string" && text ? text : "Server error";
 };
 
 function createMutation<

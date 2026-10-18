@@ -45,6 +45,7 @@ export function UserMobileCard({ user }: UserTableRowProps) {
           {formatStatusText(user.role)}
         </Badge>
       </div>
+      <p className="text-muted-foreground text-xs">{user.phone || "N/A"}</p>
       <p className="text-muted-foreground text-xs">
         Joined {new Date(user.createdAt).toLocaleDateString()}
       </p>
@@ -77,6 +78,7 @@ export default function UserTableRow({ user }: UserTableRowProps) {
         </div>
       </TableCell>
       <TableCell className="py-4">{user.email}</TableCell>
+      <TableCell className="py-4">{user.phone || "N/A"}</TableCell>
       <TableCell className="py-4">
         <Badge variant={getRoleBadgeVariant(user.role)}>
           {formatStatusText(user.role)}

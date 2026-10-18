@@ -25,6 +25,7 @@ export default function UserTable({ users, isLoading }: UserTableProps) {
       <TableRow>
         <TableHead>User</TableHead>
         <TableHead>Email</TableHead>
+        <TableHead>Phone</TableHead>
         <TableHead>Role</TableHead>
         <TableHead>Join Date</TableHead>
       </TableRow>

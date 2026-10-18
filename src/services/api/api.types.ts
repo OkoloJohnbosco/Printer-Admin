@@ -33,7 +33,8 @@ export interface ServerError {
   name: string;
   response: {
     data: {
-      error: string;
+      error?: string;
+      message?: string;
       status: boolean;
     };
   };

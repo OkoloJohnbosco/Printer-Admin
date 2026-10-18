@@ -15,7 +15,7 @@ const useUpdateHubSuspension = (hubId: string) => {
     endpoint: ENDPOINTS.UPDATE_HUB_SUSPENSION(hubId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [QUERYKEYS.GET_HUB_BY_ID, `${hubId}`],
+        queryKey: [QUERYKEYS.GET_HUB_BY_ID],
       });
       queryClient.invalidateQueries({
         queryKey: [QUERYKEYS.GET_ALL_HUBS],

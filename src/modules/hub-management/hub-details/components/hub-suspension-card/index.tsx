@@ -26,7 +26,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
+import { HubStatus, PrintHub } from "@/lib/hooks/admin/use-get-all-hubs";
 import useUpdateHubSuspension from "@/lib/hooks/admin/use-update-hub-suspension";
 
 const suspendSchema = z.object({
@@ -38,7 +38,7 @@ type SuspendFormValues = z.infer<typeof suspendSchema>;
 export default function HubSuspensionCard({ hub }: { hub: PrintHub }) {
   const [isSuspendModalOpen, setIsSuspendModalOpen] = useState(false);
   const [isUnsuspendModalOpen, setIsUnsuspendModalOpen] = useState(false);
-  const updateHubSuspension = useUpdateHubSuspension(hub.userId);
+  const updateHubSuspension = useUpdateHubSuspension(hub.id);
 
   const form = useForm<SuspendFormValues>({
     resolver: zodResolver(suspendSchema),
@@ -98,7 +98,7 @@ export default function HubSuspensionCard({ hub }: { hub: PrintHub }) {
           >
             Unsuspend Hub
           </Button>
-        ) : (
+        ) : hub.status === HubStatus.APPROVED ? (
           <Button
             fullWidth
             variant="destructive"
@@ -106,6 +106,10 @@ export default function HubSuspensionCard({ hub }: { hub: PrintHub }) {
           >
             Suspend Hub
           </Button>
+        ) : (
+          <p className="text-muted-foreground text-xs">
+            Only approved hubs can be suspended.
+          </p>
         )}
       </CardContent>
 

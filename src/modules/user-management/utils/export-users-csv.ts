@@ -15,6 +15,7 @@ export const mapUsersToCsvRows = (users: User[]): ExportData[] =>
   users.map((user) => ({
     User: `${user.firstName} ${user.lastName}`.trim(),
     Email: user.email,
+    Phone: user.phone || "N/A",
     Role: formatStatusText(user.role),
     "Join Date": new Date(user.createdAt).toLocaleDateString(),
   }));
