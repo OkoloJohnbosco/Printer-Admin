@@ -33,7 +33,13 @@ import HubDetailsStats from "../../components/hub-details-stats";
 import HubOrdersTable from "../../components/hub-orders-table";
 import HubSuspensionCard from "../../components/hub-suspension-card";
 
-export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
+export default function HubDetailsSection({
+  hub,
+  adminHubId,
+}: {
+  hub: PrintHub;
+  adminHubId: string;
+}) {
   const [status, setStatus] = useState(hub.status);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -79,7 +85,7 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
       hubDocuments.length > 0) ||
     hub.status === HubStatus.APPROVED;
 
-  const updateVerificationStatus = useUpdateVerificationStatus(hub.userId);
+  const updateVerificationStatus = useUpdateVerificationStatus(adminHubId);
 
   const isStatusUnchanged = status === hub.status;
 
@@ -90,7 +96,7 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
       })
       .then(() => {
         queryClient.invalidateQueries({
-          queryKey: [QUERYKEYS.GET_HUB_BY_ID, hub.userId],
+          queryKey: [QUERYKEYS.GET_HUB_BY_ID, adminHubId],
         });
         setIsConfirmModalOpen(false);
       })
@@ -134,7 +140,7 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
               </CardContent>
             </Card>
 
-            <HubOrdersTable hubId={hub.id} />
+            <HubOrdersTable hubId={adminHubId} />
 
             <Card className="@container/card shadow-none">
               <CardHeader>
@@ -264,7 +270,7 @@ export default function HubDetailsSection({ hub }: { hub: PrintHub }) {
               </CardContent>
             </Card>
 
-            <HubSuspensionCard hub={hub} />
+            <HubSuspensionCard hub={hub} adminHubId={adminHubId} />
 
             <AlertDialog
               open={isConfirmModalOpen}

@@ -35,10 +35,17 @@ const suspendSchema = z.object({
 
 type SuspendFormValues = z.infer<typeof suspendSchema>;
 
-export default function HubSuspensionCard({ hub }: { hub: PrintHub }) {
+export default function HubSuspensionCard({
+  hub,
+  adminHubId,
+}: {
+  hub: PrintHub;
+  /** Id from the hub details route — used for admin `/admin/hubs/:id/*` APIs (not `hub.userId`). */
+  adminHubId: string;
+}) {
   const [isSuspendModalOpen, setIsSuspendModalOpen] = useState(false);
   const [isUnsuspendModalOpen, setIsUnsuspendModalOpen] = useState(false);
-  const updateHubSuspension = useUpdateHubSuspension(hub.id);
+  const updateHubSuspension = useUpdateHubSuspension(adminHubId);
 
   const form = useForm<SuspendFormValues>({
     resolver: zodResolver(suspendSchema),

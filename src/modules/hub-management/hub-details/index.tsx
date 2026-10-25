@@ -14,7 +14,6 @@ export default function PrintHubDetailPageTamplate({
 
   const isLoading = getHub.isLoading && !getHub?.value;
   const isError = getHub.isError && getHub?.error;
-  console.log(getHub?.value?.data, "getHub");
 
   if (isError) {
     return <div>Error fetching hub</div>;
@@ -26,5 +25,5 @@ export default function PrintHubDetailPageTamplate({
     return <div>Hub not found</div>;
   }
 
-  return <HubDetailsSection hub={hub} />;
+  return <HubDetailsSection hub={hub} adminHubId={params.id} />;
 }
