@@ -30,7 +30,7 @@ export default function AssignDesignerCard() {
   ];
 
   const handleAssignDesigner = () => {
-    console.log("Assigning designer:", selectedDesigner);
+    // no-op
   };
 
   return (

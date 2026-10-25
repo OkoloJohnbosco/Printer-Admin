@@ -87,8 +87,8 @@ export default function ReviewPayoutForm({
           queryKey: [QUERYKEYS.GET_ALL_PAYOUTS],
         });
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
+        //  no-op
       });
   }
 

@@ -77,8 +77,8 @@ export default function LoginForm() {
         }
         router.replace(`${storeTokensUrl.pathname}${storeTokensUrl.search}`);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
+        // no-op
       });
   }
 
