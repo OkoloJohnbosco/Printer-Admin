@@ -12,6 +12,7 @@ export interface HubsData {
 }
 
 export interface PrintHub {
+  logoUrl?: string;
   id: string;
   userId: string;
   status: string;

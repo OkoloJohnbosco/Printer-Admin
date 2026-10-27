@@ -28,7 +28,7 @@ function PrintHubGridCard({ hub }: { hub: PrintHub }) {
           <div className="flex items-start gap-3">
             <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
               <Image
-                src={"/logo-sm.svg"}
+                src={hub?.logoUrl || "/logo-sm.svg"}
                 alt="logo image"
                 width={40}
                 height={40}
