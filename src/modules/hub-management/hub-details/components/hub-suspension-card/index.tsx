@@ -46,6 +46,7 @@ export default function HubSuspensionCard({
   const [isSuspendModalOpen, setIsSuspendModalOpen] = useState(false);
   const [isUnsuspendModalOpen, setIsUnsuspendModalOpen] = useState(false);
   const updateHubSuspension = useUpdateHubSuspension(adminHubId);
+  const isSuspended = hub.status === HubStatus.SUSPENDED;
 
   const form = useForm<SuspendFormValues>({
     resolver: zodResolver(suspendSchema),
@@ -83,21 +84,21 @@ export default function HubSuspensionCard({
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground text-sm">Current State</span>
-          <Badge variant={hub.suspended ? "destructive" : "success"}>
-            {hub.suspended ? "Suspended" : "Active"}
+          <Badge variant={isSuspended ? "destructive" : "success"}>
+            {isSuspended ? "Suspended" : "Active"}
           </Badge>
         </div>
 
-        {hub.suspended && hub.suspensionReason && (
+        {isSuspended && hub.metadata.suspension.reason && (
           <div className="rounded-md border border-amber-200 bg-amber-50 p-3">
             <p className="text-muted-foreground text-xs font-medium">
               Suspension reason
             </p>
-            <p className="text-sm">{hub.suspensionReason}</p>
+            <p className="text-sm">{hub.metadata.suspension.reason}</p>
           </div>
         )}
 
-        {hub.suspended ? (
+        {isSuspended ? (
           <Button
             fullWidth
             variant="outline"

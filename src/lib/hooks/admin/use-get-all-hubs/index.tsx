@@ -21,8 +21,12 @@ export interface PrintHub {
   businessEmail: string;
   businessAddress: string;
   businessPhone: string | null;
-  suspended?: boolean;
-  suspensionReason?: string | null;
+  metadata: {
+    suspension: {
+      suspendedAt?: string;
+      reason?: string | null;
+    };
+  };
   createdAt: string;
   updatedAt: string;
   documents: Document[];
@@ -44,6 +48,7 @@ export enum HubStatus {
   APPROVED = "APPROVED",
   REJECTED = "REJECTED",
   ACTION_REQUIRED = "ACTION_REQUIRED",
+  SUSPENDED = "SUSPENDED",
 }
 const useGetAllHubs = ({
   limit,
