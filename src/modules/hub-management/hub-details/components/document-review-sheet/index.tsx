@@ -34,6 +34,8 @@ interface DocumentReviewSheetProps {
   onRejectionReasonChange: (reason: string) => void;
   onSubmit: () => void;
   isLoading: boolean;
+  /** View-only mode (e.g. hub suspended) — no approve/reject actions. */
+  readOnly?: boolean;
 }
 
 export default function DocumentReviewSheet({
@@ -46,6 +48,7 @@ export default function DocumentReviewSheet({
   onRejectionReasonChange,
   onSubmit,
   isLoading,
+  readOnly = false,
 }: DocumentReviewSheetProps) {
   const renderDocumentPreview = () => {
     if (!document) return null;
@@ -99,6 +102,7 @@ export default function DocumentReviewSheet({
 
   const isAlreadyReviewed =
     document?.status === "APPROVED" || document?.status === "REJECTED";
+  const showReviewActions = !readOnly && !isAlreadyReviewed;
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -112,9 +116,11 @@ export default function DocumentReviewSheet({
               <div>
                 <SheetTitle>{document?.name}</SheetTitle>
                 <SheetDescription>
-                  {isAlreadyReviewed
-                    ? "View document details"
-                    : "Review and take action on this document"}
+                  {readOnly && !isAlreadyReviewed
+                    ? "View only — hub is suspended"
+                    : isAlreadyReviewed
+                      ? "View document details"
+                      : "Review and take action on this document"}
                 </SheetDescription>
               </div>
               {isAlreadyReviewed && (
@@ -185,6 +191,13 @@ export default function DocumentReviewSheet({
                   </p>
                 </div>
               </div>
+            </div>
+          ) : readOnly ? (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+              <p className="text-sm text-red-800">
+                Document review is disabled while this hub is suspended.
+                Unsuspend the hub to approve or reject documents.
+              </p>
             </div>
           ) : (
             /* Action Selection - Only show for PENDING_REVIEW documents */
@@ -261,7 +274,7 @@ export default function DocumentReviewSheet({
           <Button variant="outline" onClick={onClose} disabled={isLoading}>
             {isAlreadyReviewed ? "Close" : "Cancel"}
           </Button>
-          {!isAlreadyReviewed && (
+          {showReviewActions && (
             <Button
               onClick={onSubmit}
               disabled={isLoading || !document}

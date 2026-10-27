@@ -93,9 +93,6 @@ function PrintHubTableRow({ printHub }: { printHub: PrintHub }) {
             {hubStatusIcons[getHubStatusIconKey(printHub.status as HubStatus)]}
             {formatStatusText(printHub.status)}
           </Badge>
-          {printHub.status === HubStatus.SUSPENDED && (
-            <Badge variant="destructive">Suspended</Badge>
-          )}
         </div>
       </TableCell>
     </TableRow>

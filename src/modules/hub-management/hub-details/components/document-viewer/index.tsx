@@ -25,9 +25,13 @@ export interface Document {
 
 interface DocumentViewerProps {
   documents: Document[];
+  reviewsDisabled?: boolean;
 }
 
-export default function DocumentViewer({ documents }: DocumentViewerProps) {
+export default function DocumentViewer({
+  documents,
+  reviewsDisabled = false,
+}: DocumentViewerProps) {
   const params = useParams();
   const hubId = params.hubId as string;
   const [selectedDocument, setSelectedDocument] =
@@ -87,7 +91,7 @@ export default function DocumentViewer({ documents }: DocumentViewerProps) {
   };
 
   const handleSubmitReview = async () => {
-    if (!selectedDocument) return;
+    if (!selectedDocument || reviewsDisabled) return;
 
     // Validate rejection reason if action is REJECTED
     if (reviewAction === "REJECTED" && !rejectionReason.trim()) {
@@ -202,7 +206,7 @@ export default function DocumentViewer({ documents }: DocumentViewerProps) {
           })}
         </div>
 
-        {approvedDocuments.length < documents.length && (
+        {!reviewsDisabled && approvedDocuments.length < documents.length && (
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
             <p className="text-sm text-amber-700">
               <strong>Note:</strong> You must approve all {documents.length}{" "}
@@ -223,6 +227,7 @@ export default function DocumentViewer({ documents }: DocumentViewerProps) {
         onRejectionReasonChange={setRejectionReason}
         onSubmit={handleSubmitReview}
         isLoading={reviewDocument.isPending}
+        readOnly={reviewsDisabled}
       />
     </>
   );

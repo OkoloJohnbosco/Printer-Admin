@@ -84,7 +84,7 @@ export default function HubSuspensionCard({
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground text-sm">Current State</span>
-          <Badge variant={isSuspended ? "destructive" : "success"}>
+          <Badge variant={isSuspended ? "rejected" : "approved"}>
             {isSuspended ? "Suspended" : "Active"}
           </Badge>
         </div>

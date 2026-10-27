@@ -46,9 +46,6 @@ function PrintHubGridCard({ hub }: { hub: PrintHub }) {
               {hubStatusIcons[getHubStatusIconKey(hub.status as HubStatus)]}
               {formatStatusText(hub.status)}
             </Badge>
-            {hub.status === HubStatus.SUSPENDED && (
-              <Badge variant="destructive">Suspended</Badge>
-            )}
           </div>
         </div>
       </CardHeader>

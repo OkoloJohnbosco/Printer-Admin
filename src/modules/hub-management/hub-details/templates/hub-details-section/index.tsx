@@ -87,6 +87,8 @@ export default function HubDetailsSection({
 
   const updateVerificationStatus = useUpdateVerificationStatus(adminHubId);
 
+  const isHubSuspended = hub.status === HubStatus.SUSPENDED;
+  const canUpdateHub = !isHubSuspended && allDocumentsApproved;
   const isStatusUnchanged = status === hub.status;
 
   const handleStatusUpdate = () => {
@@ -136,7 +138,19 @@ export default function HubDetailsSection({
                 <CardTitle>Document Verification</CardTitle>
               </CardHeader>
               <CardContent>
-                <DocumentViewer documents={hubDocuments} />
+                {isHubSuspended && (
+                  <div className="mb-4 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4">
+                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+                    <p className="text-sm text-red-800">
+                      This hub is suspended. Document review is disabled until
+                      the hub is unsuspended.
+                    </p>
+                  </div>
+                )}
+                <DocumentViewer
+                  documents={hubDocuments}
+                  reviewsDisabled={isHubSuspended}
+                />
               </CardContent>
             </Card>
 
@@ -202,13 +216,16 @@ export default function HubDetailsSection({
                   </span>
                   <Badge
                     variant={
-                      hub?.status?.toLowerCase() as
-                        | "approved"
-                        | "rejected"
-                        | "pending"
+                      hub.status === HubStatus.SUSPENDED
+                        ? "rejected"
+                        : (hub.status.toLowerCase() as
+                            | "approved"
+                            | "rejected"
+                            | "pending")
                     }
+                    className="capitalize"
                   >
-                    {hub.status}
+                    {formatStatus(hub.status)}
                   </Badge>
                 </div>
               </CardContent>
@@ -219,7 +236,22 @@ export default function HubDetailsSection({
                 <CardTitle>Update Status</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {!allDocumentsApproved && (
+                {isHubSuspended && (
+                  <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4">
+                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+                    <div>
+                      <p className="text-sm font-medium text-red-800">
+                        Hub suspended
+                      </p>
+                      <p className="text-sm text-red-700">
+                        Verification status cannot be changed while the hub is
+                        suspended. Unsuspend the hub first.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {!isHubSuspended && !allDocumentsApproved && (
                   <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4">
                     <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
                     <div>
@@ -236,36 +268,49 @@ export default function HubDetailsSection({
 
                 <div>
                   <label className="text-muted-foreground mb-2 block text-sm">
-                    Current Hub Status
+                    {isHubSuspended
+                      ? "Verification status"
+                      : "Change hub status"}
                   </label>
-                  <Select
-                    value={status}
-                    onValueChange={setStatus}
-                    disabled={!allDocumentsApproved}
-                  >
-                    <SelectTrigger
-                      className={!allDocumentsApproved ? "opacity-50" : ""}
+                  {isHubSuspended ? (
+                    <p className="text-sm font-medium">
+                      {formatStatus(hub.status)}
+                    </p>
+                  ) : (
+                    <Select
+                      value={status}
+                      onValueChange={setStatus}
+                      disabled={!canUpdateHub}
                     >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="PENDING">Pending</SelectItem>
-                      <SelectItem value="APPROVED">Approved</SelectItem>
-                      <SelectItem value="REJECTED">Rejected</SelectItem>
-                    </SelectContent>
-                  </Select>
+                      <SelectTrigger
+                        className={!canUpdateHub ? "opacity-50" : ""}
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="PENDING">Pending</SelectItem>
+                        <SelectItem value="APPROVED">Approved</SelectItem>
+                        <SelectItem value="REJECTED">Rejected</SelectItem>
+                        <SelectItem value="ACTION_REQUIRED">
+                          Action Required
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
                 <Button
                   onClick={() => setIsConfirmModalOpen(true)}
                   fullWidth
                   variant="default_blue"
-                  disabled={!allDocumentsApproved || isStatusUnchanged}
+                  disabled={!canUpdateHub || isStatusUnchanged}
                 >
-                  {!allDocumentsApproved
-                    ? `Approve Documents First (${approvedDocuments.length}/${hubDocuments.length} Approved)`
-                    : isStatusUnchanged
-                      ? "No Changes to Update"
-                      : "Update Hub Status"}
+                  {isHubSuspended
+                    ? "Hub Is Suspended"
+                    : !allDocumentsApproved
+                      ? `Approve Documents First (${approvedDocuments.length}/${hubDocuments.length} Approved)`
+                      : isStatusUnchanged
+                        ? "No Changes to Update"
+                        : "Update Hub Status"}
                 </Button>
               </CardContent>
             </Card>

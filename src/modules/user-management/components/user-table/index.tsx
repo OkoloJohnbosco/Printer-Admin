@@ -39,7 +39,7 @@ export default function UserTable({ users, isLoading }: UserTableProps) {
         <div className="hidden md:block">
           <Table>
             {tableHeader}
-            <TableSkeletonRowLoader length={4} noOfRows={10} />
+            <TableSkeletonRowLoader length={5} noOfRows={10} />
           </Table>
         </div>
       </>
