@@ -15,6 +15,7 @@ const hubStatusIcons = {
   approved: <Check className="size-3" />,
   rejected: <X className="size-3" />,
   action_required: <AlertCircle className="size-3" />,
+  suspended: <AlertCircle className="size-3" />,
 };
 
 export function PrintHubMobileCard({ printHub }: { printHub: PrintHub }) {
@@ -40,7 +41,9 @@ export function PrintHubMobileCard({ printHub }: { printHub: PrintHub }) {
             {hubStatusIcons[getHubStatusIconKey(printHub.status as HubStatus)]}
             {formatStatusText(printHub.status)}
           </Badge>
-          {printHub.suspended && <Badge variant="destructive">Suspended</Badge>}
+          {printHub.status === HubStatus.SUSPENDED && (
+            <Badge variant="destructive">Suspended</Badge>
+          )}
         </div>
       </div>
       <p className="text-muted-foreground text-sm wrap-break-word">
@@ -90,7 +93,9 @@ function PrintHubTableRow({ printHub }: { printHub: PrintHub }) {
             {hubStatusIcons[getHubStatusIconKey(printHub.status as HubStatus)]}
             {formatStatusText(printHub.status)}
           </Badge>
-          {printHub.suspended && <Badge variant="destructive">Suspended</Badge>}
+          {printHub.status === HubStatus.SUSPENDED && (
+            <Badge variant="destructive">Suspended</Badge>
+          )}
         </div>
       </TableCell>
     </TableRow>

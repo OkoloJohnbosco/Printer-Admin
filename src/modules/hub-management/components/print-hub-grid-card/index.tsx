@@ -17,6 +17,7 @@ const hubStatusIcons = {
   approved: <Check className="size-3" />,
   rejected: <X className="size-3" />,
   action_required: <AlertCircle className="size-3" />,
+  suspended: <AlertCircle className="size-3" />,
 };
 
 function PrintHubGridCard({ hub }: { hub: PrintHub }) {
@@ -45,7 +46,9 @@ function PrintHubGridCard({ hub }: { hub: PrintHub }) {
               {hubStatusIcons[getHubStatusIconKey(hub.status as HubStatus)]}
               {formatStatusText(hub.status)}
             </Badge>
-            {hub.suspended && <Badge variant="destructive">Suspended</Badge>}
+            {hub.status === HubStatus.SUSPENDED && (
+              <Badge variant="destructive">Suspended</Badge>
+            )}
           </div>
         </div>
       </CardHeader>

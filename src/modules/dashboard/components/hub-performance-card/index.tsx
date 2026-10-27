@@ -21,6 +21,7 @@ const HUB_STATUS_LABELS: Record<HubStatus, string> = {
   [HubStatus.PENDING]: "Pending verification",
   [HubStatus.REJECTED]: "Rejected",
   [HubStatus.ACTION_REQUIRED]: "Action required",
+  [HubStatus.SUSPENDED]: "Suspended",
 };
 
 function getHubStatusLabel(status: string): string {

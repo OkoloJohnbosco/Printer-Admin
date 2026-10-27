@@ -296,6 +296,7 @@ export const getHubStatusBadgeVariant = (status: HubStatus) => {
     [HubStatus.APPROVED]: "approved",
     [HubStatus.REJECTED]: "rejected",
     [HubStatus.ACTION_REQUIRED]: "action_required",
+    [HubStatus.SUSPENDED]: "rejected",
   };
   return variantMap[status] || "pending";
 };
@@ -304,7 +305,8 @@ export type HubStatusIconKey =
   | "pending"
   | "approved"
   | "rejected"
-  | "action_required";
+  | "action_required"
+  | "suspended";
 
 export const getHubStatusIconKey = (status: HubStatus): HubStatusIconKey => {
   const iconKeyMap: Record<HubStatus, HubStatusIconKey> = {
@@ -312,6 +314,7 @@ export const getHubStatusIconKey = (status: HubStatus): HubStatusIconKey => {
     [HubStatus.APPROVED]: "approved",
     [HubStatus.REJECTED]: "rejected",
     [HubStatus.ACTION_REQUIRED]: "action_required",
+    [HubStatus.SUSPENDED]: "suspended",
   };
   return iconKeyMap[status] || "pending";
 };
